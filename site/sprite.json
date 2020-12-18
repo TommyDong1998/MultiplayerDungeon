@@ -1,0 +1,40 @@
+var spriteData={	Dagger:{
+                     "height":13,
+                     "id":1,
+                     "width":6,
+                     "x":292,
+                     "y":18
+                    },
+					HealthPotion:{
+					 "height":11,
+                     "id":2,
+                     "width":8,
+                     "x":292,
+                     "y":244
+					},
+					Gold:
+					[{x:289,y:273,width:8,height:6},
+					{x:297,y:273,width:8,height:6},
+					{x:295,y:273,width:8,height:6},
+					{x:303,y: 273,width:8,height:6}],
+					RustSword:{
+					  "height":21,
+                     "id":4,
+                     "width":10,
+                     "x":307,
+                     "y":26
+					},
+					TallMinion:[
+					{x:370,y:305,width:11,height:16},
+					{x:387,y:305,width:10,height:15},
+					{x:404,y:305,width:11,height:15},
+					{x:420,y:305,width:10,height:14}
+					],
+					TinyMinion:[
+					{x:372,y:52,width:11,height:12},
+					{x:388,y:52,width:10,height:12},
+					{x:403,y:52,width:11,height:12},
+					{x:419,y:52,width:10,height:12}
+					]
+
+}

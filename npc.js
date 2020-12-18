@@ -1,0 +1,140 @@
+class NPC extends Monster {
+    constructor(type) {
+        super(type);
+        var attack = true;
+        this.on('collide', (obj) => {
+            if (attack) {
+                for (let o of obj) {
+                    if (o.hp && !(o instanceof NPC)) {
+                        o.emit('damage', 1, this);
+                    }
+                    o.emit('knockback', this, 150);
+                }
+                attack = false;
+                setTimeout(() => {
+                    attack = true;
+                }, 300)
+            }
+        });
+        this.once('remove', () => {
+            clearInterval(this.action);
+        });
+    }
+    attackFirst() {
+        var prev = {
+            x: 0,
+            y: 0
+        };
+        if (this.action)
+            clearInterval(this.action);
+        this.action = setInterval(() => {
+            var nearest;
+            map.findNear(this, 500, (obj) => {
+                if (obj instanceof Player && obj != this) {
+                    if (!nearest)
+                        nearest = obj;
+                    else {
+                        var distance = Math.sqrt(Math.pow(obj.pos.x - this.pos.x, 2) + Math.pow(obj.pos.y - this.pos.y, 2));
+                        var oldDistance = Math.sqrt(Math.pow(nearest.pos.x - this.pos.x, 2) + Math.pow(nearest.pos.y - this.pos.y, 2));
+                        if (distance < oldDistance) {
+                            nearest = obj;
+                        }
+                    }
+                }
+            });
+            if (nearest && nearest.removed == undefined) {
+                this.velocity.x -= prev.x;
+                this.velocity.y -= prev.y;
+                prev = this.velocityToward(nearest, this.stat.speed);
+            }
+            if (prev.x > 0) {
+                this.facing = 1;
+            } else if (this.velocity.x < 0) {
+                this.facing = -1;
+            }
+        }, 500);
+    }
+    attackSpawn() {
+        this.attackFirst();
+        var minion = 5;
+        var action = setInterval(() => {
+            this.attackFirst();
+            setTimeout(() => {
+                clearInterval(this.action);
+                if (this.hp != this.stat.hp && minion) {
+					var enemy = new NPC('minion');
+                    enemy.setPosition(this.pos.x, this.pos.y);
+                    enemy.attackFirst();
+                    enemy.on('remove', () => {
+                        minion++;
+                    });
+                    minion--;
+                }
+                this.velocity.x = 0;
+                this.velocity.y = 0;
+            }, 4000);
+        }, 5000);
+        this.once("remove", () => {
+            clearInterval(action);
+        });
+    }
+    randomRun() {
+        var x = 0;
+        var offsetx = 0;
+        var offsety = 0;
+        this.on('collide', (obj) => {
+            for (let o of obj) {
+                if (o.type.indexOf('solid') != -1) {
+                    offsetx = this.velocity.x * -10;
+                    offsety = this.velocity.y * -10;
+                }
+            }
+        });
+        setInterval(() => {
+            x++;
+            this.velocityToward({
+                pos: {
+                    x: Math.sin(x / 10) * 500 + offsetx,
+                    y: Math.cos(x / 10) * 500 + offsety
+                }
+            }, 100);
+            if (this.velocity.x > 0) {
+                this.facing = 1;
+            } else if (this.velocity.x < 0) {
+                this.facing = -1;
+            }
+        }, 500);
+    }
+}
+//Main boss
+//Based off normal npc
+class Demon extends NPC {
+    constructor() {
+        super("demon");
+        this.hp = 30;
+        this.stat.hp = 30;
+        this.stat.speed = 150;
+        this.removeAllListeners("knockback");
+        this.on('damage', (amt, obj) => {
+            if (this.hp <= 0) {
+                for (var x = 0; x < 10; x++) {
+                    var coin = new Coin();
+                    coin.setPosition(this.pos.x + (Math.random() * 100), this.pos.y + (Math.random() * 100));
+                    if (obj.goldBoost) {
+                        var coin = new Coin();
+                        coin.setPosition(this.pos.x + (Math.random() * 100), this.pos.y + (Math.random() * 100));
+                    }
+                }
+            }
+        });
+        this.on('knockback', (obj, amt) => {
+            if (obj instanceof Weapon)
+                this.knockback(obj, amt / 2);
+        });
+        setInterval(() => {
+            if (this.hp != this.stat.hp) {
+                this.hp++;
+            }
+        }, 5000);
+    }
+}
