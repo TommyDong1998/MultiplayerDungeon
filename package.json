@@ -2,6 +2,9 @@
   "name": "Multiplayer Dungeon",
   "version": "3.0.1",
   "main": "game.js",
+  "scripts": {
+    "start": "node game.js"
+  },
   "dependencies": {
     "express": "^4.16.4",
     "inquirer": "^6.2.1",
