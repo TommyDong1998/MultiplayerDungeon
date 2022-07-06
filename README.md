@@ -2,8 +2,8 @@
 
 ## Instructions
 
-git clone https://github.com/TommyDong1998/MultiplayerDungeon
-cd MultiplayerDungeon
-npm install
-node game.js
+1. git clone https://github.com/TommyDong1998/MultiplayerDungeon
+2. cd MultiplayerDungeon
+3. npm install
+4. node game.js
 open http://localhost:81 or http://localhost:<environment port>
