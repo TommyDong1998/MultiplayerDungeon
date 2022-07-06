@@ -3,7 +3,7 @@ var sword = require("./index.js");
 var app = express();
 
 app.use(express.static('site'));
-var httpServer=app.listen(81);
+var httpServer=app.listen(process.env.PORT || 81);
 /*
 ToDo
 Finish xp implementation
