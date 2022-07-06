@@ -6,4 +6,4 @@
 2. cd MultiplayerDungeon
 3. npm install
 4. node game.js
-open http://localhost:81 or http://localhost:<environment port>
+open http://localhost:81 or http://localhost: [environment port]
