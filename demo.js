@@ -1,5 +1,5 @@
 var express = require("express");
-var sword = require("./index.js");
+var sword = require("../sword_engine.js");
 var app = express();
 
 app.use(express.static('site'));
