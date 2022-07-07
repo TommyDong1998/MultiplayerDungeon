@@ -3,8 +3,7 @@
   "version": "3.0.1",
   "main": "game.js",
   "scripts": {
-    "start": "node build/game.js",
-    "build_windows": "type demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js"
+    "start": "node game.js"
   },
   "dependencies": {
     "express": "^4.16.4",
