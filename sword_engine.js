@@ -244,13 +244,22 @@
     Entity.id = 0;
     // ////////////////////
     // Constructor
-    function main(cb) {
+    function main(cb,httpServer) {
         // Run one time
         consoleStatus();
-        const socket = new WebSocket.Server({
+        let opt;
+        if(httpServer){
+            opt={
+                server: httpServer,
+                perMessageDeflate: false
+            }
+        }else{
+            opt={
             port: settings.port,
             perMessageDeflate: false
-        });
+            }
+        }
+        const socket = new WebSocket.Server(opt);
         var velocity = [];
         var collision = [];
         var undoVelocity = [];

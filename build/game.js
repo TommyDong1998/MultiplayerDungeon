@@ -1,9 +1,12 @@
 var express = require("express");
-var sword = require("../sword_engine.js");
 var app = express();
 
 app.use(express.static('site'));
-var httpServer=app.listen(81);
+let port=process.env.PORT||81
+
+var httpServer=app.listen(port);
+
+var sword = require("../sword_engine.js");
 /*
 ToDo
 Finish xp implementation
@@ -42,7 +45,7 @@ var world = new sword(function(setting, socket) {
     socket.on('connection', function connection(ws) {
         var logged;
 		if(players.length==0){
-			loadMap(require("../map/level1.json"));
+			loadMap(require("./map/level1.json"));
 		}
         ws.once("message", (data) => {
             try {
