@@ -2,11 +2,11 @@ var express = require("express");
 var app = express();
 
 app.use(express.static('site'));
-let port=process.env.PORT||80
+let port=process.env.PORT||8080
 
 var httpServer=app.listen(port);
-
 //allow client to get port
+
 app.get('/api/port', (req, res) => {
     res.send('var port='+port+';');
 });
