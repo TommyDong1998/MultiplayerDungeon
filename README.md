@@ -7,7 +7,7 @@ Simple in browser multiplayer dungeon game.
 2. cd MultiplayerDungeon
 3. npm install
 4. npm run start
-5. open http://localhost:81 or http://localhost: environment port
+5. open http://localhost:8080 or http://localhost: environment port
 
 ## Elastic Beanstalk Deployment
 
