@@ -12,5 +12,6 @@ Simple in browser multiplayer dungeon game.
 ## Elastic Beanstalk Deployment
 
 1. Download as [zip](https://github.com/TommyDong1998/MultiplayerDungeon/archive/refs/heads/main.zip)
-2. Upload and deploy
-3. Up and running :)
+2. Extract the contents and then zip the contents inside of MultiplayerDungeon-main
+3. Upload the new zip and deploy
+4. Up and running :)
