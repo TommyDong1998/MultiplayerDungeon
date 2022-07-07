@@ -134,6 +134,7 @@
 			<div id="bar"></div>
 		</div>
 	</body>
+	<script src="/api/port"></script>
 	<script>
 	var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of doing double damage!",cost:10},
 	{name:"Dagger",description:"Very short. Little knockback. Double gold!",cost:10},
@@ -458,7 +459,7 @@
 	
 
 	//	Create a socket to connect to the server
-	var socket=new WebSocket("ws://"+window.location.hostname+":8080");
+	var socket=new WebSocket("ws://"+window.location.hostname+":"+port);
 	var pname;
 	socket.addEventListener("open",()=>{
 		pname=prompt("Please enter your name", "Dungeon");
@@ -490,7 +491,7 @@
 		if(message.restart){
 			if(confirm("You died! Want to restart?")){
 				//socket.send(JSON.stringify({restart:true}));
-				var tempSocket=new WebSocket("ws://"+window.location.hostname+":8080");
+				var tempSocket=new WebSocket("ws://"+window.location.hostname+":"+port);
 				tempSocket.addEventListener("open",()=>{
 					socket.send(JSON.stringify({"name":pname}));
 				});
