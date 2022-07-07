@@ -9,7 +9,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "inquirer": "^6.2.1",
-    "node-gameloop": "^0.1.4",
+    "node-gameloop": "https://github.com/tangmi/node-gameloop",
     "quad-node": "^1.0.5",
     "sat": "^0.7.1",
     "ws": "^6.1.2"
