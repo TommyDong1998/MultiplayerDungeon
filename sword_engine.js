@@ -5,7 +5,7 @@
     // By Tom     ///
     // //////////////
     const QuadNode = require('quad-node');
-    var SAT = require('sat');
+    const SAT = require('sat');
     const gameloop = require('node-gameloop');
     const WebSocket = require('ws');
     // Built in
@@ -14,7 +14,7 @@
     	ToDo List
     	- Make bounding box in GameMap better for rotation
     */
-    var settings = {
+    const settings = {
         speed: 30,
         width: 5000,
         height: 5000,
@@ -260,9 +260,9 @@
             }
         }
         const socket = new WebSocket.Server(opt);
-        var velocity = [];
-        var collision = [];
-        var undoVelocity = [];
+        const velocity = [];
+        const collision = [];
+        let undoVelocity = [];
         this.on('velocity', (object) => {
             velocity.push(object);
             object.once('remove', () => {
@@ -290,7 +290,7 @@
         this.on('rmCollision', (object) => {
             collision.splice(collision.indexOf(object), 1);
         });
-        var loop=gameloop.setGameLoop((delta) => {
+        const loop=gameloop.setGameLoop((delta) => {
             if (settings.debug && delta > 0.04) {
                 console.log("Time(normal " + Math.floor(1 / settings.speed*100)/100 + ")", delta);
             }
@@ -306,19 +306,19 @@
 
             collision.forEach((entity) => {
                 // Check collision
-                var overlapping = entity.collideWith();
+                const overlapping = entity.collideWith();
                 entity.emit('collide', overlapping);
             });
 
             undoVelocity.forEach((entity) => {
-                var newX = entity.object.polygon.pos.x;
-                var newY = entity.object.polygon.pos.y;
+                let newX = entity.object.polygon.pos.x;
+                let newY = entity.object.polygon.pos.y;
                 if (entity.x)
                     newX -= entity.object.dx;
                 if (entity.y)
                     newY -= entity.object.dy;
                 entity.object.setPosition(newX, newY);
-                for (var x of entity.object.attachE) {
+                for (let x of entity.object.attachE) {
                     x.setPosition(x.polygon.pos.x - entity.object.dx, x.polygon.pos.y - entity.object.dy);
                 }
             });
