@@ -36,7 +36,7 @@ class Player extends Monster {
                 this.weapon.setPosition(centerLocation + pos.x, this.polygon.pos.y + 25 - weapon.origin.y + pos.y);
             }
         });
-        this.gold = 300;
+        this.gold = 0;
         this.damageFree = true;
         setTimeout(() => {
             this.damageFree = false;
