@@ -770,7 +770,8 @@ class Player extends Monster {
         };
         var current = map.findNear(this, 500);
         let visibleItems=[];
-        current = current.reduce((total, entity) => {
+        const total=[];
+        current.forEach((entity) => {
             if (entity.sprite || entity instanceof Bullet) {
                 var info = {
                     id: entity.id,
@@ -830,7 +831,7 @@ class Player extends Monster {
             visibleItems.push(entity.id);
             return total;
         }, []);
-
+        current=total;
         this.visibleData=this.visibleData||[];
         //Things player see previously but not currently
         let nonVisible=this.visibleData.filter((data)=>{
