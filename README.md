@@ -22,5 +22,7 @@ Simple in browser multiplayer dungeon game. Demo available [here](http://multipl
 2. cd MultiplayerDungeon
 3. npm install
 4. make changes
-4. npm build && npm run start
-5. open http://localhost:8080 or http://localhost: environment port
+5. npm build && npm run start
+6. open http://localhost:8080 or http://localhost: environment port
+
+Repeat steps 4-6 when developing
