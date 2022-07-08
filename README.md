@@ -1,5 +1,5 @@
 # Multiplayer Dungeon Game
-Simple in browser multiplayer dungeon game. Demo available [here](http://multiplayerdungeon.us-east-2.elasticbeanstalk.com)
+Simple in browser multiplayer dungeon game. Demo available [here](http://multiplayerdungeon-env.eba-sdwfkmve.us-east-1.elasticbeanstalk.com/)
 
 ## Local Instructions
 
