@@ -6,7 +6,6 @@
     // //////////////
     const QuadNode = require('quad-node');
     const SAT = require('sat');
-    const gameloop = require('node-gameloop');
     const WebSocket = require('ws');
     // Built in
     const EventEmitter = require('events');
@@ -290,10 +289,18 @@
         this.on('rmCollision', (object) => {
             collision.splice(collision.indexOf(object), 1);
         });
-        const loop=gameloop.setGameLoop((delta) => {
+
+        let lastTick = Date.now();
+        const loop=setInterval(() => {
+            //Calculate delta
+            const currentTicket=Date.now();
+            const delta=(currentTicket-lastTick)/100;
+            lastTick=currentTicket;
+
             if (settings.debug && delta > 0.04) {
                 console.log("Time(normal " + Math.floor(1 / settings.speed*100)/100 + ")", delta);
             }
+            
             velocity.forEach((entity) => {
                 entity.dx = entity.velocity.x * delta;
                 entity.dy = entity.velocity.y * delta;
@@ -324,7 +331,7 @@
             });
             undoVelocity = [];
             this.emit('processFinish');
-        }, 1000 / settings.speed);
+        }, Math.floor(1000 / settings.speed/10) *10);
 		cb(settings, socket);
     }
     Object.assign(main.prototype, EventEmitter.prototype);
