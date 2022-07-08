@@ -294,7 +294,7 @@
         const loop=setInterval(() => {
             //Calculate delta
             const currentTicket=Date.now();
-            const delta=(currentTicket-lastTick)/100;
+            const delta=(currentTicket-lastTick)/1000;
             lastTick=currentTicket;
 
             if (settings.debug && delta > 0.04) {
@@ -331,7 +331,7 @@
             });
             undoVelocity = [];
             this.emit('processFinish');
-        }, Math.floor(1000 / settings.speed/10) *10);
+        }, Math.floor(1000 / settings.speed/10)*10);
 		cb(settings, socket);
     }
     Object.assign(main.prototype, EventEmitter.prototype);
