@@ -15,3 +15,14 @@ Simple in browser multiplayer dungeon game. Demo available [here](http://multipl
 2. Extract the contents and then zip the contents inside of MultiplayerDungeon-main
 3. Upload the new zip and deploy
 4. Up and running :)
+
+## Development Instructions
+
+1. git clone https://github.com/TommyDong1998/MultiplayerDungeon
+2. cd MultiplayerDungeon
+3. npm install
+4. make changes
+5. npm build && npm run start
+6. open http://localhost:8080 or http://localhost: environment port
+
+Repeat steps 4-6 when developing
