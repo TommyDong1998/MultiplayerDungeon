@@ -108,11 +108,8 @@
 			try{
 				this.quadTree.remove(object);
             }catch(e){
-				console.log(e)
+				console.log("error:",object,e)
 			}
-			//object.attachE.forEach((entity) => {
-            //  entity.emit('remove');
-            //});
         }
     }
 
