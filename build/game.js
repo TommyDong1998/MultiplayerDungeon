@@ -11,7 +11,7 @@ app.get('/api/port', (req, res) => {
     res.send('var port='+port+';');
 });
 
-var sword = require("../sword_engine.js");
+var sword = require("sword");
 /*
 ToDo
 Finish xp implementation
@@ -838,7 +838,7 @@ class Player extends Monster {
         Exception for static
         */
         let nonVisible=this.visibleData.filter((data)=>{
-            return visibleItems.indexOf(data)===-1&&data.static==false;
+            return visibleItems.indexOf(data)===-1&&data.static != true;
         });
         
         this.visibleData=visibleItems;
