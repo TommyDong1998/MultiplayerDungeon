@@ -294,13 +294,13 @@
         const loop=setInterval(() => {
             //Calculate delta
             const currentTicket=Date.now();
-            const delta=(currentTicket-lastTick)/1000;
+            let delta=(currentTicket-lastTick)/1000;
             lastTick=currentTicket;
 
             if (settings.debug && delta > 0.04) {
                 console.log("Time(normal " + Math.floor(1 / settings.speed*100)/100 + ")", delta);
             }
-            
+
             if(delta > 0.05){
                 delta=0.05;
             }
