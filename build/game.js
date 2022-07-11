@@ -734,7 +734,6 @@ class Player extends Monster {
 		this.shop();
         //Whenever something get removed
         function removeEntity(id) {
-            console.log("test",id)
             try {
 				socket.send(JSON.stringify({
 					kill: id
@@ -839,7 +838,7 @@ class Player extends Monster {
         Exception for static
         */
         let nonVisible=this.visibleData.filter((data)=>{
-            return visibleItems.indexOf(data)===-1&&data.static!=true;
+            return visibleItems.indexOf(data)===-1&&data.static==false;
         });
         
         this.visibleData=visibleItems;
