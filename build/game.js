@@ -633,9 +633,7 @@ function loadMap(file){
 			}
 		}
 	}
-}
-loadMap(require("./map/level2.json"))
-//loadMap(require("./map/level2.json"))//Shop number
+}//Shop number
 const entityClassNum=1;
 /* Requires Global Variable world */
 class Player extends Monster {

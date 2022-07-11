@@ -82,5 +82,3 @@ function loadMap(file){
 		}
 	}
 }
-loadMap(require("./map/level2.json"))
-//loadMap(require("./map/level2.json"))
