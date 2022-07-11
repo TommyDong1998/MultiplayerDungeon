@@ -838,7 +838,7 @@ class Player extends Monster {
         Exception for static
         */
         let nonVisible=this.visibleData.filter((data)=>{
-            return visibleItems.indexOf(data)===-1&&data.static==false;
+            return visibleItems.indexOf(data)===-1&&data.static != true;
         });
         
         this.visibleData=visibleItems;
