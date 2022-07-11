@@ -269,12 +269,16 @@
 			else{
 				this.map[obj.id]=new item(obj);
 			}
-			if (this.update.indexOf(this.map[obj.id])==-1)
+			if (this.update.indexOf(this.map[obj.id])==-1){
 				this.update.push(this.map[obj.id])
+			}
+			if(this.map[obj.id].visibility==false){
+				this.map[obj.id].visibility=true;
+			}
 		}
 		remove(entity){
-			this.update.splice(this.update.indexOf(this.map[entity]),1);
-			this.map[entity]=null;
+			//Set to invisible instead of removing object since server only sends new info about an object
+			this.map[entity].visibility=false;
 		}
 	}
 
@@ -329,10 +333,7 @@
 	}
 
 	var util={
-		drawSprite:(info,sprite,map)=>{
-			/*if(map){
-			}
-			else*/
+		drawSprite:(info,sprite)=>{
 			ctx.drawImage(tiles,info.x,info.y,info.width,info.height,
 							sprite.x,sprite.y,sprite.width,sprite.height);
 		},
@@ -377,6 +378,8 @@
 
 		//Draw all items
 		for(var item of gameMap.update){
+			if(item.visibility == false)
+				continue;
 			//Load sprite information
 			var info=item.sprite.info;
 			var sprite=item.sprite;
@@ -478,13 +481,15 @@
 				gameMap.addOrUpdate(item);
 				updateIndex();
 			});
-		}else if(message.kill){
+		}
+		// Something got killed
+		else if(message.kill){
 			gameMap.remove(message.kill);
 		}
 		if (message.removeUpdate){
 			message.removeUpdate.forEach((entity)=>{
 				if(gameMap.map[entity])
-					gameMap.update.splice(gameMap.update.indexOf(gameMap.map[entity]),1);
+					gameMap.remove(entity);
 			})
 		}
 		if(message.restart){
