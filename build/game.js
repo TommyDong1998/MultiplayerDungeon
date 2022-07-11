@@ -570,6 +570,8 @@ function loadMap(file){
 	var createSolid = (x, y) => {
 		var solid = new sword.Entity(32, 32);
 		solid.type.push('solid');
+		//Static type is not removed from client when out of players view
+		solid.type.push('static');
 		solid.setPosition(x, y);
 		map.insert(solid);
 	};
@@ -582,7 +584,6 @@ function loadMap(file){
 				var tile = new sword.Entity(32, 32);
 				tile.sprite = getLoc(c, r) - 1;
 				tile.setPosition(c * 32, r * 32);
-				tile.type.push("map");
 				map.insert(tile);
 				// Solid a little bit on tile
 				if (!getLoc(c, r - 1))
@@ -802,7 +803,7 @@ class Player extends Monster {
                 if (entity instanceof Bullet) {
                     info.particle = true;
                 }
-                if (entity.type.indexOf("map") != -1) {
+                if (entity.type.indexOf("static") != -1) {
                     info.static = true;
                 }
                 if (entity.playerName) {
@@ -833,9 +834,13 @@ class Player extends Monster {
         }, []);
         current=total;
         this.visibleData=this.visibleData||[];
-        //Things player see previously but not currently
+        /*
+        Things player see previously but not currently
+        Will notify client to set as invisible.
+        Exception for static
+        */
         let nonVisible=this.visibleData.filter((data)=>{
-            return visibleItems.indexOf(data)===-1;
+            return visibleItems.indexOf(data)===-1&&data.static==false;
         });
         
         this.visibleData=visibleItems;

@@ -18,6 +18,8 @@ function loadMap(file){
 	var createSolid = (x, y) => {
 		var solid = new sword.Entity(32, 32);
 		solid.type.push('solid');
+		//Static type is not removed from client when out of players view
+		solid.type.push('static');
 		solid.setPosition(x, y);
 		map.insert(solid);
 	};
@@ -30,7 +32,6 @@ function loadMap(file){
 				var tile = new sword.Entity(32, 32);
 				tile.sprite = getLoc(c, r) - 1;
 				tile.setPosition(c * 32, r * 32);
-				tile.type.push("map");
 				map.insert(tile);
 				// Solid a little bit on tile
 				if (!getLoc(c, r - 1))

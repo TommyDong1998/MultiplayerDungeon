@@ -166,7 +166,7 @@ class Player extends Monster {
                 if (entity instanceof Bullet) {
                     info.particle = true;
                 }
-                if (entity.type.indexOf("map") != -1) {
+                if (entity.type.indexOf("static") != -1) {
                     info.static = true;
                 }
                 if (entity.playerName) {
@@ -197,9 +197,13 @@ class Player extends Monster {
         }, []);
         current=total;
         this.visibleData=this.visibleData||[];
-        //Things player see previously but not currently
+        /*
+        Things player see previously but not currently
+        Will notify client to set as invisible.
+        Exception for static
+        */
         let nonVisible=this.visibleData.filter((data)=>{
-            return visibleItems.indexOf(data)===-1;
+            return visibleItems.indexOf(data)===-1&&data.static==false;
         });
         
         this.visibleData=visibleItems;

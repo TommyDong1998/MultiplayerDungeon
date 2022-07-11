@@ -380,6 +380,7 @@
 		for(var item of gameMap.update){
 			if(item.visibility == false)
 				continue;
+
 			//Load sprite information
 			var info=item.sprite.info;
 			var sprite=item.sprite;
@@ -390,7 +391,7 @@
 			}
 			var spriteInfo=Object.assign({},item.sprite);
 			var origin={};
-			//If particle
+
 			if(item.particle){
 				ctx.fillRect(info.x,info.y,10,10);
 			}
@@ -410,7 +411,7 @@
 							util.drawSprite(info,sprite);
 						});
 					}else{
-						util.drawSprite(info,sprite,item.static);
+						util.drawSprite(info,sprite);
 					}
 			}
 			if(sprite.playerName){
@@ -471,6 +472,7 @@
 	//	When you get message from server do this
 	function recievePackets(event){
 		var message=JSON.parse(event.data);
+		console.log(message)
 		if(message.shop){
 			createItem(1,message.shopItemX);
 			createItem(2,message.shopItemY);
