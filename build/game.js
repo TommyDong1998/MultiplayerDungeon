@@ -11,7 +11,7 @@ app.get('/api/port', (req, res) => {
     res.send('var port='+port+';');
 });
 
-var sword = require("../sword_engine.js");
+var sword = require("sword");
 /*
 ToDo
 Finish xp implementation
@@ -745,7 +745,7 @@ class Player extends Monster {
         // Display
         var sendFrame = this.sendFrame.bind(this);
         world.on('remove', removeEntity);
-        world.on('processFinish', sendFrame);
+        world.on('nextFrame', sendFrame);
         var close = false;
         socket.on('close', () => {
             close = true;
@@ -753,7 +753,7 @@ class Player extends Monster {
             this.emit('remove');
         });
         this.once("remove", () => {
-            world.removeListener('processFinish', sendFrame);
+            world.removeListener('nextFrame', sendFrame);
             if (!close){
 				world.removeListener('remove', removeEntity);
                 socket.send(JSON.stringify({
