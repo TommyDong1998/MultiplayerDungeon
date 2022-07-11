@@ -301,6 +301,10 @@
                 console.log("Time(normal " + Math.floor(1 / settings.speed*100)/100 + ")", delta);
             }
             
+            if(delta > 0.05){
+                delta=0.05;
+            }
+            
             velocity.forEach((entity) => {
                 entity.dx = entity.velocity.x * delta;
                 entity.dy = entity.velocity.y * delta;
