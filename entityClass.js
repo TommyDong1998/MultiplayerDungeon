@@ -71,14 +71,8 @@ function setPotionHoard(entity){
 }
 function setLeader(entity){
 	entity.entityClass="leader";
-	this.classAttribute={team:[]};
-	entity.attack=function(){
-		if (!this.timeout&&entity.healthPotions) {
-            setTimeout(()=>{
-				this.timeout=false;
-			},1000)
-        }
-	}
+	entity.stat.hp=7;
+	entity.hp+=2;
 }
 function setLuckMan(entity){
 	entity.entityClass="luckMan";

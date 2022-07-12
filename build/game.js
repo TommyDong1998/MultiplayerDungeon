@@ -142,14 +142,8 @@ function setPotionHoard(entity){
 }
 function setLeader(entity){
 	entity.entityClass="leader";
-	this.classAttribute={team:[]};
-	entity.attack=function(){
-		if (!this.timeout&&entity.healthPotions) {
-            setTimeout(()=>{
-				this.timeout=false;
-			},1000)
-        }
-	}
+	entity.stat.hp=7;
+	entity.hp+=2;
 }
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
@@ -229,25 +223,23 @@ class Monster extends sword.Entity {
                 }
             }
         });
+        this.drops=[[Potion.bind(null,"HealthPotion"),0.5], [Coin,0.7]]
         //When this get attacked
         this.on('damage', (amt, obj) => {
             if (this.damageFree)
                 return;
             this.hp -= amt;
             if (this.hp <= 0) {
-                //Spawn potion when npc dies
-                if (Math.random() > 0.5) {
-                    var potion = new Potion("HealthPotion");
-                    potion.setPosition(this.pos.x, this.pos.y);
-                }
-                if (Math.random() > 0.3) {
-                    if (obj.goldBoost) {
-                        var coin = new Coin();
-                        coin.setPosition(this.pos.x + (Math.random() * 10), this.pos.y + (Math.random() * 10));
+                this.drops.forEach((drops)=>{
+                    let modifier=1;
+                    if(obj.goldBoost){
+                        modifier=1.5;
                     }
-                    var coin = new Coin();
-                    coin.setPosition(this.pos.x, this.pos.y);
-                }
+                    if(Math.random()/modifier<drops[1]){
+                        const drop=new drops[0];
+                        drop.setPosition(this.pos.x+ (Math.random() * 10), this.pos.y+ (Math.random() * 10));
+                    }
+                })
                 this.emit('remove');
             }
         });
@@ -671,11 +663,28 @@ class Player extends Monster {
                 this.weapon.setPosition(centerLocation + pos.x, this.polygon.pos.y + 25 - weapon.origin.y + pos.y);
             }
         });
-        this.gold = 0;
+        
+        this._gold = 1;
+
+        Object.defineProperty(this, 'gold', {
+            set: (amount)=>{
+                this.drops=[];
+                this._gold=amount;
+                for(let i =0; i< this._gold;i++)
+                    this.drops.push([Coin,0.9])
+            },
+            get: ()=>{
+                return this._gold;
+            }
+        });
+
+        
+        //Cannot be hurt first 1 second of game
         this.damageFree = true;
         setTimeout(() => {
             this.damageFree = false;
         }, 1000);
+        //////////////////////////////////
 		var prevMov={x:0,y:0};
 		socket.on('message', (data) => {
             try {
@@ -721,8 +730,8 @@ class Player extends Monster {
                         break;
 						//Refresh shop
 					case 4:
-						 if(this.gold>4){
-							this.gold-=5
+						 if(this.gold>=1){
+							this.gold-=1
 							this.shop();
 						 }
 					break;
@@ -732,6 +741,7 @@ class Player extends Monster {
             }
         });
 		this.shop();
+        
         //Whenever something get removed
         function removeEntity(id) {
             try {
@@ -895,10 +905,10 @@ class Player extends Monster {
         //If change must update boughtItem below
 		var items = {
             RustySword: {
-                cost: 10
+                cost: 6
             },
             Dagger: {
-                cost: 10
+                cost: 5
             },
 			Warrior:{
 				cost: 15
@@ -957,7 +967,8 @@ class Player extends Monster {
 				break;
         }
     }
-}/*global sword*/
+}
+/*global sword*/
 class Potion extends sword.Entity {
     constructor(type) {
         super(16, 22);

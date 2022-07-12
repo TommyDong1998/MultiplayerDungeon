@@ -36,11 +36,28 @@ class Player extends Monster {
                 this.weapon.setPosition(centerLocation + pos.x, this.polygon.pos.y + 25 - weapon.origin.y + pos.y);
             }
         });
-        this.gold = 0;
+        
+        this._gold = 1;
+
+        Object.defineProperty(this, 'gold', {
+            set: (amount)=>{
+                this.drops=[];
+                this._gold=amount;
+                for(let i =0; i< this._gold;i++)
+                    this.drops.push([Coin,0.9])
+            },
+            get: ()=>{
+                return this._gold;
+            }
+        });
+
+        
+        //Cannot be hurt first 1 second of game
         this.damageFree = true;
         setTimeout(() => {
             this.damageFree = false;
         }, 1000);
+        //////////////////////////////////
 		var prevMov={x:0,y:0};
 		socket.on('message', (data) => {
             try {
@@ -86,8 +103,8 @@ class Player extends Monster {
                         break;
 						//Refresh shop
 					case 4:
-						 if(this.gold>4){
-							this.gold-=5
+						 if(this.gold>=1){
+							this.gold-=1
 							this.shop();
 						 }
 					break;
@@ -97,6 +114,7 @@ class Player extends Monster {
             }
         });
 		this.shop();
+        
         //Whenever something get removed
         function removeEntity(id) {
             try {
@@ -260,10 +278,10 @@ class Player extends Monster {
         //If change must update boughtItem below
 		var items = {
             RustySword: {
-                cost: 10
+                cost: 6
             },
             Dagger: {
-                cost: 10
+                cost: 5
             },
 			Warrior:{
 				cost: 15
