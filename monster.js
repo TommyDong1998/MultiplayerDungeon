@@ -73,25 +73,23 @@ class Monster extends sword.Entity {
                 }
             }
         });
+        this.drops=[[Potion.bind(null,"HealthPotion"),0.5], [Coin,0.7]]
         //When this get attacked
         this.on('damage', (amt, obj) => {
             if (this.damageFree)
                 return;
             this.hp -= amt;
             if (this.hp <= 0) {
-                //Spawn potion when npc dies
-                if (Math.random() > 0.5) {
-                    var potion = new Potion("HealthPotion");
-                    potion.setPosition(this.pos.x, this.pos.y);
-                }
-                if (Math.random() > 0.3) {
-                    if (obj.goldBoost) {
-                        var coin = new Coin();
-                        coin.setPosition(this.pos.x + (Math.random() * 10), this.pos.y + (Math.random() * 10));
+                this.drops.forEach((drops)=>{
+                    let modifier=1;
+                    if(obj.goldBoost){
+                        modifier=1.5;
                     }
-                    var coin = new Coin();
-                    coin.setPosition(this.pos.x, this.pos.y);
-                }
+                    if(Math.random()/modifier<drops[1]){
+                        const drop=new drops[0];
+                        drop.setPosition(this.pos.x+ (Math.random() * 10), this.pos.y+ (Math.random() * 10));
+                    }
+                })
                 this.emit('remove');
             }
         });

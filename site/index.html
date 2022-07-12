@@ -119,7 +119,7 @@
 			</div>
 			<div id="refreshShop" class="display">
 			<div class="detail">Your Gold<br><small id="gold">G</small></div>
-			<div class="bbutton">5G Refresh Shop</div>
+			<div class="bbutton">1G Refresh Shop</div>
 			</div>
 			<div id="section2" class="choice">
 				<img src="" width="100px">
@@ -135,11 +135,11 @@
 		</div>
 	</body>
 	<script>
-	var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of doing double damage!",cost:10},
-	{name:"Dagger",description:"Very short. Little knockback. Double gold!",cost:10},
+	var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of doing double damage!",cost:6},
+	{name:"Dagger",description:"Very short. Little knockback. Increased gold chance!",cost:5},
 	{name:"Warrior",description:"Extra health. Invincible charge special attack!",cost:15},
 	{name:"Healer",description:"Can heal others with your health!",cost:15},
-	{name:"Human Leader",description:"Looks cool on the inside. ",cost:15},
+	{name:"Human Leader",description:"Extra hp",cost:15},
 	{name:"Potion Hoarder",description:"He hoards potions. Then he throw them at people.",cost:15},
 	];
 	///////////////
@@ -472,7 +472,6 @@
 	//	When you get message from server do this
 	function recievePackets(event){
 		var message=JSON.parse(event.data);
-		console.log(message)
 		if(message.shop){
 			createItem(1,message.shopItemX);
 			createItem(2,message.shopItemY);
