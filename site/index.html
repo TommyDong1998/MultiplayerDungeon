@@ -465,8 +465,14 @@
 	//	Create a socket to connect to the server
 	var socket=new WebSocket("ws://"+window.location.host);
 	var pname;
+	function randomName() {
+		//var randomNum = Math.floor(Math.random() * 10);
+		var noun = ["CrackedHead", "Monke", "Ape", "Egg", "Groot", "Dumper", "Minion", "Nose", "Cheeks", "Leg"];
+		var adjective = ["Fart","Creepy","Blushing","Adorable","Ill","Itchy","Motionless","Ugly","Tender","Nervous"];
+        return adjective[Math.floor(Math.random() * adjective.length)] + " " + noun[Math.floor(Math.random() * noun.length)];
+    }
 	socket.addEventListener("open",()=>{
-		pname=prompt("Please enter your name", "Dungeon");
+		pname=prompt("Please enter your name", randomName());
 		socket.send(JSON.stringify({"name":pname}));
 	});
 	socket.onmessage=recievePackets;
