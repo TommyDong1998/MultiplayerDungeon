@@ -1,7 +1,7 @@
 function loadMap(file){
-	world._collisionItems.forEach(element => {
-		element.emit('remove');
-	});
+	for(let i=0;i<world._collisionItems.length;i++){
+		world._collisionItems[i].emit('remove');
+	}
 	world._velocityItems=[];
 	world._collisionItems=[];
 	map.quadTree.clear();

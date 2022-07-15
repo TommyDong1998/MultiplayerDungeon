@@ -543,9 +543,15 @@ class Demon extends NPC {
     }
 }
 function loadMap(file){
-	world._collisionItems.forEach(element => {
-		element.emit('remove');
-	});
+	console.log(world._collisionItems.length);
+	for(let i=0;i<world._collisionItems.length;i++){
+		world._collisionItems[i].emit('remove');
+	}
+	console.log(world._collisionItems.length);
+	for(let i=0;i<world._collisionItems.length;i++){
+		world._collisionItems[i].emit('remove');
+	}
+	console.log(world._collisionItems.length);
 	world._velocityItems=[];
 	world._collisionItems=[];
 	map.quadTree.clear();
