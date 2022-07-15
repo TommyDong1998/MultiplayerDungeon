@@ -278,7 +278,8 @@
 		}
 		remove(entity){
 			//Set to invisible instead of removing object since server only sends new info about an object
-			this.map[entity].visibility=false;
+			if(this.map[entity])
+				this.map[entity].visibility=false;
 		}
 	}
 

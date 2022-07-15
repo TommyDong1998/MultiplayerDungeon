@@ -1,4 +1,9 @@
 function loadMap(file){
+	world._collisionItems.forEach(element => {
+		element.emit('remove');
+	});
+	world._velocityItems=[];
+	world._collisionItems=[];
 	map.quadTree.clear();
 	var wall = file.layers[1].data;
 	function getLoc(c, r) {
