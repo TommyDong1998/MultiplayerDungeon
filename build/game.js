@@ -50,7 +50,8 @@ var world = new sword(function(setting, socket) {
     socket.on('connection', function connection(ws) {
         var logged;
 		if(players.length==0){
-			loadMap(require("./map/level1.json"));
+            delete require.cache[require.resolve("./map/levele.json")];
+			loadMap(require("./map/levele.json"));
 		}
         ws.once("message", (data) => {
             try {
@@ -543,15 +544,9 @@ class Demon extends NPC {
     }
 }
 function loadMap(file){
-	console.log(world._collisionItems.length);
 	for(let i=0;i<world._collisionItems.length;i++){
 		world._collisionItems[i].emit('remove');
 	}
-	console.log(world._collisionItems.length);
-	for(let i=0;i<world._collisionItems.length;i++){
-		world._collisionItems[i].emit('remove');
-	}
-	console.log(world._collisionItems.length);
 	world._velocityItems=[];
 	world._collisionItems=[];
 	map.quadTree.clear();
