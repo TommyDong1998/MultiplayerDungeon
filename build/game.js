@@ -50,8 +50,7 @@ var world = new sword(function(setting, socket) {
     socket.on('connection', function connection(ws) {
         var logged;
 		if(players.length==0){
-            delete require.cache[require.resolve("./map/levele.json")];
-			loadMap(require("./map/levele.json"));
+			loadMap(require("./map/level1.json"));
 		}
         ws.once("message", (data) => {
             try {
