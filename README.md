@@ -1,6 +1,8 @@
 # Multiplayer Dungeon Game
 Simple in browser multiplayer dungeon game. Demo available [here](http://multiplayerdungeon-env.eba-sdwfkmve.us-east-1.elasticbeanstalk.com/)
 
+This originally started out as a demo for my [game library](https://github.com/TommyDong1998/Sword) but ended up making it a seperate project.
+
 ## Local Instructions
 
 1. git clone https://github.com/TommyDong1998/MultiplayerDungeon
