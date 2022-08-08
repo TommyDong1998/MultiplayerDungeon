@@ -11,7 +11,7 @@ app.get('/api/port', (req, res) => {
     res.send('var port='+port+';');
 });
 
-var sword = require("sword");
+var sword = require("swordengine");
 /*
 ToDo
 Finish xp implementation
