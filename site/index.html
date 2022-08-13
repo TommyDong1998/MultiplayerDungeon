@@ -106,9 +106,41 @@
 			background:#ff0000b0;
 			height:20px;
 		}
+		#signinBackground{
+			width:100vw;
+			height:100vh;
+			background: url('/images/screen.jpg');
+			background-size: cover;
+			position:fixed;
+			top:0;
+		}
+		#signin{
+			background:#facb3e;
+			width:500px;
+			position: fixed;
+			top: 50%; right: 50%;
+			padding:20px;
+			transform: translate(50%,-50%);
+		}
+		#signin input{
+			display:block;
+			padding: 10px;
+			outline: 0;
+			border: 0;
+			margin:20px 0;
+			width: 100%;
+			box-sizing: border-box;
+		}
 	</style>
 	<body>
 		<canvas id="canvas"></canvas>
+		<div id="signinBackground">
+			<div id="signin">
+				<b>Pick a Name</b>
+				<input type="text" id="name"></input>
+				<input type="button" value="Play" onclick="startGame()"/></input>
+			</div>
+		</div>
 		<menu>
 		<div id="shop"></div>
 		<div id="popmenu">
@@ -472,10 +504,15 @@
 		var noun = ["CrackedHead", "Monke", "Ape", "Egg", "Groot", "Dumper", "Minion", "Nose", "Cheeks", "Leg"];
 		var adjective = ["Fart","Creepy","Blushing","Adorable","Ill","Itchy","Motionless","Ugly","Tender","Nervous"];
         	return adjective[Math.floor(Math.random() * adjective.length)] + " " + noun[Math.floor(Math.random() * noun.length)];
-    	}
+    }
+	function startGame(){
+		pname=document.querySelector('#name').value;
+		socket.send(JSON.stringify({"name":randomName()}));
+		document.querySelector("#signinBackground").style.display="none";
+		setUpControl();
+	}
 	socket.addEventListener("open",()=>{
-		pname=prompt("Please enter your name", randomName());
-		socket.send(JSON.stringify({"name":pname}));
+		document.querySelector('#name').value=randomName();
 	});
 	socket.onmessage=recievePackets;
 	//	When you get message from server do this
@@ -521,12 +558,16 @@
 	//////////////////////////////
 	//User input
 	//////////////////////////////
-	document.onkeydown = keyPress;
-	document.onkeyup = keyUp;
-	document.onmousemove= moveMouse;
-	document.onclick=()=>{
-			socket.send(JSON.stringify([1]));
-	};
+
+	function setUpControl(){
+		document.onkeydown = keyPress;
+		document.onkeyup = keyUp;
+		document.onmousemove= moveMouse;
+		document.onclick=()=>{
+				socket.send(JSON.stringify([1]));
+		};
+	}
+	
 	var kpress={x:0,y:0};
 	var prevMouse={x:0,y:0};
 	function moveMouse(e){
