@@ -507,7 +507,7 @@
     }
 	function startGame(){
 		pname=document.querySelector('#name').value;
-		socket.send(JSON.stringify({"name":randomName()}));
+		socket.send(JSON.stringify({"name":pname}));
 		document.querySelector("#signinBackground").style.display="none";
 		setUpControl();
 	}
