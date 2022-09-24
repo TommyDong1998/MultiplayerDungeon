@@ -155,37 +155,8 @@ This is the class that all entities inherit. NPC and Players.
 */
 class Monster extends sword.Entity {
     constructor(type) {
-        switch (type) {
-            case "elf":
-                super(30, 38);
-                this.sprite = 'elf';
-                this.hp = 6;
-                break;
-            case "skeleton":
-                super(25, 30);
-                this.sprite = 'skeleton';
-                this.hp = 6;
-                break;
-            case "demon":
-                super(46, 60);
-                this.sprite = 'demon';
-                break;
-            case "minion":
-                super(11, 18);
-                this.sprite = 'minion';
-                this.hp = 3;
-                break;
-            case "TallMinion":
-                super(23, 36);
-                this.sprite = 'TallMinion';
-                this.hp = 5;
-                break;
-			case "TinyMinion":
-				super(20, 24);
-                this.sprite = 'TinyMinion';
-                this.hp = 3;
-                break;
-        }
+        super(1,1)
+        this.setType(type);
         this.z = 10;
         this.stat = {
             hp: this.hp,
@@ -270,6 +241,39 @@ class Monster extends sword.Entity {
             this.weapon.spin(6 * Math.PI, 900, () => {
                 this.timeout = false;
             });
+        }
+    }
+    setType(type){
+        switch (type) {
+            case "elf":
+                this.box(30, 38);
+                this.sprite = 'elf';
+                this.hp = 6;
+                break;
+            case "skeleton":
+                this.box(25, 30);
+                this.sprite = 'skeleton';
+                this.hp = 6;
+                break;
+            case "demon":
+                this.box(46, 60);
+                this.sprite = 'demon';
+                break;
+            case "minion":
+                this.box(11, 18);
+                this.sprite = 'minion';
+                this.hp = 3;
+                break;
+            case "TallMinion":
+                this.box(23, 36);
+                this.sprite = 'TallMinion';
+                this.hp = 5;
+                break;
+			case "TinyMinion":
+				this.box(20, 24);
+                this.sprite = 'TinyMinion';
+                this.hp = 4;
+                break;
         }
     }
     //Knocked back by an obj
@@ -491,6 +495,16 @@ class Bullet extends sword.Entity {
             }
         }, 500);
     }
+    growTo(minion,time){
+        setTimeout(()=>{
+            if(this.hp>0){
+                var enemy = new NPC(minion);
+                enemy.setPosition(this.pos.x, this.pos.y);
+                enemy.attackFirst();
+                this.emit('remove');
+            }
+        },time);
+    }
     attackSpawn() {
         this.attackFirst();
         var minion = 5;
@@ -548,8 +562,8 @@ class Bullet extends sword.Entity {
 class Demon extends NPC {
     constructor() {
         super("demon");
-        this.hp = 5;
-        this.stat.hp = 30;
+        this.hp = 20;
+        this.stat.hp = 20;
         this.stat.speed = 150;
         this.removeAllListeners("knockback");
         this.on('damage', (amt, obj) => {
@@ -577,18 +591,33 @@ class Demon extends NPC {
 }
 //Spawn different amounts of monsters per level
 function Spawner(level,position){
-	for(let i=0;i<(level+1)*5;i+=1){
-		var enemy = new NPC("TinyMinion");
+	let numOfMinions=5 + 1 * level;
+	let numOfTinyMinions=3 * level;
+	let numOfTallMinions=level;
+
+	for(let i=0;i<numOfMinions;i+=1){
+		var enemy = new NPC("minion");
 		enemy.attackFirst();
+		enemy.growTo("TinyMinion",5000);
 		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
 	}
-	setTimeout(()=>{
-		for(let i=0;i<level*3;i+=1){
-			var enemy = new NPC("TallMinion");
-			enemy.attackSpawn();
-			enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
-		}
-	},1000)
+
+	for(let i=0;i<numOfTinyMinions;i+=1){
+		var enemy = new NPC("TinyMinion");
+		enemy.attackFirst();
+		enemy.growTo("TallMinion",10000);
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	for(let i=0;i<numOfTallMinions;i+=1){
+		var enemy = new NPC("TallMinion");
+		enemy.attackSpawn();
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	////////////////////////////////////////
+	//Generate new demon which spawns next level
+	///////////////////////////////////////
 	var enemy = new Demon();
 	enemy.stat.hp = Math.floor((1+level*0.5) * 30);
 	enemy.hp = enemy.stat.hp;

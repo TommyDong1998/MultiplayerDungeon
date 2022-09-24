@@ -1,17 +1,32 @@
 //Spawn different amounts of monsters per level
 function Spawner(level,position){
-	for(let i=0;i<(level+1)*5;i+=1){
-		var enemy = new NPC("TinyMinion");
+	let numOfMinions=5 + 1 * level;
+	let numOfTinyMinions=3 * level;
+	let numOfTallMinions=level;
+
+	for(let i=0;i<numOfMinions;i+=1){
+		var enemy = new NPC("minion");
 		enemy.attackFirst();
+		enemy.growTo("TinyMinion",5000);
 		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
 	}
-	setTimeout(()=>{
-		for(let i=0;i<level*3;i+=1){
-			var enemy = new NPC("TallMinion");
-			enemy.attackSpawn();
-			enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
-		}
-	},1000)
+
+	for(let i=0;i<numOfTinyMinions;i+=1){
+		var enemy = new NPC("TinyMinion");
+		enemy.attackFirst();
+		enemy.growTo("TallMinion",10000);
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	for(let i=0;i<numOfTallMinions;i+=1){
+		var enemy = new NPC("TallMinion");
+		enemy.attackSpawn();
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	////////////////////////////////////////
+	//Generate new demon which spawns next level
+	///////////////////////////////////////
 	var enemy = new Demon();
 	enemy.stat.hp = Math.floor((1+level*0.5) * 30);
 	enemy.hp = enemy.stat.hp;

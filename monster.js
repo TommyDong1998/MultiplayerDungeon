@@ -4,37 +4,8 @@ This is the class that all entities inherit. NPC and Players.
 */
 class Monster extends sword.Entity {
     constructor(type) {
-        switch (type) {
-            case "elf":
-                super(30, 38);
-                this.sprite = 'elf';
-                this.hp = 6;
-                break;
-            case "skeleton":
-                super(25, 30);
-                this.sprite = 'skeleton';
-                this.hp = 6;
-                break;
-            case "demon":
-                super(46, 60);
-                this.sprite = 'demon';
-                break;
-            case "minion":
-                super(11, 18);
-                this.sprite = 'minion';
-                this.hp = 3;
-                break;
-            case "TallMinion":
-                super(23, 36);
-                this.sprite = 'TallMinion';
-                this.hp = 5;
-                break;
-			case "TinyMinion":
-				super(20, 24);
-                this.sprite = 'TinyMinion';
-                this.hp = 3;
-                break;
-        }
+        super(1,1)
+        this.setType(type);
         this.z = 10;
         this.stat = {
             hp: this.hp,
@@ -119,6 +90,39 @@ class Monster extends sword.Entity {
             this.weapon.spin(6 * Math.PI, 900, () => {
                 this.timeout = false;
             });
+        }
+    }
+    setType(type){
+        switch (type) {
+            case "elf":
+                this.box(30, 38);
+                this.sprite = 'elf';
+                this.hp = 6;
+                break;
+            case "skeleton":
+                this.box(25, 30);
+                this.sprite = 'skeleton';
+                this.hp = 6;
+                break;
+            case "demon":
+                this.box(46, 60);
+                this.sprite = 'demon';
+                break;
+            case "minion":
+                this.box(11, 18);
+                this.sprite = 'minion';
+                this.hp = 3;
+                break;
+            case "TallMinion":
+                this.box(23, 36);
+                this.sprite = 'TallMinion';
+                this.hp = 5;
+                break;
+			case "TinyMinion":
+				this.box(20, 24);
+                this.sprite = 'TinyMinion';
+                this.hp = 4;
+                break;
         }
     }
     //Knocked back by an obj
