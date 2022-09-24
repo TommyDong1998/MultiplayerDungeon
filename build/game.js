@@ -686,8 +686,9 @@ var shop_items = {
     },
     PotionHoarder:{
         cost: 15
-    },JimmysRustySword: {
-        cost:2
+    },
+    JimmysRustySword: {
+        cost:8
     }
 };
 
@@ -728,7 +729,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 1;
+        this._gold = 3;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
