@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Demo</title>
+		<title>Multiplayer Dungeon Game</title>
+		<meta property="og:image" content="image/screen.jpg">
 		<script src="sprite.json"></script>
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<script
@@ -10,9 +11,10 @@
   crossorigin="anonymous"></script>
 	</head>
 	<style>
-		body{
-			margin:0;
-			font-family: sans-serif;
+		body {
+		    margin: 0;
+		    font-family: sans-serif;
+		    background: #6e6262;
 		}
 		canvas{
 			display:block;
@@ -104,9 +106,41 @@
 			background:#ff0000b0;
 			height:20px;
 		}
+		#signinBackground{
+			width:100vw;
+			height:100vh;
+			background: url('/images/screen.jpg');
+			background-size: cover;
+			position:fixed;
+			top:0;
+		}
+		#signin{
+			background:#facb3e;
+			width:500px;
+			position: fixed;
+			top: 50%; right: 50%;
+			padding:20px;
+			transform: translate(50%,-50%);
+		}
+		#signin input{
+			display:block;
+			padding: 10px;
+			outline: 0;
+			border: 0;
+			margin:20px 0;
+			width: 100%;
+			box-sizing: border-box;
+		}
 	</style>
 	<body>
 		<canvas id="canvas"></canvas>
+		<div id="signinBackground">
+			<div id="signin">
+				<b>Pick a Name</b>
+				<input type="text" id="name"></input>
+				<input type="button" value="Play" onclick="startGame()"/></input>
+			</div>
+		</div>
 		<menu>
 		<div id="shop"></div>
 		<div id="popmenu">
@@ -141,6 +175,7 @@
 	{name:"Healer",description:"Can heal others with your health!",cost:15},
 	{name:"Human Leader",description:"Extra hp",cost:15},
 	{name:"Potion Hoarder",description:"He hoards potions. Then he throw them at people.",cost:15},
+	{name:"JimmysRustySword",description:"The Sword of the Superior Swordsman.",cost:2}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
@@ -278,7 +313,8 @@
 		}
 		remove(entity){
 			//Set to invisible instead of removing object since server only sends new info about an object
-			this.map[entity].visibility=false;
+			if(this.map[entity])
+				this.map[entity].visibility=false;
 		}
 	}
 
@@ -464,9 +500,20 @@
 	//	Create a socket to connect to the server
 	var socket=new WebSocket("ws://"+window.location.host);
 	var pname;
-	socket.addEventListener("open",()=>{
-		pname=prompt("Please enter your name", "Dungeon");
+	function randomName() {
+		//var randomNum = Math.floor(Math.random() * 10);
+		var noun = ["CrackedHead", "Monke", "Ape", "Egg", "Groot", "Dumper", "Minion", "Nose", "Cheeks", "Leg"];
+		var adjective = ["Fart","Creepy","Blushing","Adorable","Ill","Itchy","Motionless","Ugly","Tender","Nervous"];
+        	return adjective[Math.floor(Math.random() * adjective.length)] + " " + noun[Math.floor(Math.random() * noun.length)];
+    }
+	function startGame(){
+		pname=document.querySelector('#name').value;
 		socket.send(JSON.stringify({"name":pname}));
+		document.querySelector("#signinBackground").style.display="none";
+		setUpControl();
+	}
+	socket.addEventListener("open",()=>{
+		document.querySelector('#name').value=randomName();
 	});
 	socket.onmessage=recievePackets;
 	//	When you get message from server do this
@@ -512,12 +559,16 @@
 	//////////////////////////////
 	//User input
 	//////////////////////////////
-	document.onkeydown = keyPress;
-	document.onkeyup = keyUp;
-	document.onmousemove= moveMouse;
-	document.onclick=()=>{
-			socket.send(JSON.stringify([1]));
-	};
+
+	function setUpControl(){
+		document.onkeydown = keyPress;
+		document.onkeyup = keyUp;
+		document.onmousemove= moveMouse;
+		document.onclick=()=>{
+				socket.send(JSON.stringify([1]));
+		};
+	}
+	
 	var kpress={x:0,y:0};
 	var prevMouse={x:0,y:0};
 	function moveMouse(e){

@@ -88,6 +88,38 @@ class RustySword extends Weapon {
         });
     }
 }
+class JimmysRustySword extends Weapon {
+    constructor() {
+        super(23, 50);
+        this.z = 13;
+        this.sprite = 'RustSword';
+        this.setOrigin(10, 30);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        if (Math.random() > 0.5)
+                            o.emit('damage', 2, this);
+                        else
+                            o.emit('damage', 1, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 300);
+                        else
+                            o.emit('knockback', this, 150);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }
+                }
+            }
+        });
+    }
+}
 /*
 Extra gold dagger
 */

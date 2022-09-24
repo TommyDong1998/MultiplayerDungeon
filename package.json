@@ -1,11 +1,10 @@
 {
-  "name": "Multiplayer Dungeon",
+  "name": "multiplayerdungeon",
   "version": "3.0.1",
   "main": "game.js",
-  "scripts": {  
+  "scripts": {
     "start": "node build/game.js",
     "build_windows": "type demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
-    "build_mac": "copy /B demo.js + entityClass.js+  monster.js  +  weapon.js  +  npc.js+ level.js  +  player.js  +  item.js  bin/game.js",
     "build_linux": "cat demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
     "build": "npm run build_windows"
   },
@@ -13,7 +12,7 @@
     "express": "^4.16.4",
     "quad-node": "^1.0.5",
     "sat": "^0.7.1",
-    "ws": "^6.1.2",
-    "sword":"https://github.com/TommyDong1998/Sword"
+    "swordengine": "git+https://github.com/TommyDong1998/Sword.git",
+    "ws": "^6.1.2"
   }
 }
