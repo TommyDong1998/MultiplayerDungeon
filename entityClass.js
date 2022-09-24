@@ -51,7 +51,7 @@ function setHealer(entity){
 }
 function setPotionHoard(entity){
 	entity.entityClass="potionHoard";
-	entity.healthPotions=1;
+	entity.healthPotions=3;
 	entity.attack=function(){
 		if (!this.timeout&&entity.healthPotions) {
 			this.timeout=true;
