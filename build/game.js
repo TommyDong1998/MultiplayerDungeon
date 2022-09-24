@@ -548,7 +548,7 @@ class Bullet extends sword.Entity {
 class Demon extends NPC {
     constructor() {
         super("demon");
-        this.hp = 30;
+        this.hp = 5;
         this.stat.hp = 30;
         this.stat.speed = 150;
         this.removeAllListeners("knockback");
@@ -577,19 +577,32 @@ class Demon extends NPC {
 }
 //Spawn different amounts of monsters per level
 function Spawner(level,position){
-	for(let i=0;i<level*5;i+=1){
+	for(let i=0;i<(level+1)*5;i+=1){
 		var enemy = new NPC("TinyMinion");
 		enemy.attackFirst();
-		enemy.setPosition(position.x,position.y);
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
 	}
-	for(let i=0;i<level*3;i+=1){
-		var enemy = new NPC("TallMinion");
+	setTimeout(()=>{
+		for(let i=0;i<level*3;i+=1){
+			var enemy = new NPC("TallMinion");
+			enemy.attackSpawn();
+			enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+		}
+	},1000)
+	var enemy = new Demon();
+	enemy.stat.hp = Math.floor((1+level*0.5) * 30);
+	enemy.hp = enemy.stat.hp;
+	setTimeout(()=>{
+		enemy.on('damage',()=>{
+			if (enemy.hp <= 0) {
+				setTimeout(()=>{
+					Spawner(level+1,enemy.pos);
+				},500);
+			}
+		});
 		enemy.attackSpawn();
 		enemy.setPosition(position.x,position.y);
-	}
-	var enemy = new Demon();
-	enemy.attackSpawn();
-	enemy.setPosition(position.x,position.y);
+	},5000)
 }
 function loadMap(file){
 	for(let i=0;i<world._collisionItems.length;i++){
@@ -651,21 +664,21 @@ function loadMap(file){
 			if (mon[r * file.width + c] != 0) {
 				var enemy;
 				switch(mon[r * file.width + c]-1){
-					case 183:
+					/*case 183:
 						enemy = new NPC("skeleton");
 						enemy.attackFirst();
-					break;
+					break;*/
 					case 737:
 						enemy = new Demon();
 						enemy.attackSpawn();
 						enemy.on('damage',()=>{
-							if (this.hp <= 0) {
+							if (enemy.hp <= 0) {
 								setTimeout(()=>{
-									Spawner(1,enemy.pos);
-								},5);
+									Spawner(0,enemy.pos);
+								},500);
 							}
 						});
-					break;
+					break;/*
 					case 695:
 						enemy = new NPC("minion");
 						enemy.attackFirst();
@@ -677,9 +690,10 @@ function loadMap(file){
 					case 119:
 						enemy = new NPC("TinyMinion");
 						enemy.attackFirst();
-					break;
+					break;*/
 				}
-				enemy.setPosition(c * 32, r * 32);
+				if(enemy)
+					enemy.setPosition(c * 32, r * 32);
 			}
 		}
 	}

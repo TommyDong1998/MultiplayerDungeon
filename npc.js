@@ -111,8 +111,8 @@ class NPC extends Monster {
 class Demon extends NPC {
     constructor() {
         super("demon");
-        this.hp = 30;
-        this.stat.hp = 30;
+        this.hp = 20;
+        this.stat.hp = 20;
         this.stat.speed = 150;
         this.removeAllListeners("knockback");
         this.on('damage', (amt, obj) => {
