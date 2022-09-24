@@ -683,7 +683,7 @@ class Player extends Monster {
         // Add to main velocity loop
         // Create weapon
 		//////////////////////////////
-        var weapon = new JimmysRustySword();
+        var weapon = new Weapon(12, 40);
         weapon.owner = this;
         map.insert(weapon);
         this.weild(weapon);
@@ -702,7 +702,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 1000;
+        this._gold = 1;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
