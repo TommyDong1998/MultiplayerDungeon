@@ -693,10 +693,10 @@ function loadMap(file){
 			if (mon[r * file.width + c] != 0) {
 				var enemy;
 				switch(mon[r * file.width + c]-1){
-					/*case 183:
+					case 183:
 						enemy = new NPC("skeleton");
 						enemy.attackFirst();
-					break;*/
+					break;
 					case 737:
 						enemy = new Demon();
 						enemy.attackSpawn();
@@ -707,7 +707,7 @@ function loadMap(file){
 								},500);
 							}
 						});
-					break;/*
+					break;
 					case 695:
 						enemy = new NPC("minion");
 						enemy.attackFirst();
@@ -719,7 +719,7 @@ function loadMap(file){
 					case 119:
 						enemy = new NPC("TinyMinion");
 						enemy.attackFirst();
-					break;*/
+					break;
 				}
 				if(enemy)
 					enemy.setPosition(c * 32, r * 32);
