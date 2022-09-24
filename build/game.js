@@ -122,7 +122,7 @@ function setHealer(entity){
 }
 function setPotionHoard(entity){
 	entity.entityClass="potionHoard";
-	entity.healthPotions=1;
+	entity.healthPotions=3;
 	entity.attack=function(){
 		if (!this.timeout&&entity.healthPotions) {
 			this.timeout=true;
@@ -148,7 +148,8 @@ function setLeader(entity){
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
 	entity.stat.luck=3;
-}/*global sword*/
+}
+/*global sword*/
 /*
 This is the class that all entities inherit. NPC and Players. 
 */
@@ -367,6 +368,38 @@ class RustySword extends Weapon {
                             o.emit('damage', 1, this);
                         if (this.specialAttack)
                             o.emit('knockback', this, 600);
+                        else
+                            o.emit('knockback', this, 150);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }
+                }
+            }
+        });
+    }
+}
+class JimmysRustySword extends Weapon {
+    constructor() {
+        super(23, 50);
+        this.z = 13;
+        this.sprite = 'RustSword';
+        this.setOrigin(10, 30);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        if (Math.random() > 0.5)
+                            o.emit('damage', 2, this);
+                        else
+                            o.emit('damage', 1, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 300);
                         else
                             o.emit('knockback', this, 150);
                         this.attack = false;
@@ -877,7 +910,7 @@ class Player extends Monster {
     }
     shop(){
 		//Generate first item
-		var item=Math.floor(Math.random()*10%6);
+		var item=Math.floor(Math.random()*10%7);
 		for(var x=0;x<6;x++){
 			if(this.boughtItem.indexOf(item)==-1)
 				break;
@@ -886,8 +919,8 @@ class Player extends Monster {
 		if(this.boughtItem.indexOf(item)!=-1)
 			return;
 		//Generate second item
-		var second=Math.floor(Math.random()*10%6);
-		for(var x=0;x<6;x++){
+		var second=Math.floor(Math.random()*10%7);
+		for(var x=0;x<7;x++){
 			if(second!=item&&this.boughtItem.indexOf(second)==-1&&(second<entityClassNum||item<entityClassNum))
 				break;
 			second=x;
@@ -926,7 +959,9 @@ class Player extends Monster {
 			},
 			PotionHoarder:{
 				cost: 15
-			}
+			},JimmysRustySword: {
+                cost:2
+            }
         };
         //Select the current item
         var item = items[Object.keys(items)[entity]];
@@ -939,7 +974,7 @@ class Player extends Monster {
         }
 		//Not item
 		if(entity>entityClassNum){
-			this.boughtItem=this.boughtItem.concat([2,3,4,5]);
+			this.boughtItem=this.boughtItem.concat([2,3,4,5,6]);
 		}else
 			this.boughtItem.push(entity);
 		//entity
@@ -970,6 +1005,13 @@ class Player extends Monster {
 			case 5:
 				setPotionHoard(this);
 				break;
+            case 6: //JimmysRusty sword
+                this.weapon.emit("remove");
+                var weapon = new JimmysRustySword();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
         }
     }
 }
