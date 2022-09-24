@@ -985,7 +985,7 @@ class Player extends Monster {
 	}
 	buy(entity) {
         //Select the current item
-        var item = shop_items[Object.keys(items)[entity]];
+        var item = shop_items[Object.keys(shop_items)[entity]];
         //Check if enough gold
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
