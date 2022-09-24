@@ -30,17 +30,15 @@ function Spawner(level,position){
 	var enemy = new Demon();
 	enemy.stat.hp = Math.floor((1+level*0.5) * 30);
 	enemy.hp = enemy.stat.hp;
-	setTimeout(()=>{
-		enemy.on('damage',()=>{
-			if (enemy.hp <= 0) {
-				setTimeout(()=>{
-					Spawner(level+1,enemy.pos);
-				},500);
-			}
-		});
-		enemy.attackSpawn();
-		enemy.setPosition(position.x,position.y);
-	},5000)
+	enemy.attackSpawn();
+	enemy.setPosition(position.x,position.y);
+	enemy.on('damage',()=>{
+		if (enemy.hp <= 0) {
+			setTimeout(()=>{
+				Spawner(level+1,enemy.pos);
+			},500);
+		}
+	});
 }
 function loadMap(file){
 	for(let i=0;i<world._collisionItems.length;i++){
@@ -100,7 +98,7 @@ function loadMap(file){
 	for (var c = 0; c < file.width; c++) {
 		for (var r = 0; r < file.height; r++) {
 			if (mon[r * file.width + c] != 0) {
-				var enemy;
+				let enemy;
 				switch(mon[r * file.width + c]-1){
 					case 183:
 						enemy = new NPC("skeleton");
@@ -109,11 +107,11 @@ function loadMap(file){
 					case 737:
 						enemy = new Demon();
 						enemy.attackSpawn();
-						enemy.on('damage',()=>{
+						enemy.on('damage',function(){
 							if (enemy.hp <= 0) {
 								setTimeout(()=>{
 									Spawner(0,enemy.pos);
-								},500);
+								},5000);
 							}
 						});
 					break;
