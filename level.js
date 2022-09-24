@@ -1,3 +1,47 @@
+//Spawn different amounts of monsters per level
+function Spawner(level,position){
+	let numOfMinions=5 + 1 * level;
+	let numOfTinyMinions=3 * level;
+	let numOfTallMinions=level;
+
+	for(let i=0;i<numOfMinions;i+=1){
+		var enemy = new NPC("minion");
+		enemy.attackFirst();
+		enemy.growTo("TinyMinion",5000);
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	for(let i=0;i<numOfTinyMinions;i+=1){
+		var enemy = new NPC("TinyMinion");
+		enemy.attackFirst();
+		enemy.growTo("TallMinion",10000);
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	for(let i=0;i<numOfTallMinions;i+=1){
+		var enemy = new NPC("TallMinion");
+		enemy.attackSpawn();
+		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
+	}
+
+	////////////////////////////////////////
+	//Generate new demon which spawns next level
+	///////////////////////////////////////
+	var enemy = new Demon();
+	enemy.stat.hp = Math.floor((1+level*0.5) * 30);
+	enemy.hp = enemy.stat.hp;
+	setTimeout(()=>{
+		enemy.on('damage',()=>{
+			if (enemy.hp <= 0) {
+				setTimeout(()=>{
+					Spawner(level+1,enemy.pos);
+				},500);
+			}
+		});
+		enemy.attackSpawn();
+		enemy.setPosition(position.x,position.y);
+	},5000)
+}
 function loadMap(file){
 	for(let i=0;i<world._collisionItems.length;i++){
 		world._collisionItems[i].emit('remove');
@@ -56,34 +100,40 @@ function loadMap(file){
 	for (var c = 0; c < file.width; c++) {
 		for (var r = 0; r < file.height; r++) {
 			if (mon[r * file.width + c] != 0) {
+				var enemy;
 				switch(mon[r * file.width + c]-1){
-					case 183:
-						var enemy = new NPC("skeleton");
-						enemy.setPosition(c * 32, r * 32);
+					/*case 183:
+						enemy = new NPC("skeleton");
 						enemy.attackFirst();
-					break;
+					break;*/
 					case 737:
-						var enemy = new Demon();
-						enemy.setPosition(c * 32, r * 32);
+						enemy = new Demon();
 						enemy.attackSpawn();
-					break;
+						enemy.on('damage',()=>{
+							if (enemy.hp <= 0) {
+								setTimeout(()=>{
+									Spawner(0,enemy.pos);
+								},500);
+							}
+						});
+					break;/*
 					case 695:
-						var enemy = new NPC("minion");
-						enemy.setPosition(c * 32, r * 32);
+						enemy = new NPC("minion");
 						enemy.attackFirst();
 					break;
 					case 631:
-						var enemy = new NPC("TallMinion");
-						enemy.setPosition(c * 32, r * 32);
+						enemy = new NPC("TallMinion");
 						enemy.attackSpawn();
 					break;
 					case 119:
-						var enemy = new NPC("TinyMinion");
-						enemy.setPosition(c * 32, r * 32);
+						enemy = new NPC("TinyMinion");
 						enemy.attackFirst();
-					break;
+					break;*/
 				}
+				if(enemy)
+					enemy.setPosition(c * 32, r * 32);
 			}
 		}
 	}
+
 }

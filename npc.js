@@ -54,6 +54,16 @@ class NPC extends Monster {
             }
         }, 500);
     }
+    growTo(minion,time){
+        setTimeout(()=>{
+            if(this.hp>0){
+                var enemy = new NPC(minion);
+                enemy.setPosition(this.pos.x, this.pos.y);
+                enemy.attackFirst();
+                this.emit('remove');
+            }
+        },time);
+    }
     attackSpawn() {
         this.attackFirst();
         var minion = 5;
@@ -111,8 +121,8 @@ class NPC extends Monster {
 class Demon extends NPC {
     constructor() {
         super("demon");
-        this.hp = 30;
-        this.stat.hp = 30;
+        this.hp = 20;
+        this.stat.hp = 20;
         this.stat.speed = 150;
         this.removeAllListeners("knockback");
         this.on('damage', (amt, obj) => {

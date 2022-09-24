@@ -21,8 +21,9 @@ var shop_items = {
     },
     PotionHoarder:{
         cost: 15
-    },JimmysRustySword: {
-        cost:2
+    },
+    JimmysRustySword: {
+        cost:8
     }
 };
 
@@ -63,7 +64,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 1;
+        this._gold = 3;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
@@ -298,7 +299,7 @@ class Player extends Monster {
 	}
 	buy(entity) {
         //Select the current item
-        var item = shop_items[Object.keys(items)[entity]];
+        var item = shop_items[Object.keys(shop_items)[entity]];
         //Check if enough gold
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
