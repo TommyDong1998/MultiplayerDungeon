@@ -665,6 +665,32 @@ function loadMap(file){
 	}
 }//Shop number
 const entityClassNum=1;
+
+//A list of all the items and their cost
+//If change must update boughtItem below
+var shop_items = {
+    RustySword: {
+        cost: 6
+    },
+    Dagger: {
+        cost: 5
+    },
+    Warrior:{
+        cost: 15
+    },
+    Healer:{
+        cost: 15
+    },
+    Leader:{
+        cost: 15
+    },
+    PotionHoarder:{
+        cost: 15
+    },JimmysRustySword: {
+        cost:2
+    }
+};
+
 /* Requires Global Variable world */
 class Player extends Monster {
     constructor(socket, type, name) {
@@ -909,24 +935,21 @@ class Player extends Monster {
         }
     }
     shop(){
-		//Generate first item
-		var item=Math.floor(Math.random()*10%7);
-		for(var x=0;x<6;x++){
-			if(this.boughtItem.indexOf(item)==-1)
-				break;
-			item=x;
-		}
-		if(this.boughtItem.indexOf(item)!=-1)
-			return;
-		//Generate second item
-		var second=Math.floor(Math.random()*10%7);
-		for(var x=0;x<7;x++){
-			if(second!=item&&this.boughtItem.indexOf(second)==-1&&(second<entityClassNum||item<entityClassNum))
-				break;
-			second=x;
-		}
-		if(second==item||this.boughtItem.indexOf(second)!=-1)
-			second=null;
+		//Get all items not bought
+        let unbought_items=[];
+        for(let i=0;i<Object.keys(shop_items).length;i++){
+            if(this.boughtItem.indexOf(i)==-1)
+                unbought_items.push(i);
+        }
+        let item=null,second=null;
+        if(unbought_items.length>0){
+            let idx=Math.floor(Math.random()*unbought_items.length);
+            item=unbought_items[idx];
+            unbought_items.splice(idx,1);
+        }
+        if(unbought_items.length>0){
+            second=unbought_items[Math.floor(Math.random()*unbought_items.length)];
+        }
 		//Try to send
 		try{
 			this.socket.send(JSON.stringify({
@@ -939,32 +962,8 @@ class Player extends Monster {
 		}
 	}
 	buy(entity) {
-        //A list of all the items and their cost
-        //If change must update boughtItem below
-		var items = {
-            RustySword: {
-                cost: 6
-            },
-            Dagger: {
-                cost: 5
-            },
-			Warrior:{
-				cost: 15
-			},
-			Healer:{
-				cost: 15
-			},
-			Leader:{
-				cost: 15
-			},
-			PotionHoarder:{
-				cost: 15
-			},JimmysRustySword: {
-                cost:2
-            }
-        };
         //Select the current item
-        var item = items[Object.keys(items)[entity]];
+        var item = shop_items[Object.keys(items)[entity]];
         //Check if enough gold
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
@@ -973,10 +972,7 @@ class Player extends Monster {
             return;
         }
 		//Not item
-		if(entity>entityClassNum){
-			this.boughtItem=this.boughtItem.concat([2,3,4,5,6]);
-		}else
-			this.boughtItem.push(entity);
+		this.boughtItem.push(entity);
 		//entity
         switch (entity) {
             case 0: //Rusty sword
