@@ -26,27 +26,34 @@ function setWarrior(entity){
         }
 	}
 }
-function setHealer(entity){
-	entity.entityClass="healer";
+function setVampire(entity){
+	entity.entityClass="vampire";
 	entity.attack=function(){
-		if (this.hp&&!this.timeout) {
-			var entities=map.findNear(this,30).filter(()=>{
-				return entity instanceof Player&&entity!=this;
-			});
-			//Only activate if there are entities
-			if(entities.length){
-				this.timeout=true;
-				this.hp--;
-				entities.forEach((entity)=>{
-					if(entity.hp<entity.stat.hp){
-							entity.hp++;
-					}
-				});
+		if (!this.timeout) {
+			this.timeout = true;
+			entity.vamp=1;
+			this.damageFree = true;
+			var pos = {
+                    x: this.mousePos.x,
+                    y: this.mousePos.y
+            }
+			util.normalize(pos, this.stat.speed);
+			this.velocity.x += pos.x;
+            this.velocity.y += pos.y;
+			setTimeout(()=>{
+				this.damageFree = false;
+				this.vamp=0;				
+				this.velocity.x -= pos.x*2;
+				this.velocity.y -= pos.y*2;
 				setTimeout(()=>{
-					this.timeout=false;
-				},5000)
-			}
-        }
+					this.velocity.x += pos.x;
+					this.velocity.y += pos.y;
+					setTimeout(()=>{
+						this.timeout=false;
+					},500)
+				},200);
+			},300)
+		}
 	}
 }
 function setPotionHoard(entity){
