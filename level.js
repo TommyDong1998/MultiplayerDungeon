@@ -36,7 +36,7 @@ function Spawner(level,position){
 		if (enemy.hp <= 0) {
 			setTimeout(()=>{
 				Spawner(level+1,enemy.pos);
-			},500);
+			},5000);
 		}
 	});
 }

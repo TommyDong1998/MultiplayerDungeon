@@ -27,6 +27,7 @@ function setWarrior(entity){
 	}
 }
 function setVampire(entity){
+	entity.stat.hp=4;
 	entity.entityClass="vampire";
 	entity.attack=function(){
 		if (!this.timeout) {
