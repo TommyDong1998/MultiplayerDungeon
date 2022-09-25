@@ -13,8 +13,8 @@ var shop_items = {
     Warrior:{
         cost: 15
     },
-    Healer:{
-        cost: 15
+    Vampire:{
+        cost: 20
     },
     Leader:{
         cost: 15
@@ -64,7 +64,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 3;
+        this._gold = 300;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
@@ -329,7 +329,7 @@ class Player extends Monster {
 				setWarrior(this);
 				break;
 			case 3:
-				setHealer(this);
+				setVampire(this);
 				break;
 			case 4:
 				setLeader(this);

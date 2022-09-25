@@ -63,6 +63,10 @@ class Monster extends sword.Entity {
                 })
                 this.emit('remove');
             }
+            if(obj.owner && obj.owner.vamp){
+                if(obj.owner.hp<obj.owner.stat.hp)
+                    obj.owner.hp+=Math.round(obj.owner.vamp*amt);
+            }
         });
         //When this get knockback
         this.on('knockback', (obj, amt) => {
