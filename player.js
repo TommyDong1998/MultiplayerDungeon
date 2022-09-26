@@ -79,11 +79,11 @@ class Player extends Monster {
         });
 
         
-        //Cannot be hurt first 1 second of game
+        //Cannot be hurt first 5 seconds of game
         this.damageFree = true;
         setTimeout(() => {
             this.damageFree = false;
-        }, 1000);
+        }, 5000);
         //////////////////////////////////
 		var prevMov={x:0,y:0};
 		socket.on('message', (data) => {
@@ -271,27 +271,28 @@ class Player extends Monster {
         }
     }
     shop(){
-		//Get all items not bought
+		function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        
+        
+        //Get all items not bought
         let unbought_items=[];
         for(let i=0;i<Object.keys(shop_items).length;i++){
             if(this.boughtItem.indexOf(i)==-1)
                 unbought_items.push(i);
         }
-        let item=null,second=null;
-        if(unbought_items.length>0){
-            let idx=Math.floor(Math.random()*unbought_items.length);
-            item=unbought_items[idx];
-            unbought_items.splice(idx,1);
-        }
-        if(unbought_items.length>0){
-            second=unbought_items[Math.floor(Math.random()*unbought_items.length)];
-        }
+        
+        shuffleArray(unbought_items);
+        this.shopItems=unbought_items.slice(0,6);
 		//Try to send
 		try{
 			this.socket.send(JSON.stringify({
 								shop: true,
-								shopItemX:item,
-								shopItemY:second
+								shopItems:this.shopItems
 			}));
 		}catch(e){
 			console.log(e);
@@ -300,11 +301,14 @@ class Player extends Monster {
 	buy(entity) {
         //Select the current item
         var item = shop_items[Object.keys(shop_items)[entity]];
-        //Check if enough gold
+        //Check if enough gold  
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
         } else {
             //Not enough gold
+            return;
+        }
+        if(this.shopItems.indexOf(entity)==-1){
             return;
         }
 		//Not item

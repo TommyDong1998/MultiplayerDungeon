@@ -1,0 +1,131 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #6e6262;
+}
+canvas{
+    display:block;
+}
+menu{
+    position:fixed;
+    top:0;
+    width:100%;
+}
+menu #shop{
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    float:right;
+    margin-top:15px;
+    margin-right:10%;
+    background-image:url(images/chest.png);
+    width:100px;
+    height:88px;
+    background-size:contain;
+}
+menu #shop:hover{
+    background-image:url(images/lightchest.png);
+}
+img{
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+#popmenu{
+    visibility:hidden;
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width:70%;
+    margin:auto;
+    max-width: 700px;
+    background:rgba(223, 223, 234, 0.95);
+    padding:10px;
+    box-sizing:border-box;
+    color:grey;
+    font-size:20px;
+}
+#popmenu .choices{
+    display: flex;
+    flex-flow: wrap;
+}
+#popmenu .display{
+    width:100%;
+    text-align: center;
+}
+#popmenu .choice,.display{
+    background:#efefef;
+    margin:10px;
+    width: 30%;
+    min-width:200px;
+    text-align: center;
+}
+
+#popmenu img{
+    margin:10px;
+    height: fit-content;
+    width: 50px;
+}
+#popmenu .bbutton{
+    background: #539eff;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    color: white;
+    padding: 15px;
+    cursor:pointer;
+}
+#popmenu .bbutton:hover{
+    color:grey;
+}
+#popmenu .wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    height:75%;
+}
+#popmenu .wrapper .detail{
+    flex:1;
+    padding: 15px;
+    font-size:12px;
+    overflow: hidden;
+}
+#xp{
+    position:fixed;
+    bottom:30px;
+    left:10%;
+    width:80%;
+    background:white;
+    height:20px;
+    visibility:hidden;
+}
+#xp #bar{
+    width:80%;
+    background:#ff0000b0;
+    height:20px;
+}
+#signinBackground{
+    width:100vw;
+    height:100vh;
+    background: url('/images/screen.jpg');
+    background-size: cover;
+    position:fixed;
+    top:0;
+}
+#signin{
+    background:#facb3e;
+    width:500px;
+    position: fixed;
+    top: 50%; right: 50%;
+    padding:20px;
+    transform: translate(50%,-50%);
+}
+#signin input{
+    display:block;
+    padding: 10px;
+    outline: 0;
+    border: 0;
+    margin:20px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
