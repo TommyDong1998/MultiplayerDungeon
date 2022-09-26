@@ -167,14 +167,18 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 		var info=spriteData[name];
 		if(info){
 			return info;
-		}else if(typeof name =="number"){
-			return {x:(name%32)*16,y:(Math.trunc(name/32))*16,width:16,height:16};
 		}else if(name=="elf"){
 			return [{x:16*8+1,y:16*3-3,width:15,height:19},
 					{x:16*9+1,y:16*3-2,width:15,height:18},
 					{x:16*10+1,y:16*3-1,width:15,height:17},
 					{x:16*11+1,y:16*3-2,width:15,height:18}];
-		}else if(name=="knight"){
+		}else if(name==36||name==37||name==38){
+			console.log(name)
+			return [{x:(36%32)*16,y:(Math.trunc(36/32))*16,width:16,height:16},
+			{x:(37%32)*16,y:(Math.trunc(37/32))*16,width:16,height:16},
+			{x:(38%32)*16,y:(Math.trunc(38/32))*16,width:16,height:16}]
+		}
+		else if(name=="knight"){
 			return [{x:16*8+1,y:108,width:15,height:20},
 					{x:16*9+1,y:108,width:15,height:20},
 					{x:16*10+1,y:108,width:15,height:20},
@@ -195,6 +199,8 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 					{x:387,y:338,width:11,height:18},
 					{x:403,y:337,width:11,height:18},
 					{x: 419,y: 331,width:10,height:21}];
+		}else if(typeof name =="number"){
+			return {x:(name%32)*16,y:(Math.trunc(name/32))*16,width:16,height:16};
 		}
 		return {x:0,y:0,width:0,height:0};
 	}
@@ -249,11 +255,12 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 				continue;
 
 			//Load sprite information
-			var info=item.sprite.info;
-			var sprite=item.sprite;
+			var info=item.sprite.info; //{x y width height} or [{x y width height}]
+			var sprite=item.sprite; //{x,y,width,height}
+
 			if(info.length){
 				sprite.frame=sprite.frame||0;
-				info=info[Math.trunc(sprite.frame/5)%4];
+				info=info[Math.trunc(sprite.frame/5)%info.length];
 				sprite.frame++;
 			}
 			var spriteInfo=Object.assign({},item.sprite);

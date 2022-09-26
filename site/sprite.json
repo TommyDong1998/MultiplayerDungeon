@@ -36,5 +36,4 @@ var spriteData={	Dagger:{
 					{x:403,y:52,width:11,height:12},
 					{x:419,y:52,width:10,height:12}
 					]
-
 }
