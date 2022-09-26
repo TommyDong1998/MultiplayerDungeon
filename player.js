@@ -79,11 +79,11 @@ class Player extends Monster {
         });
 
         
-        //Cannot be hurt first 1 second of game
+        //Cannot be hurt first 5 seconds of game
         this.damageFree = true;
         setTimeout(() => {
             this.damageFree = false;
-        }, 1000);
+        }, 5000);
         //////////////////////////////////
 		var prevMov={x:0,y:0};
 		socket.on('message', (data) => {
