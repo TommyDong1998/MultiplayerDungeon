@@ -47,7 +47,7 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 	function createItem(loc,item){
 		var doc=document.querySelector("#section"+loc);
 		doc.querySelector("img").src="images/"+itemsDef[item].name+".png";
-		doc.querySelector(".detail").innerHTML=itemsDef[item].name+"<br/><small>"+itemsDef[item].description+"</small>";
+		doc.querySelector(".detail").innerHTML="<b>"+itemsDef[item].name+"</b><br/>"+itemsDef[item].description;
 		doc.querySelector(".bbutton").innerText=itemsDef[item].cost+"G Buy";
 		currentShop[loc-1]=item;
 	}
