@@ -98,6 +98,7 @@ var map = new sword.GameMap(world, settings.width, settings.height);function set
 	}
 }
 function setVampire(entity){
+	entity.stat.hp=4;
 	entity.entityClass="vampire";
 	entity.attack=function(){
 		if (!this.timeout) {
@@ -645,7 +646,7 @@ function Spawner(level,position){
 		if (enemy.hp <= 0) {
 			setTimeout(()=>{
 				Spawner(level+1,enemy.pos);
-			},500);
+			},5000);
 		}
 	});
 }
