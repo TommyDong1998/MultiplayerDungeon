@@ -349,8 +349,11 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 	function recievePackets(event){
 		var message=JSON.parse(event.data);
 		if(message.shop){
-			createItem(1,message.shopItemX);
-			createItem(2,message.shopItemY);
+            let i=1;
+            message.shopItems.forEach((item)=>{
+                createItem(i,item);
+                i++;
+            })
 		}
 		else if(message.item){
 			message.item.forEach((item)=>{
