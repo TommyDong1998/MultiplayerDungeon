@@ -21,16 +21,18 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 		}
 	};
 	var currentShop=[];
-	document.querySelector("#section1 .bbutton").onclick=()=>{
-		buyShop(currentShop[0]);
-		document.querySelector("#popmenu").style.visibility="hidden";
-		createBlankItem(0);
-	}
-	document.querySelector("#section2 .bbutton").onclick=()=>{
-		buyShop(currentShop[1]);
-		document.querySelector("#popmenu").style.visibility="hidden";
-		createBlankItem(1);
-	}
+	document.querySelectorAll(".bbutton").forEach((e)=>{
+        e.onclick=function(){
+            let id=this.parentNode.id.substr(7)-1
+            buyShop(id);
+            document.querySelector("#popmenu").style.visibility="hidden";
+            if(gold>=itemsDef[currentShop[id]].cost){
+                createBlankItem(id);
+            }else{
+                alert("Not enough gold")
+            }
+        }
+    })
 	document.querySelector("#refreshShop .bbutton").onclick=()=>{
 		socket.send(JSON.stringify([4]));
 	}

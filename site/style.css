@@ -63,7 +63,9 @@ img{
 }
 
 #popmenu img{
-    margin:25px;
+    margin:10px;
+    height: fit-content;
+    width: 50px;
 }
 #popmenu .bbutton{
     background: #539eff;
@@ -86,6 +88,7 @@ img{
     flex:1;
     padding: 15px;
     font-size:12px;
+    overflow: hidden;
 }
 #xp{
     position:fixed;
