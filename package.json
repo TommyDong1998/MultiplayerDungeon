@@ -12,7 +12,7 @@
     "express": "^4.16.4",
     "quad-node": "^1.0.5",
     "sat": "^0.7.1",
-    "swordengine": "github:TommyDong1998/Sword",
+    "swordengine": "^1.1.1",
     "ws": "^6.1.2"
   }
 }
