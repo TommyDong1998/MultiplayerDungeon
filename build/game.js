@@ -151,14 +151,15 @@ function setPotionHoard(entity){
 		if(entity.healthPotions<3)
 			entity.healthPotions+=1;
 	},60*1000)
-	this.once('remove',()=>{
+	entity.once('remove',()=>{
 		clearInterval(addPotion);
 	})
 }
 function setLeader(entity){
+	entity.box(45, 60);
 	entity.entityClass="leader";
-	entity.stat.hp=7;
-	entity.hp+=2;
+	entity.stat.hp=20;
+	entity.hp+=14;
 }
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
@@ -183,9 +184,18 @@ class Monster extends sword.Entity {
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
+
+        //Counts how many frames was stuck in wall
+        this._stuckInWall=0;
+        
+
+
+        
         this.on('collide', (obj) => {
+            let stuckInWall=false;
             for (let o of obj) {
                 if (o.type.indexOf('solid') != -1) {
+                    stuckInWall=true;
                     //Undo x
                     this.setPosition(this.pos.x - this.dx, this.pos.y);
                     //Check if collide
@@ -208,6 +218,23 @@ class Monster extends sword.Entity {
                     }
                     break;
                 }
+            }
+            if(stuckInWall){
+                world.once('nextFrame',()=>{
+                    //If stuck in wall after begining of next frame
+                    let col=this.collideWith().find((entity) => {
+                        return entity.type.indexOf('solid') != -1;
+                    });
+                    if (col){
+                        //teleport user to nearest non collision area
+                        let collided=this.collideWith().find((entity) => {
+                            return entity.type.indexOf('solid') != -1;
+                        });
+                        
+                        let response=collided._response;
+                        this.setPosition(this.pos.x-response.overlapV.x,this.pos.y-response.overlapV.y);
+                    }
+                });
             }
         });
         this.drops=[[Potion.bind(null,"HealthPotion"),0.5], [Coin,0.7]]
@@ -1046,7 +1073,11 @@ class Player extends Monster {
 	}
 	buy(entity) {
         //Select the current item
-        var item = shop_items[Object.keys(shop_items)[entity]];
+        if(this.shopItems.length<=entity){
+            return;
+        }
+        var item = shop_items[Object.keys(shop_items)[this.shopItems[entity]]];
+        console.log(Object.keys(shop_items)[this.shopItems[entity]])
         //Check if enough gold  
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
@@ -1054,13 +1085,10 @@ class Player extends Monster {
             //Not enough gold
             return;
         }
-        if(this.shopItems.indexOf(entity)==-1){
-            return;
-        }
 		//Not item
 		this.boughtItem.push(entity);
 		//entity
-        switch (entity) {
+        switch (this.shopItems[entity]) {
             case 0: //Rusty sword
                 this.weapon.emit("remove");
                 var weapon = new RustySword();
