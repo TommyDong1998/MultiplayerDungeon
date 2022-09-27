@@ -14,6 +14,7 @@ class Monster extends sword.Entity {
         };
         this.status=[];
 		this.facing = 1;
+		this._weaponReach=10;
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
@@ -96,6 +97,8 @@ class Monster extends sword.Entity {
         });
         //When this get knockback
         this.on('knockback', (obj, amt) => {
+            if(obj.owner && obj.owner.entityClass=="minie")
+                this.knockback(obj, amt/2);    
             this.knockback(obj, amt);
         });
     }
