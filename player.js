@@ -64,7 +64,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 3;
+        this._gold = 30;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
@@ -300,7 +300,11 @@ class Player extends Monster {
 	}
 	buy(entity) {
         //Select the current item
-        var item = shop_items[Object.keys(shop_items)[entity]];
+        if(this.shopItems.length<=entity){
+            return;
+        }
+        var item = shop_items[Object.keys(shop_items)[this.shopItems[entity]]];
+        console.log(Object.keys(shop_items)[this.shopItems[entity]])
         //Check if enough gold  
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
@@ -308,13 +312,10 @@ class Player extends Monster {
             //Not enough gold
             return;
         }
-        if(this.shopItems.indexOf(entity)==-1){
-            return;
-        }
 		//Not item
 		this.boughtItem.push(entity);
 		//entity
-        switch (entity) {
+        switch (this.shopItems[entity]) {
             case 0: //Rusty sword
                 this.weapon.emit("remove");
                 var weapon = new RustySword();

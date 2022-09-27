@@ -1,10 +1,10 @@
-var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of doing double damage!",cost:6},
-	{name:"Dagger",description:"Very short. Little knockback. Increased gold chance!",cost:5},
-	{name:"Warrior",description:"Extra health. Invincible charge special attack!",cost:15},
-	{name:"Vampire",description:"Doing damage heals you!",cost:20},
-	{name:"Human Leader",description:"Extra hp",cost:15},
-	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every minute!",cost:15},
-	{name:"JimmysRustySword",description:"The Sword of the Superior Swordsman.",cost:8}
+var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of doing double damage!",cost:6,rarity:0},
+	{name:"Dagger",description:"Very short. Little knockback. Increased gold chance!",cost:5,rarity:0},
+	{name:"Warrior",description:"Extra health. Invincible charge special attack!",cost:15,rarity:0},
+	{name:"Vampire",description:"Doing damage heals you!",cost:20,rarity:1},
+	{name:"Human Leader",description:"Extra hp",cost:20,rarity:1},
+	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every minute!",cost:15,rarity:0},
+	{name:"JimmysRustySword",description:"The Sword of the Superior Swordsman.",cost:8,rarity:0}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');

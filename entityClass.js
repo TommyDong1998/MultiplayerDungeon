@@ -80,14 +80,15 @@ function setPotionHoard(entity){
 		if(entity.healthPotions<3)
 			entity.healthPotions+=1;
 	},60*1000)
-	this.once('remove',()=>{
+	entity.once('remove',()=>{
 		clearInterval(addPotion);
 	})
 }
 function setLeader(entity){
+	entity.box(45, 60);
 	entity.entityClass="leader";
-	entity.stat.hp=7;
-	entity.hp+=2;
+	entity.stat.hp=20;
+	entity.hp+=14;
 }
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
