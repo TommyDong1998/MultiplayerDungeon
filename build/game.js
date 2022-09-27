@@ -837,7 +837,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 3;
+        this._gold = 30;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
