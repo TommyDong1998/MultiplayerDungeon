@@ -2,7 +2,7 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 	{name:"Dagger",description:"Very short. Little knockback. Increased gold chance!",cost:5,rarity:0},
 	{name:"Warrior",description:"Extra health. Invincible charge special attack!",cost:15,rarity:0},
 	{name:"Vampire",description:"Doing damage heals you!",cost:20,rarity:1},
-	{name:"Human Leader",description:"Extra hp",cost:20,rarity:1},
+	{name:"Human Leader",description:"Giant among men. Clearly the leader!",cost:20,rarity:1},
 	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every minute!",cost:15,rarity:0},
 	{name:"JimmysRustySword",description:"The Sword of the Superior Swordsman.",cost:8,rarity:0}
 	];
