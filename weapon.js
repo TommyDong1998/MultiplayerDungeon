@@ -92,7 +92,7 @@ class JimmysRustySword extends Weapon {
     constructor() {
         super(23, 50);
         this.z = 13;
-        this.sprite = 'RustSword';
+        this.sprite = 'JimmyRustySword';
         this.setOrigin(10, 30);
         this.type.push('weapon');
         this.attack = true;

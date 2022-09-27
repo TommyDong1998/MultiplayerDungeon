@@ -24,6 +24,14 @@ var spriteData={	Dagger:{
                      "x":307,
                      "y":26
 					},
+					JimmyRustySword:{
+					   "src":"images/JimmysRustySword.png",
+						"height":21,
+					   "id":4,
+					   "width":10,
+					   "x":307,
+					   "y":26
+					},
 					TallMinion:[
 					{x:370,y:305,width:11,height:16},
 					{x:387,y:305,width:10,height:15},
