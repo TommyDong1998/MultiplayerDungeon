@@ -149,9 +149,9 @@ function setPotionHoard(entity){
         }
 	}
 	let addPotion=setInterval(()=>{
-		if(entity.healthPotions<3)
+		if(entity.healthPotions<10)
 			entity.healthPotions+=1;
-	},60*1000)
+	},20*1000)
 	entity.once('remove',()=>{
 		clearInterval(addPotion);
 	})
@@ -257,7 +257,7 @@ class Monster extends sword.Entity {
                     });
                     if (col){
                         //teleport user to nearest non collision area
-                        let collided=this.collideWith().find((entity) => {
+                        let collided=this.collideWith((ob)=>{return ob.type.indexOf('solid') != -1;}).find((entity) => {
                             return entity.type.indexOf('solid') != -1;
                         });
                         
@@ -466,7 +466,7 @@ class JimmysRustySword extends Weapon {
     constructor() {
         super(23, 50);
         this.z = 13;
-        this.sprite = 'RustSword';
+        this.sprite = 'JimmyRustySword';
         this.setOrigin(10, 30);
         this.type.push('weapon');
         this.attack = true;

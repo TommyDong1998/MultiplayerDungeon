@@ -78,9 +78,9 @@ function setPotionHoard(entity){
         }
 	}
 	let addPotion=setInterval(()=>{
-		if(entity.healthPotions<3)
+		if(entity.healthPotions<10)
 			entity.healthPotions+=1;
-	},60*1000)
+	},20*1000)
 	entity.once('remove',()=>{
 		clearInterval(addPotion);
 	})

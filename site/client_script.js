@@ -3,7 +3,7 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 	{name:"Warrior",description:"Extra health. Invincible charge special attack!",cost:15,rarity:0},
 	{name:"Vampire",description:"Doing damage heals you!",cost:20,rarity:1},
 	{name:"Human Leader",description:"Giant among men. Clearly the leader!",cost:20,rarity:1},
-	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every minute!",cost:15,rarity:0},
+	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every 20 seconds!",cost:15,rarity:0},
 	{name:"JimmysRustySword",description:"The Sword of the Superior Swordsman.",cost:8,rarity:0},
 	{name:"Minie",description:"The strongest tinest warrior alive",cost:15,rarity:0}
 	];
@@ -173,7 +173,9 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 					{x:16*9+1,y:16*3-2,width:15,height:18},
 					{x:16*10+1,y:16*3-1,width:15,height:17},
 					{x:16*11+1,y:16*3-2,width:15,height:18}];
-		}else if(name==36||name==37||name==38){
+		}
+		//lava
+		else if(name==36||name==37||name==38){
 			console.log(name)
 			return [{x:(36%32)*16,y:(Math.trunc(36/32))*16,width:16,height:16},
 			{x:(37%32)*16,y:(Math.trunc(37/32))*16,width:16,height:16},
@@ -188,7 +190,6 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 			return [{x:371,y:82,width:10,height:14},
 					{x:387,y:84,width:10,height:12},
 					{x:403,y:85,width:10,height:11},
-					
 					{x: 418,y: 83,width:10,height:13}];
 		}else if(name=="demon"){
 			return [{x:21,y:370,width:23,height:30},
@@ -200,16 +201,31 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 					{x:387,y:338,width:11,height:18},
 					{x:403,y:337,width:11,height:18},
 					{x: 419,y: 331,width:10,height:21}];
-		}else if(typeof name =="number"){
+		}
+		else if(typeof name =="number"){
 			return {x:(name%32)*16,y:(Math.trunc(name/32))*16,width:16,height:16};
 		}
 		return {x:0,y:0,width:0,height:0};
 	}
 
 	var util={
+		//Info - location of sprite in sprite sheet
+		//Sprite - 
 		drawSprite:(info,sprite)=>{
-			ctx.drawImage(tiles,info.x,info.y,info.width,info.height,
-							sprite.x,sprite.y,sprite.width,sprite.height);
+			//If there is an image file
+			if(info.src){
+				//Load it once
+				if(info.image==undefined){
+					info.image = new Image();
+				    info.image.src = info.src;
+				}else if (info.image.complete){
+					console.log(info.image.complete)
+					ctx.drawImage(info.image, sprite.x,sprite.y,sprite.width,sprite.height);
+				}
+			}else{
+				ctx.drawImage(tiles,info.x,info.y,info.width,info.height,
+				sprite.x,sprite.y,sprite.width,sprite.height);
+			}
 		},
 		flip:(info,sprite,c)=>{
 			ctx.save();
