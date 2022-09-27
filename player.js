@@ -24,6 +24,9 @@ var shop_items = {
     },
     JimmysRustySword: {
         cost:8
+    },
+    Minie:{
+        cost:15
     }
 };
 
@@ -49,18 +52,17 @@ class Player extends Monster {
         weapon.owner = this;
         map.insert(weapon);
         this.weild(weapon);
-		
 		//////////////////////////
         this.on('velocity', (x, y) => {
             if (!this.weapon.specialAttack) {
                 this.weapon.facing = this.facing;
-                var centerLocation = this.polygon.pos.x + this.width / 2 - this.weapon.width / 2;
+                this._weaponAnchor = {x:this.polygon.pos.x + this.width / 2,y:this.polygon.pos.y+ this.height*0.3};
                 var pos = {
                     x: this.mousePos.x,
                     y: this.mousePos.y
                 };
-                util.normalize(pos, 10);
-                this.weapon.setPosition(centerLocation + pos.x, this.polygon.pos.y + 25 - weapon.origin.y + pos.y);
+                util.normalize(pos, this._weaponReach);
+                this.weapon.setPosition(this._weaponAnchor.x + pos.x - this.weapon.width / 2, this._weaponAnchor.y - weapon.origin.y/2 + pos.y);
             }
         });
         
@@ -304,7 +306,6 @@ class Player extends Monster {
             return;
         }
         var item = shop_items[Object.keys(shop_items)[this.shopItems[entity]]];
-        console.log(Object.keys(shop_items)[this.shopItems[entity]])
         //Check if enough gold  
         if (this.gold >= item.cost) {
             this.gold -= item.cost;
@@ -342,13 +343,23 @@ class Player extends Monster {
 			case 5:
 				setPotionHoard(this);
 				break;
-            case 6: //JimmysRusty sword
+            case 6:
                 this.weapon.emit("remove");
                 var weapon = new JimmysRustySword();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);
                 break;
+                case 6: //JimmysRusty sword
+                this.weapon.emit("remove");
+                var weapon = new JimmysRustySword();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
+			case 7:
+				setMinie(this);
+				break;
         }
     }
 }

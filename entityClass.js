@@ -1,30 +1,31 @@
+function chargeAttack(){
+	if (!this.timeout) {
+		this.timeout = true;
+		var pos = {
+				x: this.mousePos.x,
+				y: this.mousePos.y
+		}
+		util.normalize(pos, this.stat.speed);
+		this.velocity.x += pos.x;
+		this.velocity.y += pos.y;
+		this.damageFree = true;
+		setTimeout(()=>{
+			this.damageFree = false;
+			this.velocity.x -= pos.x;
+			this.velocity.y -= pos.y;
+			setTimeout(()=>{
+				this.timeout=false;
+			},300);
+		},500)
+	}
+}
 function setWarrior(entity){
 	entity.entityClass="warrior";
 	entity.box(30, 40);
 	entity.stat.hp=8;
 	entity.hp+=2;
 	entity.sprite="knight";
-	entity.attack=function(){
-		if (!this.timeout) {
-            this.timeout = true;
-			var pos = {
-                    x: this.mousePos.x,
-                    y: this.mousePos.y
-            }
-			util.normalize(pos, this.stat.speed);
-			this.velocity.x += pos.x;
-            this.velocity.y += pos.y;
-			this.damageFree = true;
-            setTimeout(()=>{
-				this.damageFree = false;
-				this.velocity.x -= pos.x;
-				this.velocity.y -= pos.y;
-				setTimeout(()=>{
-					this.timeout=false;
-				},300);
-			},500)
-        }
-	}
+	entity.attack=chargeAttack;
 }
 function setVampire(entity){
 	entity.stat.hp=4;
@@ -84,12 +85,40 @@ function setPotionHoard(entity){
 		clearInterval(addPotion);
 	})
 }
+function spinAttack()
+{
+	if (!this.timeout) {
+		this.timeout = true;
+		var direction = this.facing;
+		setTimeout(() => {
+			this.damageFree = true;
+		}, 100);
+		setTimeout(() => {
+			this.damageFree = false;
+		}, 600);
+		this.weapon.spin(6 * Math.PI, 900, () => {
+			this.timeout = false;
+		});
+	}
+}
+
 function setLeader(entity){
 	entity.box(45, 60);
 	entity.entityClass="leader";
 	entity.stat.hp=20;
 	entity.hp+=14;
+	entity.attack=spinAttack;
 }
+
+function setMinie(entity){
+	entity.box(15, 20);
+	entity.entityClass="minie";
+	entity.stat.hp=2;
+	entity.hp=2;
+	entity._weaponReach=5;
+	entity.attack=chargeAttack;
+}
+
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
 	entity.stat.luck=3;
