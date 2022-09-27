@@ -184,9 +184,18 @@ class Monster extends sword.Entity {
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
+
+        //Counts how many frames was stuck in wall
+        this._stuckInWall=0;
+        
+
+
+        
         this.on('collide', (obj) => {
+            let stuckInWall=false;
             for (let o of obj) {
                 if (o.type.indexOf('solid') != -1) {
+                    stuckInWall=true;
                     //Undo x
                     this.setPosition(this.pos.x - this.dx, this.pos.y);
                     //Check if collide
@@ -209,6 +218,23 @@ class Monster extends sword.Entity {
                     }
                     break;
                 }
+            }
+            if(stuckInWall){
+                world.once('nextFrame',()=>{
+                    //If stuck in wall after begining of next frame
+                    let col=this.collideWith().find((entity) => {
+                        return entity.type.indexOf('solid') != -1;
+                    });
+                    if (col){
+                        //teleport user to nearest non collision area
+                        let collided=this.collideWith().find((entity) => {
+                            return entity.type.indexOf('solid') != -1;
+                        });
+                        
+                        let response=collided._response;
+                        this.setPosition(this.pos.x-response.overlapV.x,this.pos.y-response.overlapV.y);
+                    }
+                });
             }
         });
         this.drops=[[Potion.bind(null,"HealthPotion"),0.5], [Coin,0.7]]
