@@ -168,7 +168,9 @@ function spinAttack()
 			this.damageFree = false;
 		}, 600);
 		this.weapon.spin(6 * Math.PI, 900, () => {
-			this.timeout = false;
+			setTimeout(()=>{
+				this.timeout = false;
+			},300);
 		});
 	}
 }
@@ -309,7 +311,7 @@ class Monster extends sword.Entity {
     attack() {
         if (!this.timeout) {
             this.timeout = true;
-            var direction = this.facing;
+            //var direction = this.facing;
 			setTimeout(() => {
                 this.damageFree = true;
             }, 100);
@@ -317,7 +319,9 @@ class Monster extends sword.Entity {
                 this.damageFree = false;
             }, 600);
             this.weapon.spin(6 * Math.PI, 900, () => {
-                this.timeout = false;
+                setTimeout(()=>{
+                    this.timeout = false;
+                },300);
             });
         }
     }
