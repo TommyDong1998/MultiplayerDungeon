@@ -97,7 +97,9 @@ function spinAttack()
 			this.damageFree = false;
 		}, 600);
 		this.weapon.spin(6 * Math.PI, 900, () => {
-			this.timeout = false;
+			setTimeout(()=>{
+				this.timeout = false;
+			},300);
 		});
 	}
 }
