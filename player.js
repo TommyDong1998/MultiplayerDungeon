@@ -4,7 +4,7 @@ const entityClassNum=1;
 //A list of all the items and their cost
 //If change must update boughtItem below
 var shop_items = {
-    RustySword: {
+    Sword: {
         cost: 6
     },
     Dagger: {
@@ -22,11 +22,17 @@ var shop_items = {
     PotionHoarder:{
         cost: 15
     },
-    JimmysRustySword: {
-        cost:8
+    Longsword: {
+        cost:12
     },
     Mini_Knight:{
         cost:15
+    },
+    Barrier:{
+        cost:12
+    },
+    Greatsword:{
+        cost:24
     }
 };
 
@@ -48,7 +54,7 @@ class Player extends Monster {
         // Add to main velocity loop
         // Create weapon
 		//////////////////////////////
-        var weapon = new Weapon(12, 40);
+        var weapon = new Weapon(16, 32);
         weapon.owner = this;
         map.insert(weapon);
         this.weild(weapon);
@@ -317,9 +323,9 @@ class Player extends Monster {
 		this.boughtItem.push(entity);
 		//entity
         switch (this.shopItems[entity]) {
-            case 0: //Rusty sword
+            case 0: //Sword
                 this.weapon.emit("remove");
-                var weapon = new RustySword();
+                var weapon = new Sword();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);
@@ -345,14 +351,7 @@ class Player extends Monster {
 				break;
             case 6:
                 this.weapon.emit("remove");
-                var weapon = new JimmysRustySword();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-                case 6: //JimmysRusty sword
-                this.weapon.emit("remove");
-                var weapon = new JimmysRustySword();
+                var weapon = new Longsword();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);
@@ -360,6 +359,20 @@ class Player extends Monster {
 			case 7:
 				setMinie(this);
 				break;
+            case 8:
+                this.weapon.emit("remove");
+                var weapon = new Barrier();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
+            case 9:
+                this.weapon.emit("remove");
+                var weapon = new Greatsword();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
         }
     }
 }
