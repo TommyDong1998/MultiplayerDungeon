@@ -17,7 +17,7 @@ var shop_items = {
         cost: 20
     },
     Leader:{
-        cost: 15
+        cost: 20
     },
     PotionHoarder:{
         cost: 15
@@ -25,7 +25,7 @@ var shop_items = {
     JimmysRustySword: {
         cost:8
     },
-    Minie:{
+    Mini_Knight:{
         cost:15
     }
 };

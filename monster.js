@@ -97,7 +97,7 @@ class Monster extends sword.Entity {
         });
         //When this get knockback
         this.on('knockback', (obj, amt) => {
-            if(obj.owner && obj.owner.entityClass=="minie")
+            if(obj.owner && obj.owner.entityClass=="Mini_Knight")
                 this.knockback(obj, amt/2);    
             this.knockback(obj, amt);
         });
@@ -113,7 +113,7 @@ class Monster extends sword.Entity {
     attack() {
         if (!this.timeout) {
             this.timeout = true;
-            var direction = this.facing;
+            //var direction = this.facing;
 			setTimeout(() => {
                 this.damageFree = true;
             }, 100);
@@ -121,7 +121,9 @@ class Monster extends sword.Entity {
                 this.damageFree = false;
             }, 600);
             this.weapon.spin(6 * Math.PI, 900, () => {
-                this.timeout = false;
+                setTimeout(()=>{
+                    this.timeout = false;
+                },300);
             });
         }
     }
