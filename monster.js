@@ -97,7 +97,7 @@ class Monster extends sword.Entity {
         });
         //When this get knockback
         this.on('knockback', (obj, amt) => {
-            if(obj.owner && obj.owner.entityClass=="minie")
+            if(obj.owner && obj.owner.entityClass=="Mini_Knight")
                 this.knockback(obj, amt/2);    
             this.knockback(obj, amt);
         });
