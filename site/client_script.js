@@ -5,7 +5,7 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 	{name:"Human Leader",description:"Giant among men. Clearly the leader!",cost:20,rarity:1},
 	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every 20 seconds!",cost:15,rarity:0},
 	{name:"JimmysRustySword",description:"The Sword of the Superior Swordsman.",cost:8,rarity:0},
-	{name:"Minie",description:"The strongest tinest warrior alive",cost:15,rarity:0}
+	{name:"Mini Knight",description:"The strongest tinest warrior alive",cost:15,rarity:0}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
