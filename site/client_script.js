@@ -43,12 +43,14 @@ var itemsDef=[{name:"RustySword",description:"A little longer.Moderate chance of
 	}
 	function createBlankItem(loc){
 		var doc=document.querySelector("#section"+(loc+1));
-		doc.querySelector("img").src="";
+		doc.querySelector("img").hidden=true;
 		doc.querySelector(".detail").innerHTML="Nothing for sale<br/><small>Nothing here</small>";
+		doc.querySelector(".bbutton").innerText="Nothing for sale"
 		currentShop[loc]=false;
 	}
 	function createItem(loc,item){
 		var doc=document.querySelector("#section"+loc);
+		doc.querySelector("img").hidden=false;
 		doc.querySelector("img").src="images/"+itemsDef[item].name+".png";
 		doc.querySelector(".detail").innerHTML="<b>"+itemsDef[item].name+"</b><br/>"+itemsDef[item].description;
 		doc.querySelector(".bbutton").innerText=itemsDef[item].cost+"G Buy";
