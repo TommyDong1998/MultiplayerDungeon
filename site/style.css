@@ -9,13 +9,17 @@ canvas{
 menu{
     position:fixed;
     top:0;
-    width:100%;
+    right:10%;
 }
-menu #shop{
+menu .shopText{
+    color:white;
+    font-size: 25px;
+    text-align: center;
+}
+menu #shop .shopChest{
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-    float:right;
     margin-top:15px;
     margin-right:10%;
     background-image:url(images/chest.png);
@@ -23,7 +27,7 @@ menu #shop{
     height:88px;
     background-size:contain;
 }
-menu #shop:hover{
+menu #shop .shopChest:hover{
     background-image:url(images/lightchest.png);
 }
 img{
