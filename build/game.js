@@ -396,7 +396,7 @@ class Weapon extends sword.Entity {
         super(w, h);
         this.z = 13;
         this.sprite = 'Dagger';
-        this.setOrigin(6, 34);
+        this.setOrigin(8, 24);
         this.type.push('weapon');
         world.emit('collision', this);
         this.attack = true;
@@ -407,9 +407,9 @@ class Weapon extends sword.Entity {
                     if (o.hp && o.weapon != this) {
                         o.emit('damage', 1, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 600);
+                            o.emit('knockback', this, 400);
                         else
-                            o.emit('knockback', this, 150);
+                            o.emit('knockback', this, 200);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
@@ -446,12 +446,44 @@ class Weapon extends sword.Entity {
 /*
 Extra damage
 */
-class RustySword extends Weapon {
+class Sword extends Weapon {
     constructor() {
-        super(20, 42);
+        super(20, 40);
         this.z = 13;
-        this.sprite = 'RustSword';
-        this.setOrigin(10, 30);
+        this.sprite = 'Sword';
+        this.setOrigin(10, 32);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        if (Math.random() > 0.5)
+                            o.emit('damage', 2, this);
+                        else
+                            o.emit('damage', 1, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 500);
+                        else
+                            o.emit('knockback', this, 250);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }
+                }
+            }
+        });
+    }
+}
+class Longsword extends Weapon {
+    constructor() {
+        super(20, 44);
+        this.z = 13;
+        this.sprite = 'Longsword';
+        this.setOrigin(10, 34);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -467,7 +499,7 @@ class RustySword extends Weapon {
                         if (this.specialAttack)
                             o.emit('knockback', this, 600);
                         else
-                            o.emit('knockback', this, 150);
+                            o.emit('knockback', this, 20);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
@@ -478,12 +510,12 @@ class RustySword extends Weapon {
         });
     }
 }
-class JimmysRustySword extends Weapon {
+class Greatsword extends Weapon {
     constructor() {
-        super(23, 50);
+        super(24, 48);
         this.z = 13;
-        this.sprite = 'JimmyRustySword';
-        this.setOrigin(10, 30);
+        this.sprite = 'Greatsword';
+        this.setOrigin(12, 36);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -492,18 +524,50 @@ class JimmysRustySword extends Weapon {
                 //Can attack many at same time
                 for (let o of obj) {
                     if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.5)
+                        if (Math.random() > 0.25)
                             o.emit('damage', 2, this);
                         else
                             o.emit('damage', 1, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 300);
+                            o.emit('knockback', this, 600);
                         else
-                            o.emit('knockback', this, 150);
+                            o.emit('knockback', this, 300);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
                         }, 300);
+                    }
+                }
+            }
+        });
+    }
+}
+class Barrier extends Weapon {
+    constructor() {
+        super(48, 48);
+        this.z = 13;
+        this.sprite = 'Barrier';
+        this.setOrigin(24, 24);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        if (Math.random() > 0.9)
+                            o.emit('damage', 1, this);
+                        else
+                            o.emit('damage', 0, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 50);
+                        else
+                            o.emit('knockback', this, 50);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 50);
                     }
                 }
             }
@@ -515,10 +579,10 @@ Extra gold dagger
 */
 class Dagger extends Weapon {
     constructor() {
-        super(12, 26);
+        super(16, 32);
         this.z = 13;
         this.sprite = 'Dagger';
-        this.setOrigin(6, 24);
+        this.setOrigin(8, 24);
         this.type.push('weapon');
         this.attack = true;
         this.goldBoost = 1;
@@ -825,7 +889,7 @@ const entityClassNum=1;
 //A list of all the items and their cost
 //If change must update boughtItem below
 var shop_items = {
-    RustySword: {
+    Sword: {
         cost: 6
     },
     Dagger: {
@@ -838,16 +902,22 @@ var shop_items = {
         cost: 20
     },
     Leader:{
-        cost: 15
+        cost: 20
     },
     PotionHoarder:{
         cost: 15
     },
-    JimmysRustySword: {
-        cost:8
+    Longsword: {
+        cost:12
     },
     Mini_Knight:{
         cost:15
+    },
+    Barrier:{
+        cost:12
+    },
+    Greatsword:{
+        cost:24
     }
 };
 
@@ -869,7 +939,7 @@ class Player extends Monster {
         // Add to main velocity loop
         // Create weapon
 		//////////////////////////////
-        var weapon = new Weapon(12, 40);
+        var weapon = new Weapon(16, 32);
         weapon.owner = this;
         map.insert(weapon);
         this.weild(weapon);
@@ -1138,9 +1208,9 @@ class Player extends Monster {
 		this.boughtItem.push(entity);
 		//entity
         switch (this.shopItems[entity]) {
-            case 0: //Rusty sword
+            case 0: //Sword
                 this.weapon.emit("remove");
-                var weapon = new RustySword();
+                var weapon = new Sword();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);
@@ -1166,14 +1236,7 @@ class Player extends Monster {
 				break;
             case 6:
                 this.weapon.emit("remove");
-                var weapon = new JimmysRustySword();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-                case 6: //JimmysRusty sword
-                this.weapon.emit("remove");
-                var weapon = new JimmysRustySword();
+                var weapon = new Longsword();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);
@@ -1181,6 +1244,20 @@ class Player extends Monster {
 			case 7:
 				setMinie(this);
 				break;
+            case 8:
+                this.weapon.emit("remove");
+                var weapon = new Barrier();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
+            case 9:
+                this.weapon.emit("remove");
+                var weapon = new Greatsword();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
         }
     }
 }
