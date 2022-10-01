@@ -315,7 +315,10 @@ class Monster extends sword.Entity {
     weild(weapon) {
         // this.attach(weapon)
         this.weapon = weapon;
-        weapon.setPosition(this.polygon.pos.x + this.width / 2 - weapon.width * this.facing, this.polygon.pos.y - weapon.origin.y);
+        weapon.owner=this;
+        weapon.setPosition(this.polygon.pos.x + this._weaponAnchor.x + - this.weapon.width / 2, this.polygon.pos.y+this._weaponAnchor.y - weapon.origin.y/2);
+        //weapon.setPosition(this.polygon.pos.x + this.width / 2 - weapon.width * this.facing, this.polygon.pos.y - weapon.origin.y);
+        this.weapon.emit('init', this)
         this.once('remove', () => {
             this.weapon.emit('remove');
         });
@@ -572,6 +575,36 @@ class Barrier extends Weapon {
                 }
             }
         });
+        this.once('init',function(player){
+            player._weaponAnchor = {x: player.width / 2,y: player.height/2};
+            let tempReach=player._weaponReach;
+            let tempAnchor=player._weaponAnchor;
+            player._weaponReach = 0;
+            
+            this.once('remove',function(){
+                if(this.player){
+                    this.player._weaponAnchor = tempAnchor;
+                    this.player._weaponReach=tempReach;
+                }
+            })
+        })
+        //Override class attack
+        this._overrideAttack=function(player){
+            if (!this.timeout) {
+                this.timeout = true;
+                this.damageFree = true;
+                this.setOrigin(40, 40);
+                this.box(80,80);
+                setTimeout(()=>{
+                    this.box(64,64);
+                    this.setOrigin(32, 32);
+                    this.damageFree = false;
+                    setTimeout(()=>{
+                        this.timeout=false;
+                    },500);
+                },1000)
+            }
+        }
     }
 }
 class HalfBarrier extends Weapon {
@@ -1033,24 +1066,30 @@ class Player extends Monster {
         // Add to main velocity loop
         // Create weapon
 		//////////////////////////////
-        var weapon = new Weapon(16, 32);
-        weapon.owner = this;
+        this._weaponAnchor = {x: this.width / 2,y: this.height*0.3};
+        let weapon=new Weapon(16, 32);
         map.insert(weapon);
         this.weild(weapon);
 		//////////////////////////
-        this.on('velocity', (x, y) => {
+        let OrientWeapon= function(x, y) {
+            this.weapon;
             if (!this.weapon.specialAttack) {
                 this.weapon.facing = this.facing;
-                this._weaponAnchor = {x:this.polygon.pos.x + this.width / 2,y:this.polygon.pos.y+ this.height*0.3};
                 var pos = {
                     x: this.mousePos.x,
                     y: this.mousePos.y
                 };
                 util.normalize(pos, this._weaponReach);
-                this.weapon.setPosition(this._weaponAnchor.x + pos.x - this.weapon.width / 2, this._weaponAnchor.y - weapon.origin.y/2 + pos.y);
+                this.weapon.setPosition(this.polygon.pos.x + this._weaponAnchor.x + pos.x- this.weapon.origin.x, this.polygon.pos.y+this._weaponAnchor.y - this.weapon.origin.y+ pos.y);
             }
-        });
+        }
+        OrientWeapon=OrientWeapon.bind(this);
+        world.on('nextFrame', OrientWeapon);
         
+        this.on('remove',()=>{
+            world.removeListener('nextFrame',OrientWeapon);
+        });
+
         this._gold = 300;
 
         Object.defineProperty(this, 'gold', {
@@ -1096,7 +1135,10 @@ class Player extends Monster {
                         break;
                         //Attack
                     case 1:
-                        this.attack();
+                        if (this.weapon._overrideAttack)
+                            this.weapon._overrideAttack(this)
+                        else
+                            this.attack();
                         break;
                         //Mouse movement
                     case 2:

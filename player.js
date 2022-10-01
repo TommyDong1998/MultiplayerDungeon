@@ -116,24 +116,30 @@ class Player extends Monster {
         // Add to main velocity loop
         // Create weapon
 		//////////////////////////////
-        var weapon = new Weapon(16, 32);
-        weapon.owner = this;
+        this._weaponAnchor = {x: this.width / 2,y: this.height*0.3};
+        let weapon=new Weapon(16, 32);
         map.insert(weapon);
         this.weild(weapon);
 		//////////////////////////
-        this.on('velocity', (x, y) => {
+        let OrientWeapon= function(x, y) {
+            this.weapon;
             if (!this.weapon.specialAttack) {
                 this.weapon.facing = this.facing;
-                this._weaponAnchor = {x:this.polygon.pos.x + this.width / 2,y:this.polygon.pos.y+ this.height*0.3};
                 var pos = {
                     x: this.mousePos.x,
                     y: this.mousePos.y
                 };
                 util.normalize(pos, this._weaponReach);
-                this.weapon.setPosition(this._weaponAnchor.x + pos.x - this.weapon.width / 2, this._weaponAnchor.y - weapon.origin.y/2 + pos.y);
+                this.weapon.setPosition(this.polygon.pos.x + this._weaponAnchor.x + pos.x- this.weapon.origin.x, this.polygon.pos.y+this._weaponAnchor.y - this.weapon.origin.y+ pos.y);
             }
-        });
+        }
+        OrientWeapon=OrientWeapon.bind(this);
+        world.on('nextFrame', OrientWeapon);
         
+        this.on('remove',()=>{
+            world.removeListener('nextFrame',OrientWeapon);
+        });
+
         this._gold = 300;
 
         Object.defineProperty(this, 'gold', {
@@ -179,7 +185,10 @@ class Player extends Monster {
                         break;
                         //Attack
                     case 1:
-                        this.attack();
+                        if (this.weapon._overrideAttack)
+                            this.weapon._overrideAttack(this)
+                        else
+                            this.attack();
                         break;
                         //Mouse movement
                     case 2:
