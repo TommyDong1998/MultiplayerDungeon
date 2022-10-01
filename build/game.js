@@ -704,7 +704,6 @@ class Bullet extends sword.Entity {
                     var distance = Math.sqrt(Math.pow(obj.pos.x+obj.width/2 - this.pos.x+this.width/2, 2) + Math.pow(obj.pos.y+obj.height/2 - this.pos.y+this.height/2, 2));
                     if(distance>300)
                         return
-                    console.log(distance)
                     if (!nearest)
                         nearest = obj;
                     else {
@@ -919,7 +918,7 @@ function loadMap(file){
 	
 	world.setMaxListeners(1000);
 	//Stress Tester
-	for(let i=0;i<0;i++){
+	for(let i=0;i<1000;i++){
 		var enemy2 = new NPC("minion");
 		enemy2.attackFirst();
 		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
