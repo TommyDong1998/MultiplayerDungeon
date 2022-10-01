@@ -92,6 +92,7 @@ var map = new sword.GameMap(world, settings.width, settings.height);function cha
 }
 function setWarrior(entity){
 	entity.emit("newClass");
+    entity._classSetter=setWarrior;
 	entity.entityClass="warrior";
 	entity.box(30, 40);
 	entity.stat.hp=8;
@@ -101,6 +102,7 @@ function setWarrior(entity){
 }
 function setVampire(entity){
 	entity.emit("newClass");
+    entity._classSetter=setVampire;
 	entity.stat.hp=4;
 	entity.entityClass="vampire";
 	entity.attack=function(){
@@ -133,6 +135,7 @@ function setVampire(entity){
 }
 function setPotionHoard(entity){
 	entity.emit("newClass");
+    entity._classSetter=setPotionHoard;
 	entity.entityClass="potionHoard";
 	entity.healthPotions=3;
 	entity.attack=function(){
@@ -186,6 +189,7 @@ function spinAttack()
 
 function setLeader(entity){
 	entity.emit("newClass");
+    entity._classSetter=setLeader;
 	entity.box(45, 60);
 	entity.entityClass="leader";
 	entity.stat.hp=20;
@@ -195,6 +199,7 @@ function setLeader(entity){
 
 function setMinie(entity){
 	entity.emit("newClass");
+    entity._classSetter=setMinie;
 	entity.box(15, 20);
 	entity.entityClass="Mini_Knight";
 	entity.sprite="knight";
@@ -582,7 +587,10 @@ class Barrier extends Weapon {
             player._weaponReach = 0;
             
             this.once('remove',function(){
-                if(this.player){
+                if(this.player && this.player._classSetter){
+                    this.player._classSetter(this.player)
+                }
+                else if(this.player){
                     this.player._weaponAnchor = tempAnchor;
                     this.player._weaponReach=tempReach;
                 }

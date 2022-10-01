@@ -189,7 +189,10 @@ class Barrier extends Weapon {
             player._weaponReach = 0;
             
             this.once('remove',function(){
-                if(this.player){
+                if(this.player && this.player._classSetter){
+                    this.player._classSetter(this.player)
+                }
+                else if(this.player){
                     this.player._weaponAnchor = tempAnchor;
                     this.player._weaponReach=tempReach;
                 }
