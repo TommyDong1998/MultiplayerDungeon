@@ -69,6 +69,7 @@ var world = new sword(function(setting, socket) {
         });
     });
 },httpServer);
+world.setMaxListeners(100);
 var map = new sword.GameMap(world, settings.width, settings.height);function chargeAttack(){
 	if (!this.timeout) {
 		this.timeout = true;
@@ -237,9 +238,6 @@ class Monster extends sword.Entity {
         //Counts how many frames was stuck in wall
         this._stuckInWall=0;
         
-
-
-        
         this.on('collide', (obj) => {
             let stuckInWall=false;
             for (let o of obj) {
@@ -271,7 +269,7 @@ class Monster extends sword.Entity {
             if(stuckInWall){
                 world.once('nextFrame',()=>{
                     //If stuck in wall after begining of next frame
-                    let col=this.collideWith().find((entity) => {
+                    let col=this.collideWith((ob)=>{return ob.type.indexOf('solid') != -1;}).find((entity) => {
                         return entity.type.indexOf('solid') != -1;
                     });
                     if (col){
@@ -863,8 +861,8 @@ function Spawner(level,position){
 	});
 }
 function loadMap(file){
-	for(let i=0;i<world._collisionItems.length;i++){
-		world._collisionItems[i].emit('remove');
+	while(world._collisionItems.length){
+		world._collisionItems[0].emit('remove');
 	}
 	world._velocityItems=[];
 	world._collisionItems=[];
@@ -915,6 +913,15 @@ function loadMap(file){
 		}
 	}
 	
+	
+	world.setMaxListeners(1000);
+	//Stress Tester
+	for(let i=0;i<1000;i++){
+		var enemy2 = new NPC("minion");
+		enemy2.attackFirst();
+		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
+	}
+
 	//Generate monsters
 	var mon = file.layers[2].data;
 	for (var c = 0; c < file.width; c++) {
