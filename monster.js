@@ -22,9 +22,6 @@ class Monster extends sword.Entity {
         //Counts how many frames was stuck in wall
         this._stuckInWall=0;
         
-
-
-        
         this.on('collide', (obj) => {
             let stuckInWall=false;
             for (let o of obj) {
@@ -56,7 +53,7 @@ class Monster extends sword.Entity {
             if(stuckInWall){
                 world.once('nextFrame',()=>{
                     //If stuck in wall after begining of next frame
-                    let col=this.collideWith().find((entity) => {
+                    let col=this.collideWith((ob)=>{return ob.type.indexOf('solid') != -1;}).find((entity) => {
                         return entity.type.indexOf('solid') != -1;
                     });
                     if (col){

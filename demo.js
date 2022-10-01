@@ -69,4 +69,5 @@ var world = new sword(function(setting, socket) {
         });
     });
 },httpServer);
+world.setMaxListeners(100);
 var map = new sword.GameMap(world, settings.width, settings.height);

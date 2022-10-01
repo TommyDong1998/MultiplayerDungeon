@@ -41,8 +41,8 @@ function Spawner(level,position){
 	});
 }
 function loadMap(file){
-	for(let i=0;i<world._collisionItems.length;i++){
-		world._collisionItems[i].emit('remove');
+	while(world._collisionItems.length){
+		world._collisionItems[0].emit('remove');
 	}
 	world._velocityItems=[];
 	world._collisionItems=[];
@@ -93,6 +93,15 @@ function loadMap(file){
 		}
 	}
 	
+	
+	world.setMaxListeners(1000);
+	//Stress Tester
+	for(let i=0;i<1000;i++){
+		var enemy2 = new NPC("minion");
+		enemy2.attackFirst();
+		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
+	}
+
 	//Generate monsters
 	var mon = file.layers[2].data;
 	for (var c = 0; c < file.width; c++) {
