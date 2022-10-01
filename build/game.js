@@ -699,13 +699,16 @@ class Bullet extends sword.Entity {
             clearInterval(this.action);
         this.action = setInterval(() => {
             var nearest;
-            map.findNear(this, 500, (obj) => {
+            players.forEach((obj) => {
                 if (obj instanceof Player && obj != this) {
+                    var distance = Math.sqrt(Math.pow(obj.pos.x+obj.width/2 - this.pos.x+this.width/2, 2) + Math.pow(obj.pos.y+obj.height/2 - this.pos.y+this.height/2, 2));
+                    if(distance>300)
+                        return
+                    console.log(distance)
                     if (!nearest)
                         nearest = obj;
                     else {
-                        var distance = Math.sqrt(Math.pow(obj.pos.x - this.pos.x, 2) + Math.pow(obj.pos.y - this.pos.y, 2));
-                        var oldDistance = Math.sqrt(Math.pow(nearest.pos.x - this.pos.x, 2) + Math.pow(nearest.pos.y - this.pos.y, 2));
+                        var oldDistance = Math.sqrt(Math.pow(nearest.pos.x+nearest.width/2 - this.pos.x+this.width/2, 2) + Math.pow(nearest.pos.y+nearest.height/2 - this.pos.y+this.height/2, 2));
                         if (distance < oldDistance) {
                             nearest = obj;
                         }
@@ -916,7 +919,7 @@ function loadMap(file){
 	
 	world.setMaxListeners(1000);
 	//Stress Tester
-	for(let i=0;i<500;i++){
+	for(let i=0;i<0;i++){
 		var enemy2 = new NPC("minion");
 		enemy2.attackFirst();
 		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
