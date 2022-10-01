@@ -182,6 +182,39 @@ class Barrier extends Weapon {
                 }
             }
         });
+        this.once('init',function(player){
+            player._weaponAnchor = {x: player.width / 2,y: player.height/2};
+            let tempReach=player._weaponReach;
+            let tempAnchor=player._weaponAnchor;
+            player._weaponReach = 0;
+            
+            this.once('remove',function(){
+                if(this.player && this.player._classSetter){
+                    this.player._classSetter(this.player)
+                }
+                else if(this.player){
+                    this.player._weaponAnchor = tempAnchor;
+                    this.player._weaponReach=tempReach;
+                }
+            })
+        })
+        //Override class attack
+        this._overrideAttack=function(player){
+            if (!this.timeout) {
+                this.timeout = true;
+                this.damageFree = true;
+                this.setOrigin(40, 40);
+                this.box(80,80);
+                setTimeout(()=>{
+                    this.box(64,64);
+                    this.setOrigin(32, 32);
+                    this.damageFree = false;
+                    setTimeout(()=>{
+                        this.timeout=false;
+                    },500);
+                },1000)
+            }
+        }
     }
 }
 class HalfBarrier extends Weapon {

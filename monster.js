@@ -105,7 +105,10 @@ class Monster extends sword.Entity {
     weild(weapon) {
         // this.attach(weapon)
         this.weapon = weapon;
-        weapon.setPosition(this.polygon.pos.x + this.width / 2 - weapon.width * this.facing, this.polygon.pos.y - weapon.origin.y);
+        weapon.owner=this;
+        weapon.setPosition(this.polygon.pos.x + this._weaponAnchor.x + - this.weapon.width / 2, this.polygon.pos.y+this._weaponAnchor.y - weapon.origin.y/2);
+        //weapon.setPosition(this.polygon.pos.x + this.width / 2 - weapon.width * this.facing, this.polygon.pos.y - weapon.origin.y);
+        this.weapon.emit('init', this)
         this.once('remove', () => {
             this.weapon.emit('remove');
         });
