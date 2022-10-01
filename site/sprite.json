@@ -39,6 +39,9 @@ var spriteData={
 	Sword:{
 		"src":"images/Sword.png"
 	}, 
+	HalfBarrier:{
+		"src":"images/HalfBarrier.png"
+	}, 
 	TallMinion:[
 	{x:370,y:305,width:11,height:16},
 	{x:387,y:305,width:10,height:15},
