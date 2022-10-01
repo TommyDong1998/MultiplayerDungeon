@@ -166,14 +166,14 @@ class Barrier extends Weapon {
                 //Can attack many at same time
                 for (let o of obj) {
                     if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.95)
+                        if (Math.random() > 0.96)
                             o.emit('damage', 1, this);
                         else
                             o.emit('damage', 0, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 40);
+                            o.emit('knockback', this, 30);
                         else
-                            o.emit('knockback', this, 40);
+                            o.emit('knockback', this, 30);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
