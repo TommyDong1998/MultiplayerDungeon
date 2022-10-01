@@ -3,41 +3,100 @@ const entityClassNum=1;
 
 //A list of all the items and their cost
 //If change must update boughtItem below
+
 var shop_items = {
     Sword: {
-        cost: 6
+        cost: 6,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new Sword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     },
     Dagger: {
-        cost: 5
+        cost: 5,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new Dagger();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     },
     Warrior:{
-        cost: 15
+        cost: 15,
+        add:function(player){
+            setWarrior(player);
+        }
     },
     Vampire:{
-        cost: 20
+        cost: 20,
+        add:function(player){
+            setVampire(player);
+        }
     },
     Leader:{
-        cost: 20
+        cost: 20,
+        add:function(player){
+            setLeader(player);
+        }
     },
     PotionHoarder:{
-        cost: 15
+        cost: 15,
+        add:function(player){
+            setPotionHoard(player);
+        }
     },
     Longsword: {
-        cost:12
+        cost:12,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new Longsword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     },
     Mini_Knight:{
-        cost:15
+        cost:15,
+        add:function(player){
+            setMinie(player);
+        }
     },
     Barrier:{
-        cost:20
+        cost:20,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new Barrier();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     },
     Greatsword:{
-        cost:24
+        cost:24,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new Greatsword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     },
     HalfBarrier:{
-        cost:12
+        cost:12,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new HalfBarrier();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     }
 };
+
 
 /* Requires Global Variable world */
 class Player extends Monster {
@@ -75,7 +134,7 @@ class Player extends Monster {
             }
         });
         
-        this._gold = 30;
+        this._gold = 300;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
@@ -323,66 +382,8 @@ class Player extends Monster {
             return;
         }
 		//Not item
-		this.boughtItem.push(entity);
+		this.boughtItem.push(this.shopItems[entity]);
 		//entity
-        switch (this.shopItems[entity]) {
-            case 0: //Sword
-                this.weapon.emit("remove");
-                var weapon = new Sword();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-            case 1:
-                this.weapon.emit("remove");
-                var weapon = new Dagger();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-			case 2:
-				setWarrior(this);
-				break;
-			case 3:
-				setVampire(this);
-				break;
-			case 4:
-				setLeader(this);
-				break;
-			case 5:
-				setPotionHoard(this);
-				break;
-            case 6:
-                this.weapon.emit("remove");
-                var weapon = new Longsword();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-			case 7:
-				setMinie(this);
-				break;
-            case 8:
-                this.weapon.emit("remove");
-                var weapon = new Barrier();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-            case 9:
-                this.weapon.emit("remove");
-                var weapon = new Greatsword();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-            case 10:
-                this.weapon.emit("remove");
-                var weapon = new HalfBarrier();
-                weapon.owner = this;
-                map.insert(weapon);
-                this.weild(weapon);
-                break;
-        }
+        item.add(this);
     }
 }
