@@ -515,7 +515,7 @@ class Greatsword extends Weapon {
         super(24, 48);
         this.z = 13;
         this.sprite = 'Greatsword';
-        this.setOrigin(12, 36);
+        this.setOrigin(12, 42);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -544,10 +544,10 @@ class Greatsword extends Weapon {
 }
 class Barrier extends Weapon {
     constructor() {
-        super(48, 48);
+        super(64, 64);
         this.z = 13;
         this.sprite = 'Barrier';
-        this.setOrigin(24, 24);
+        this.setOrigin(32, 32);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -556,7 +556,39 @@ class Barrier extends Weapon {
                 //Can attack many at same time
                 for (let o of obj) {
                     if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.9)
+                        if (Math.random() > 0.95)
+                            o.emit('damage', 1, this);
+                        else
+                            o.emit('damage', 0, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 40);
+                        else
+                            o.emit('knockback', this, 40);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 30);
+                    }
+                }
+            }
+        });
+    }
+}
+class HalfBarrier extends Weapon {
+    constructor() {
+        super(64, 32);
+        this.z = 13;
+        this.sprite = 'HalfBarrier';
+        this.setOrigin(32, 28);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        if (Math.random() > 0.95)
                             o.emit('damage', 1, this);
                         else
                             o.emit('damage', 0, this);
@@ -567,7 +599,7 @@ class Barrier extends Weapon {
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
-                        }, 50);
+                        }, 30);
                     }
                 }
             }
@@ -914,10 +946,13 @@ var shop_items = {
         cost:15
     },
     Barrier:{
-        cost:12
+        cost:20
     },
     Greatsword:{
         cost:24
+    },
+    HalfBarrier:{
+        cost:12
     }
 };
 
@@ -1254,6 +1289,13 @@ class Player extends Monster {
             case 9:
                 this.weapon.emit("remove");
                 var weapon = new Greatsword();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
+            case 10:
+                this.weapon.emit("remove");
+                var weapon = new HalfBarrier();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);

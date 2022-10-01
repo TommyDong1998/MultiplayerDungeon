@@ -29,10 +29,13 @@ var shop_items = {
         cost:15
     },
     Barrier:{
-        cost:12
+        cost:20
     },
     Greatsword:{
         cost:24
+    },
+    HalfBarrier:{
+        cost:12
     }
 };
 
@@ -369,6 +372,13 @@ class Player extends Monster {
             case 9:
                 this.weapon.emit("remove");
                 var weapon = new Greatsword();
+                weapon.owner = this;
+                map.insert(weapon);
+                this.weild(weapon);
+                break;
+            case 10:
+                this.weapon.emit("remove");
+                var weapon = new HalfBarrier();
                 weapon.owner = this;
                 map.insert(weapon);
                 this.weild(weapon);

@@ -7,8 +7,9 @@ var itemsDef=[
 	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every 20 seconds!",cost:15,rarity:0},
 	{name:"Longsword",description:"The Sword of the Superior Swordsman.",cost:12,rarity:0},
 	{name:"Mini Knight",description:"The strongest, tinist warrior alive.",cost:15,rarity:0},
-	{name:"Barrier",description:"Its a forcefield probably or something like that.",cost:12,rarity:0},
-	{name:"Greatsword",description:"Make swords great again.",cost:24,rarity:0}
+	{name:"Barrier",description:"Its a forcefield probably or something like that.",cost:20,rarity:0},
+	{name:"Greatsword",description:"Make swords great again.",cost:24,rarity:0},
+	{name:"HalfBarrier",description:"Its Like a forcefield but not all the way.",cost:12,rarity:0}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
