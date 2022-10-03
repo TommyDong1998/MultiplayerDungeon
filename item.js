@@ -31,10 +31,11 @@ class Coin extends sword.Entity {
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
+        this.gold=1;
         this.on('collide', (obj) => {
             for (let o of obj) {
                 if (o instanceof Player) {
-                    o.gold++;
+                    o.gold+=this.gold;
                     this.emit("remove");
                     break;
                 }

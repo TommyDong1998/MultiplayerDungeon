@@ -146,7 +146,7 @@ class Player extends Monster {
             set: (amount)=>{
                 this.drops=[];
                 this._gold=amount;
-                for(let i =0; i< this._gold;i++)
+                for(let i =0; i< Math.min(this._gold,30);i++)
                     this.drops.push([Coin,0.9])
             },
             get: ()=>{
