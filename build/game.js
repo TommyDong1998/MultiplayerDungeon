@@ -381,8 +381,7 @@ class Monster extends sword.Entity {
         this._knockbackCount=this._knockbackCount||0;
         this._knockbackCount+=1;
         if(this instanceof Player && this._knockbackCount){
-            amt/=1+this._knockbackCount;
-            console.log("reduced knockback")
+            amt/=2;
         }
         var d = {
             x: obj.pos.x - this.pos.x,
@@ -925,7 +924,7 @@ function loadMap(file){
 	
 	world.setMaxListeners(1000);
 	//Stress Tester
-	for(let i=0;i<1000;i++){
+	for(let i=0;i<100;i++){
 		var enemy2 = new NPC("minion");
 		enemy2.attackFirst();
 		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
