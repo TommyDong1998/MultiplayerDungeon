@@ -61,6 +61,11 @@ var world = new sword(function(setting, socket) {
 					player.on("remove",()=>{
 						if(players.indexOf(player)!=-1)
 							players.splice(players.indexOf(player),1);
+                        setTimeout(()=>{
+                            if(players.length==0){
+                                clearMap();
+                            }
+                        },5000)
 					});
                 }
             } catch (e) {
