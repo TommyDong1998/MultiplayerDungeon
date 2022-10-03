@@ -607,7 +607,7 @@ class Barrier extends Weapon {
                     player.damageFree = false;
                     setTimeout(()=>{
                         player.timeout=false;
-                    },1000);
+                    },1500);
                 },1000)
             }
         }
@@ -1113,7 +1113,7 @@ class Player extends Monster {
             set: (amount)=>{
                 this.drops=[];
                 this._gold=amount;
-                for(let i =0; i< this._gold;i++)
+                for(let i =0; i< Math.min(this._gold,30);i++)
                     this.drops.push([Coin,0.9])
             },
             get: ()=>{
@@ -1396,10 +1396,11 @@ class Coin extends sword.Entity {
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
+        this.gold=1;
         this.on('collide', (obj) => {
             for (let o of obj) {
                 if (o instanceof Player) {
-                    o.gold++;
+                    o.gold+=this.gold;
                     this.emit("remove");
                     break;
                 }
