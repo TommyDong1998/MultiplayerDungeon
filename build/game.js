@@ -567,7 +567,7 @@ class Barrier extends Weapon {
                         else
                             o.emit('damage', 0, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 30);
+                            o.emit('knockback', this, 300);
                         else
                             o.emit('knockback', this, 30);
                         this.attack = false;
@@ -597,17 +597,17 @@ class Barrier extends Weapon {
         //Override class attack
         this._overrideAttack=function(player){
             if (!this.timeout) {
-                this.timeout = true;
-                this.damageFree = true;
+                player.timeout = true;
+                player.damageFree = true;
                 this.setOrigin(40, 40);
                 this.box(80,80);
-                setTimeout(()=>{
+                setTimeout(()=>{                
                     this.box(64,64);
                     this.setOrigin(32, 32);
-                    this.damageFree = false;
+                    player.damageFree = false;
                     setTimeout(()=>{
-                        this.timeout=false;
-                    },500);
+                        player.timeout=false;
+                    },1000);
                 },1000)
             }
         }
