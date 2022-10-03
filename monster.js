@@ -162,6 +162,11 @@ class Monster extends sword.Entity {
     }
     //Knocked back by an obj
     knockback(obj, amt) {
+        this._knockbackCount=this._knockbackCount||0;
+        this._knockbackCount+=1;
+        if(this instanceof Player && this._knockbackCount){
+            amt/=2;
+        }
         var d = {
             x: obj.pos.x - this.pos.x,
             y: obj.pos.y - this.pos.y
@@ -174,6 +179,7 @@ class Monster extends sword.Entity {
         this.velocity.x += d.x;
         this.velocity.y += d.y;
         setTimeout(() => {
+            this._knockbackCount-=1;
             this.velocity.x -= d.x;
             this.velocity.y -= d.y;
         }, 300)

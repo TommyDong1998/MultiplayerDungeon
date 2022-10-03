@@ -378,6 +378,11 @@ class Monster extends sword.Entity {
     }
     //Knocked back by an obj
     knockback(obj, amt) {
+        this._knockbackCount=this._knockbackCount||0;
+        this._knockbackCount+=1;
+        if(this instanceof Player && this._knockbackCount){
+            amt/=2;
+        }
         var d = {
             x: obj.pos.x - this.pos.x,
             y: obj.pos.y - this.pos.y
@@ -390,6 +395,7 @@ class Monster extends sword.Entity {
         this.velocity.x += d.x;
         this.velocity.y += d.y;
         setTimeout(() => {
+            this._knockbackCount-=1;
             this.velocity.x -= d.x;
             this.velocity.y -= d.y;
         }, 300)
@@ -431,7 +437,7 @@ class Weapon extends sword.Entity {
         this.specialAttack = true;
         var x = 0,
             y = 0;
-        this.rad = 0;
+        this.rad = this.rad||0;
         var amp = 13;
         var stop = setInterval(() => {
             x = Math.cos(this.rad - 1) * amp + this.owner.polygon.pos.x + this.owner.width / 2 - this.width / 2;
@@ -918,7 +924,7 @@ function loadMap(file){
 	
 	world.setMaxListeners(1000);
 	//Stress Tester
-	for(let i=0;i<1000;i++){
+	for(let i=0;i<100;i++){
 		var enemy2 = new NPC("minion");
 		enemy2.attackFirst();
 		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
