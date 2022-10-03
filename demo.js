@@ -45,13 +45,14 @@ var util = {
 
 var settings;
 var players=[];
+var playersConnected=0;
 var world = new sword(function(setting, socket) {
     settings = setting;
     socket.on('connection', function connection(ws) {
-        var logged;
-		if(players.length==0){
+		if(playersConnected==0){
 			loadMap(require("./map/level1.json"));
 		}
+        playersConnected+=1;
         ws.once("message", (data) => {
             try {
                 data = JSON.parse(data);
@@ -59,10 +60,12 @@ var world = new sword(function(setting, socket) {
                     var player = new Player(ws, "elf", data.name);
 					players.push(player);
 					player.on("remove",()=>{
-						if(players.indexOf(player)!=-1)
+						if(players.indexOf(player)!=-1){
 							players.splice(players.indexOf(player),1);
+                            playersConnected-=1
+                        }
                         setTimeout(()=>{
-                            if(players.length==0){
+                            if(playersConnected==0){
                                 clearMap();
                             }
                         },5000)

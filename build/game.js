@@ -45,13 +45,14 @@ var util = {
 
 var settings;
 var players=[];
+var playersConnected=0;
 var world = new sword(function(setting, socket) {
     settings = setting;
     socket.on('connection', function connection(ws) {
-        var logged;
-		if(players.length==0){
+		if(playersConnected==0){
 			loadMap(require("./map/level1.json"));
 		}
+        playersConnected+=1;
         ws.once("message", (data) => {
             try {
                 data = JSON.parse(data);
@@ -59,10 +60,12 @@ var world = new sword(function(setting, socket) {
                     var player = new Player(ws, "elf", data.name);
 					players.push(player);
 					player.on("remove",()=>{
-						if(players.indexOf(player)!=-1)
+						if(players.indexOf(player)!=-1){
 							players.splice(players.indexOf(player),1);
+                            playersConnected-=1
+                        }
                         setTimeout(()=>{
-                            if(players.length==0){
+                            if(playersConnected==0){
                                 clearMap();
                             }
                         },5000)
@@ -200,7 +203,7 @@ function setLeader(entity){
 	entity.entityClass="leader";
 	entity.stat.hp=20;
 	entity.hp+=14;
-	entity.attack=spinAttack;
+	entity.attack=spinAttack.bind(this);
 }
 
 function setMinie(entity){
@@ -215,11 +218,81 @@ function setMinie(entity){
 	entity.attack=chargeAttack;
 }
 
+class Projectile extends sword.Entity{
+    constructor(w, h) {
+        super(w, h);
+        this.z = 13;
+        this.sprite = 'Dagger';
+        this.setOrigin(8, 24);
+        this.type.push('weapon');
+        world.emit('collision', this);
+        world.emit('velocity', this);
+        this.on('collide', (obj) => {
+                //Can attack many at same time
+				let hit=false;
+                for (let o of obj) {
+                    if (o.hp && this.owner != o) {
+						hit=true;
+                        o.emit('damage', 1, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 400);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }else if(o.type.includes('solid')){
+						hit=true;
+					}
+                }
+				if(obj.length && hit)
+					this.emit('remove');
+        });
+    }
+}
+
+
+function setWizard(entity){
+	entity.emit("newClass");
+    entity._classSetter=setWizard;
+	entity.box(15, 20);
+	entity.entityClass="Wizard";
+	entity.sprite="elf";
+	entity.stat.hp=2;
+	entity.hp=2;
+	entity._weaponReach=5;
+	entity.attack=shootProjectile.bind(this,entity,200);
+}
+
+
+function shootProjectile(player,speed){
+	if (!this.timeout) {
+		this.timeout = true;
+		let p=new Projectile(16,32);
+		map.insert(p)
+		let pos={
+			x: player.mousePos.x,
+			y: player.mousePos.y
+		}
+		util.normalize(pos, speed);
+		p.setPosition(player.pos.x,player.pos.y);
+		p.owner=player;
+		p.velocity.x+=pos.x;
+		p.velocity.y+=pos.y;
+		setTimeout(()=>{
+			if(p){
+				p.emit('remove');
+			}
+		},3000)
+		setTimeout(()=>{
+			this.timeout=false;
+		},500);
+	}
+}
+
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
 	entity.stat.luck=3;
-}
-/*global sword*/
+}/*global sword*/
 /*
 This is the class that all entities inherit. NPC and Players. 
 */
@@ -1101,6 +1174,7 @@ class Player extends Monster {
         let weapon=new Weapon(16, 32);
         map.insert(weapon);
         this.weild(weapon);
+        setWizard(this)
 		//////////////////////////
         let OrientWeapon= function(x, y) {
             this.weapon;

@@ -123,7 +123,7 @@ function setLeader(entity){
 	entity.entityClass="leader";
 	entity.stat.hp=20;
 	entity.hp+=14;
-	entity.attack=spinAttack;
+	entity.attack=spinAttack.bind(this);
 }
 
 function setMinie(entity){
@@ -136,6 +136,77 @@ function setMinie(entity){
 	entity.hp=2;
 	entity._weaponReach=5;
 	entity.attack=chargeAttack;
+}
+
+class Projectile extends sword.Entity{
+    constructor(w, h) {
+        super(w, h);
+        this.z = 13;
+        this.sprite = 'Dagger';
+        this.setOrigin(8, 24);
+        this.type.push('weapon');
+        world.emit('collision', this);
+        world.emit('velocity', this);
+        this.on('collide', (obj) => {
+                //Can attack many at same time
+				let hit=false;
+                for (let o of obj) {
+                    if (o.hp && this.owner != o) {
+						hit=true;
+                        o.emit('damage', 1, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 400);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }else if(o.type.includes('solid')){
+						hit=true;
+					}
+                }
+				if(obj.length && hit)
+					this.emit('remove');
+        });
+    }
+}
+
+
+function setWizard(entity){
+	entity.emit("newClass");
+    entity._classSetter=setWizard;
+	entity.box(15, 20);
+	entity.entityClass="Wizard";
+	entity.sprite="elf";
+	entity.stat.hp=2;
+	entity.hp=2;
+	entity._weaponReach=5;
+	entity.attack=shootProjectile.bind(this,entity,200);
+}
+
+
+function shootProjectile(player,speed){
+	if (!this.timeout) {
+		this.timeout = true;
+		let p=new Projectile(16,32);
+		map.insert(p)
+		let pos={
+			x: player.mousePos.x,
+			y: player.mousePos.y
+		}
+		util.normalize(pos, speed);
+		p.setPosition(player.pos.x,player.pos.y);
+		p.owner=player;
+		p.velocity.x+=pos.x;
+		p.velocity.y+=pos.y;
+		setTimeout(()=>{
+			if(p){
+				p.emit('remove');
+			}
+		},3000)
+		setTimeout(()=>{
+			this.timeout=false;
+		},500);
+	}
 }
 
 function setLuckMan(entity){

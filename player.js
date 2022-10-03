@@ -120,6 +120,7 @@ class Player extends Monster {
         let weapon=new Weapon(16, 32);
         map.insert(weapon);
         this.weild(weapon);
+        setWizard(this)
 		//////////////////////////
         let OrientWeapon= function(x, y) {
             this.weapon;
