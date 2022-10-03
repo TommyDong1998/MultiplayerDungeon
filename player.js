@@ -94,6 +94,12 @@ var shop_items = {
             map.insert(weapon);
             player.weild(weapon);
         }
+    },
+    Wizard:{
+        cost:15,
+        add:function(player){
+            setWizard(player);
+        }
     }
 };
 
