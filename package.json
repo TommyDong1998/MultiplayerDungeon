@@ -4,15 +4,17 @@
   "main": "game.js",
   "scripts": {
     "start": "node build/game.js",
+    "build_site": "uglifyjs client_script.js -m -o site/client_script.js",
     "build_windows": "type demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
     "build_linux": "cat demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
-    "build": "npm run build_windows"
+    "build": "npm run build_site && npm run build_windows"
   },
   "dependencies": {
     "express": "^4.16.4",
     "quad-node": "^1.0.5",
     "sat": "^0.7.1",
     "swordengine": "^1.1.1",
+    "uglify-js": "^3.17.2",
     "ws": "^6.1.2"
   }
 }
