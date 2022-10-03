@@ -7,9 +7,10 @@ var itemsDef=[
 	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every 20 seconds!",cost:15,rarity:0},
 	{name:"Longsword",description:"The Sword of the Superior Swordsman.",cost:12,rarity:0},
 	{name:"Mini Knight",description:"The strongest, tinist warrior alive.",cost:15,rarity:0},
-	{name:"Barrier",description:"Its a forcefield probably or something like that.",cost:20,rarity:0},
+	{name:"Barrier",description:"You can use forcefield but it disable your attack.",cost:20,rarity:0},
 	{name:"Greatsword",description:"Make swords great again.",cost:24,rarity:0},
-	{name:"HalfBarrier",description:"Its Like a forcefield but not all the way.",cost:12,rarity:0}
+	{name:"HalfBarrier",description:"Its Like a forcefield but not all the way.",cost:12,rarity:0},
+	{name:"Wizard",description:"Long ranged attack",cost:15,rarity:0}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
@@ -179,6 +180,12 @@ var itemsDef=[
 					{x:16*9+1,y:16*3-2,width:15,height:18},
 					{x:16*10+1,y:16*3-1,width:15,height:17},
 					{x:16*11+1,y:16*3-2,width:15,height:18}];
+		}
+		else if(name=="wizard"){
+			return [{x:16*8+1,y:173,width:15,height:19},
+					{x:16*9+1,y:172,width:15,height:19},
+					{x:16*10+1,y:174,width:15,height:18},
+					{x:16*11+1,y:173,width:15,height:19}];
 		}
 		//lava
 		else if(name==36||name==37||name==38){

@@ -174,9 +174,9 @@ class Projectile extends sword.Entity{
 function setWizard(entity){
 	entity.emit("newClass");
     entity._classSetter=setWizard;
-	entity.box(15, 20);
+	entity.box(30, 40);
 	entity.entityClass="Wizard";
-	entity.sprite="elf";
+	entity.sprite="wizard";
 	entity.stat.hp=2;
 	entity.hp=2;
 	entity._weaponReach=5;
@@ -198,11 +198,13 @@ function shootProjectile(player,speed){
 		p.owner=player;
 		p.velocity.x+=pos.x;
 		p.velocity.y+=pos.y;
+		
+		p.rotate(Math.atan2(player.mousePos.y, player.mousePos.x) + 2.5 * Math.PI);
 		setTimeout(()=>{
 			if(p){
 				p.emit('remove');
 			}
-		},3000)
+		},1500)
 		setTimeout(()=>{
 			this.timeout=false;
 		},500);
