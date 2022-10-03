@@ -431,7 +431,7 @@ class Weapon extends sword.Entity {
         this.specialAttack = true;
         var x = 0,
             y = 0;
-        var rotation = this.rad;
+        this.rad = 0;
         var amp = 13;
         var stop = setInterval(() => {
             x = Math.cos(this.rad - 1) * amp + this.owner.polygon.pos.x + this.owner.width / 2 - this.width / 2;
