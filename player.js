@@ -122,13 +122,12 @@ class Player extends Monster {
         // Add to main velocity loop
         // Create weapon
 		//////////////////////////////
-        this._weaponAnchor = {x: this.width / 2,y: this.height*0.3};
+        this._weaponAnchor = {x: this.width / 2,y: this.height*0.5};
         let weapon=new Weapon(16, 32);
         map.insert(weapon);
         this.weild(weapon);
 		//////////////////////////
         let OrientWeapon= function(x, y) {
-            this.weapon;
             if (!this.weapon.specialAttack) {
                 this.weapon.facing = this.facing;
                 var pos = {
