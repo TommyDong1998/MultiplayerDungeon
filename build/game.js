@@ -200,10 +200,11 @@ function setLeader(entity){
 	entity.emit("newClass");
     entity._classSetter=setLeader;
 	entity.box(45, 60);
+	entity.sprite='elf';
 	entity.entityClass="leader";
 	entity.stat.hp=20;
 	entity.hp+=14;
-	entity.attack=spinAttack.bind(this);
+	entity.attack=spinAttack.bind(entity);
 }
 
 function setMinie(entity){
@@ -234,8 +235,7 @@ class Projectile extends sword.Entity{
                     if (o.hp && this.owner != o) {
 						hit=true;
                         o.emit('damage', 1, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 400);
+						o.emit('knockback', this, 50);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
@@ -260,7 +260,7 @@ function setWizard(entity){
 	entity.stat.hp=2;
 	entity.hp=2;
 	entity._weaponReach=5;
-	entity.attack=shootProjectile.bind(this,entity,200);
+	entity.attack=shootProjectile.bind(this,entity,250);
 }
 
 
