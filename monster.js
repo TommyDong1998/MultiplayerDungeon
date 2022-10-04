@@ -132,7 +132,7 @@ class Monster extends sword.Entity {
             case "elf":
                 this.box(30, 38);
                 this.sprite = 'elf';
-                this.hp = 6;
+                this.hp = 10;
                 break;
             case "skeleton":
                 this.box(25, 30);
