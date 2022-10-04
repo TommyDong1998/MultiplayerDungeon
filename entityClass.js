@@ -24,8 +24,8 @@ function setWarrior(entity){
     entity._classSetter=setWarrior;
 	entity.entityClass="warrior";
 	entity.box(30, 40);
-	entity.stat.hp=8;
-	entity.hp+=2;
+	entity.stat.hp=12;
+	entity.hp=12;
 	entity.sprite="knight";
 	entity.attack=chargeAttack;
 }
@@ -66,6 +66,8 @@ function setPotionHoard(entity){
 	entity.emit("newClass");
     entity._classSetter=setPotionHoard;
 	entity.entityClass="potionHoard";
+	entity.hp=10;
+	entity.stat.hp=10;
 	entity.healthPotions=3;
 	entity.attack=function(){
 		if (!this.timeout&&entity.healthPotions) {
@@ -133,8 +135,8 @@ function setMinie(entity){
 	entity.box(15, 20);
 	entity.entityClass="Mini_Knight";
 	entity.sprite="knight";
-	entity.stat.hp=2;
-	entity.hp=2;
+	entity.stat.hp=4;
+	entity.hp=4;
 	entity._weaponReach=5;
 	entity.attack=chargeAttack;
 }
@@ -177,8 +179,8 @@ function setWizard(entity){
 	entity.box(30, 40);
 	entity.entityClass="Wizard";
 	entity.sprite="wizard";
-	entity.stat.hp=2;
-	entity.hp=2;
+	entity.stat.hp=4;
+	entity.hp=4;
 	entity._weaponReach=5;
 	entity.attack=shootProjectile.bind(this,entity,250);
 }
