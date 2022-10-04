@@ -200,10 +200,11 @@ function setLeader(entity){
 	entity.emit("newClass");
     entity._classSetter=setLeader;
 	entity.box(45, 60);
+	entity.sprite='elf';
 	entity.entityClass="leader";
 	entity.stat.hp=20;
 	entity.hp+=14;
-	entity.attack=spinAttack.bind(this);
+	entity.attack=spinAttack.bind(entity);
 }
 
 function setMinie(entity){
