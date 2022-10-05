@@ -1011,7 +1011,7 @@ function loadMap(file){
 	
 	world.setMaxListeners(1000);
 	//Stress Tester
-	for(let i=0;i<100;i++){
+	for(let i=0;i<30;i++){
 		var enemy2 = new NPC("minion");
 		enemy2.attackFirst();
 		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
