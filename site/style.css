@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     background: #6e6262;
 }
 canvas{
@@ -132,4 +133,7 @@ img{
     margin:20px 0;
     width: 100%;
     box-sizing: border-box;
+    font-size: 20px;
+    font-weight: bold;
+    color: #191c24
 }
