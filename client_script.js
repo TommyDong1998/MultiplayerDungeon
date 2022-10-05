@@ -18,6 +18,7 @@ var itemsDef=[
 	canvas.height=window.innerHeight;
 	var ctx=canvas.getContext('2d');
 	ctx.imageSmoothingEnabled =false;
+	document.getElementById('shop').style.visibility="hidden";
 	/////Shop
 	document.querySelector("#shop").onclick=()=>{
 		if(document.querySelector("#popmenu").style.visibility!="visible"){
@@ -375,6 +376,7 @@ var itemsDef=[
         	return adjective[Math.floor(Math.random() * adjective.length)] + " " + noun[Math.floor(Math.random() * noun.length)];
     }
 	function startGame(){
+		document.getElementById('shop').style.visibility="visible";
 		pname=document.querySelector('#name').value;
 		socket.send(JSON.stringify({"name":pname}));
 		document.querySelector("#signinBackground").style.display="none";
