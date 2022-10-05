@@ -109,7 +109,7 @@ class Longsword extends Weapon {
                         if (this.specialAttack)
                             o.emit('knockback', this, 600);
                         else
-                            o.emit('knockback', this, 20);
+                            o.emit('knockback', this, 250);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
