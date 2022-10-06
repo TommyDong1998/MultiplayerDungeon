@@ -49,7 +49,6 @@ function clearMap(){
 	map.quadTree.clear();
 }
 function loadMap(file){
-	clearMap();
 	var wall = file.layers[1].data;
 	function getLoc(c, r) {
 		return wall[(r) * file.width + c];
