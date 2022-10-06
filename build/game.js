@@ -46,12 +46,16 @@ var util = {
 var settings;
 var players=[];
 var playersConnected=0;
+
+var loadedMap=false;
 var world = new sword(function(setting, socket) {
     settings = setting;
     socket.on('connection', function connection(ws) {
-		if(playersConnected==0){
-			loadMap(require("./map/level1.json"));
-		}
+        console.log(playersConnected)
+        if(!loadedMap){
+            loadMap(require("./map/level1.json"));
+            loadedMap=true;
+        }
         playersConnected+=1;
         ws.once("message", (data) => {
             try {
@@ -67,6 +71,7 @@ var world = new sword(function(setting, socket) {
                         setTimeout(()=>{
                             if(playersConnected==0){
                                 clearMap();
+                                loadedMap=false;
                             }
                         },5000)
 					});
@@ -961,7 +966,6 @@ function clearMap(){
 	map.quadTree.clear();
 }
 function loadMap(file){
-	clearMap();
 	var wall = file.layers[1].data;
 	function getLoc(c, r) {
 		return wall[(r) * file.width + c];
