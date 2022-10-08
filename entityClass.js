@@ -172,9 +172,10 @@ class Projectile extends sword.Entity{
 						hit=true;
 					}
                 }
-				if(obj.length && hit)
+				if(obj.length && hit){
 					this.emit('remove');
-				clearInterval(spin);
+					clearInterval(spin);
+				}
         });
     }
 }
