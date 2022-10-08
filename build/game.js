@@ -138,7 +138,7 @@ function setWarrior(entity){
 function setVampire(entity){
 	entity.emit("newClass");
     entity._classSetter=setVampire;
-	entity.box(30, 40);
+	entity.box(30, 38);
 	entity.stat.hp=4;
 	entity.entityClass="vampire";
 	entity.sprite="elf"
