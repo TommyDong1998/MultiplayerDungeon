@@ -190,7 +190,6 @@ var itemsDef=[
 		}
 		//lava
 		else if(name==36||name==37||name==38){
-			console.log(name)
 			return [{x:(36%32)*16,y:(Math.trunc(36/32))*16,width:16,height:16},
 			{x:(37%32)*16,y:(Math.trunc(37/32))*16,width:16,height:16},
 			{x:(38%32)*16,y:(Math.trunc(38/32))*16,width:16,height:16}]
@@ -233,7 +232,6 @@ var itemsDef=[
 					info.image = new Image();
 				    info.image.src = info.src;
 				}else if (info.image.complete){
-					console.log(info.image.complete)
 					ctx.drawImage(info.image, sprite.x,sprite.y,sprite.width,sprite.height);
 				}
 			}else{
@@ -406,6 +404,13 @@ var itemsDef=[
 		// Something got killed
 		else if(message.kill){
 			gameMap.remove(message.kill);
+		}
+		else if(message.players){
+			let player="";
+			message.players.forEach((playerName)=>{
+				player+="<div>"+playerName+"</div>";
+			});
+			document.querySelector('#playerList').innerHTML=player;
 		}
 		if (message.removeUpdate){
 			message.removeUpdate.forEach((entity)=>{

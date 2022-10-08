@@ -47,6 +47,19 @@ var settings;
 var players=[];
 var playersConnected=0;
 
+//Send player information to client
+function sendPlayers(){
+    let playersList= players.map((player)=>{
+        return player.playerName;
+    })
+    console.log(playersList)
+    players.forEach((player)=>{
+        player.socket.send(JSON.stringify({
+            players: playersList
+        }));
+    })
+}
+
 var loadedMap=false;
 var world = new sword(function(setting, socket) {
     settings = setting;
@@ -63,12 +76,15 @@ var world = new sword(function(setting, socket) {
                 if (data.name) {
                     var player = new Player(ws, "elf", data.name);
 					players.push(player);
+                    sendPlayers();
 					player.on("remove",()=>{
 						if(players.indexOf(player)!=-1){
 							players.splice(players.indexOf(player),1);
-                            playersConnected-=1
+                            playersConnected-=1;
+                            sendPlayers();
                         }
                         setTimeout(()=>{
+                            console.log(playersConnected)
                             if(playersConnected==0){
                                 clearMap();
                                 loadedMap=false;
