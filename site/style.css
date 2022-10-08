@@ -16,6 +16,7 @@ menu .shopText{
     color:white;
     font-size: 25px;
     text-align: center;
+    width:88px;
 }
 menu #shop .shopChest{
     image-rendering: pixelated;
@@ -24,8 +25,8 @@ menu #shop .shopChest{
     margin-top:15px;
     margin-right:10%;
     background-image:url(images/chest.png);
-    width:100px;
-    height:88px;
+    width:88px;
+    height:77px;
     background-size:contain;
 }
 menu #shop .shopChest:hover{
@@ -136,4 +137,12 @@ img{
     font-size: 20px;
     font-weight: bold;
     color: #191c24
+}
+
+#players{
+    background: rgb(114 114 114 / 50%);
+    margin-top: 20px;
+    padding: 20px;
+    color: white;
+    border-radius: 25px;
 }
