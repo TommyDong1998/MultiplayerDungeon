@@ -261,7 +261,7 @@ class Player extends Monster {
         this.data = this.data || {
             item: []
         };
-        var current = map.findNear(this, 800);
+        var current = map.findNear(this, 700);
         let visibleItems=[];
         const total=[];
         current.forEach((entity) => {
