@@ -147,8 +147,8 @@ class Projectile extends sword.Entity{
     constructor(w, h) {
         super(w, h);
         this.z = 13;
-        this.sprite = 'Dagger';
-        this.setOrigin(8, 24);
+        this.sprite = 'Fireball';
+        this.setOrigin(8, 8);
         this.type.push('weapon');
         world.emit('collision', this);
         world.emit('velocity', this);
@@ -171,6 +171,9 @@ class Projectile extends sword.Entity{
 				if(obj.length && hit)
 					this.emit('remove');
         });
+		setInterval(()=>{
+			this.rotate(12 * Math.PI / 180);
+		},10);
     }
 }
 
@@ -191,7 +194,7 @@ function setWizard(entity){
 function shootProjectile(player,speed){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new Projectile(16,32);
+		let p=new Projectile(16,16);
 		map.insert(p)
 		let pos={
 			x: player.mousePos.x,
@@ -200,8 +203,8 @@ function shootProjectile(player,speed){
 		util.normalize(pos, speed);
 		p.setPosition(player.pos.x,player.pos.y);
 		p.owner=player;
-		p.velocity.x+=pos.x;
-		p.velocity.y+=pos.y;
+		p.velocity.x+=pos.x ;
+		p.velocity.y+=pos.y ;
 		
 		p.rotate(Math.atan2(player.mousePos.y, player.mousePos.x) + 2.5 * Math.PI);
 		setTimeout(()=>{
