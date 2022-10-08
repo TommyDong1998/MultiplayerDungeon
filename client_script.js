@@ -67,7 +67,7 @@ var itemsDef=[
 	}
 	/////
 	var setting={
-		scale:window.innerWidth/512
+		scale:Math.round(window.innerWidth/700)
 	};
 	ctx.scale(setting.scale ,setting.scale);
 	var player;

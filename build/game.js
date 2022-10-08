@@ -278,9 +278,10 @@ class Projectile extends sword.Entity{
 						hit=true;
 					}
                 }
-				if(obj.length && hit)
+				if(obj.length && hit){
 					this.emit('remove');
-				clearInterval(spin);
+					clearInterval(spin);
+				}
         });
     }
 }
@@ -1351,7 +1352,7 @@ class Player extends Monster {
         this.data = this.data || {
             item: []
         };
-        var current = map.findNear(this, 500);
+        var current = map.findNear(this, 800);
         let visibleItems=[];
         const total=[];
         current.forEach((entity) => {
