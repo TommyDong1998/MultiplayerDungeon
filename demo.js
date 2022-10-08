@@ -48,17 +48,24 @@ var players=[];
 var playersConnected=0;
 
 //Send player information to client
-function sendPlayers(){
-    let playersList= players.map((player)=>{
+function updateGoldRank(){
+    let playersList= players.sort((a,b)=>{
+        return b.gold - a.gold;
+    })
+    playersList= playersList.map((player)=>{
         return player.playerName;
     })
-    console.log(playersList)
     players.forEach((player)=>{
         player.socket.send(JSON.stringify({
             players: playersList
         }));
     })
 }
+
+//Upgrade gold rankings every 5 seconds
+setInterval(()=>{
+    updateGoldRank();
+},5000);
 
 var loadedMap=false;
 var world = new sword(function(setting, socket) {
@@ -76,15 +83,13 @@ var world = new sword(function(setting, socket) {
                 if (data.name) {
                     var player = new Player(ws, "elf", data.name);
 					players.push(player);
-                    sendPlayers();
+                    updateGoldRank();
 					player.on("remove",()=>{
 						if(players.indexOf(player)!=-1){
 							players.splice(players.indexOf(player),1);
                             playersConnected-=1;
-                            sendPlayers();
                         }
                         setTimeout(()=>{
-                            console.log(playersConnected)
                             if(playersConnected==0){
                                 clearMap();
                                 loadedMap=false;

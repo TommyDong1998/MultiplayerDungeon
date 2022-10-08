@@ -407,8 +407,10 @@ var itemsDef=[
 		}
 		else if(message.players){
 			let player="";
+			let rank=1;
 			message.players.forEach((playerName)=>{
-				player+="<div>"+playerName+"</div>";
+				player+="<div>#"+rank+" "+playerName+"</div>";
+				rank+=1;
 			});
 			document.querySelector('#playerList').innerHTML=player;
 		}
