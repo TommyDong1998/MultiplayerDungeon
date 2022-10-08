@@ -64,14 +64,14 @@ var loadedMap=false;
 var world = new sword(function(setting, socket) {
     settings = setting;
     socket.on('connection', function connection(ws) {
-        console.log(playersConnected)
-        if(!loadedMap){
-            loadMap(require("./map/level1.json"));
-            loadedMap=true;
-        }
-        playersConnected+=1;
         ws.once("message", (data) => {
             try {
+                if(!loadedMap){
+                    loadMap(require("./map/level1.json"));
+                    loadedMap=true;
+                }
+                playersConnected+=1;
+                
                 data = JSON.parse(data);
                 if (data.name) {
                     var player = new Player(ws, "elf", data.name);
