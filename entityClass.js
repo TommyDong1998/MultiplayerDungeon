@@ -152,6 +152,10 @@ class Projectile extends sword.Entity{
         this.type.push('weapon');
         world.emit('collision', this);
         world.emit('velocity', this);
+		let spin=setInterval(()=>{
+			this.rotate(12 * Math.PI / 180);
+		},16);
+
         this.on('collide', (obj) => {
                 //Can attack many at same time
 				let hit=false;
@@ -170,10 +174,8 @@ class Projectile extends sword.Entity{
                 }
 				if(obj.length && hit)
 					this.emit('remove');
+				clearInterval(spin);
         });
-		setInterval(()=>{
-			this.rotate(12 * Math.PI / 180);
-		},10);
     }
 }
 
