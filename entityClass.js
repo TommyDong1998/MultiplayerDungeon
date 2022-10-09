@@ -214,7 +214,7 @@ function shootProjectile(player,speed){
 			if(p){
 				p.emit('remove');
 			}
-		},1500)
+		},1000)
 		setTimeout(()=>{
 			this.timeout=false;
 		},500);
