@@ -138,8 +138,8 @@ function setWarrior(entity){
 function setVampire(entity){
 	entity.emit("newClass");
     entity._classSetter=setVampire;
-	entity.box(30, 40);
-	entity.stat.hp=8;
+	entity.box(30, 38);
+	entity.stat.hp=4;
 	entity.entityClass="vampire";
 	entity.sprite="elf"
 	entity.attack=function(){
@@ -254,7 +254,7 @@ class Projectile extends sword.Entity{
         super(w, h);
         this.z = 13;
         this.sprite = 'Fireball';
-        this.setOrigin(16, 16);
+        this.setOrigin(8, 8);
         this.type.push('weapon');
         world.emit('collision', this);
         world.emit('velocity', this);
@@ -278,9 +278,10 @@ class Projectile extends sword.Entity{
 						hit=true;
 					}
                 }
-				if(obj.length && hit)
+				if(obj.length && hit){
 					this.emit('remove');
-				clearInterval(spin);
+					clearInterval(spin);
+				}
         });
     }
 }
@@ -292,8 +293,8 @@ function setWizard(entity){
 	entity.box(30, 40);
 	entity.entityClass="Wizard";
 	entity.sprite="wizard";
-	entity.stat.hp=6;
-	entity.hp=6;
+	entity.stat.hp=4;
+	entity.hp=4;
 	entity._weaponReach=5;
 	entity.attack=shootProjectile.bind(this,entity,250);
 }
@@ -302,7 +303,7 @@ function setWizard(entity){
 function shootProjectile(player,speed){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new Projectile(32,32);
+		let p=new Projectile(16,16);
 		map.insert(p)
 		let pos={
 			x: player.mousePos.x,
@@ -319,7 +320,7 @@ function shootProjectile(player,speed){
 			if(p){
 				p.emit('remove');
 			}
-		},1500)
+		},1000)
 		setTimeout(()=>{
 			this.timeout=false;
 		},500);
@@ -669,35 +670,6 @@ class Greatsword extends Weapon {
         });
     }
 }
-class GlassSword extends Weapon {
-    constructor() {
-        super(22, 54);
-        this.z = 13;
-        this.sprite = 'GlassSword';
-        this.setOrigin(11, 54);
-        this.type.push('weapon');
-        this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        o.emit('damage', 2, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 600);
-                        else
-                            o.emit('knockback', this, 300);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 300);
-                    }
-                }
-            }
-        });
-    }
-}
 class Barrier extends Weapon {
     constructor() {
         super(64, 64);
@@ -719,11 +691,11 @@ class Barrier extends Weapon {
                         if (this.specialAttack)
                             o.emit('knockback', this, 300);
                         else
-                            o.emit('knockback', this, 20);
+                            o.emit('knockback', this, 30);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
-                        }, 20);
+                        }, 30);
                     }
                 }
             }
@@ -749,8 +721,8 @@ class Barrier extends Weapon {
             if (!this.timeout) {
                 player.timeout = true;
                 player.damageFree = true;
-                this.setOrigin(64, 64);
-                this.box(128,128);
+                this.setOrigin(40, 40);
+                this.box(80,80);
                 setTimeout(()=>{                
                     this.box(64,64);
                     this.setOrigin(32, 32);
@@ -758,7 +730,7 @@ class Barrier extends Weapon {
                     setTimeout(()=>{
                         player.timeout=false;
                     },1500);
-                },1000);
+                },1000)
             }
         }
     }
@@ -782,7 +754,7 @@ class HalfBarrier extends Weapon {
                         else
                             o.emit('damage', 0, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 100);
+                            o.emit('knockback', this, 50);
                         else
                             o.emit('knockback', this, 50);
                         this.attack = false;
@@ -827,12 +799,8 @@ class Bullet extends sword.Entity {
                 for (let o of obj) {
                     if (o.hp && !(o instanceof NPC)) {
                         o.emit('damage', 1, this);
-                        o.emit('knockback', this, 150);
                     }
-                    else {
-                        o.emit('knockback', this, 75);
-                    }
-
+                    o.emit('knockback', this, 150);
                 }
                 attack = false;
                 setTimeout(() => {
@@ -1222,16 +1190,6 @@ var shop_items = {
         cost:15,
         add:function(player){
             setWizard(player);
-        }
-    },
-    GlassSword:{
-        cost:64,
-        add:function(player){
-            player.weapon.emit("remove");
-            var weapon = new GlassSword();
-            weapon.owner = player;
-            map.insert(weapon);
-            player.weild(weapon);
         }
     }
 };

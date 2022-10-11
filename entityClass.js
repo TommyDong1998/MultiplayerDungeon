@@ -32,8 +32,8 @@ function setWarrior(entity){
 function setVampire(entity){
 	entity.emit("newClass");
     entity._classSetter=setVampire;
-	entity.box(30, 40);
-	entity.stat.hp=8;
+	entity.box(30, 38);
+	entity.stat.hp=4;
 	entity.entityClass="vampire";
 	entity.sprite="elf"
 	entity.attack=function(){
@@ -148,7 +148,7 @@ class Projectile extends sword.Entity{
         super(w, h);
         this.z = 13;
         this.sprite = 'Fireball';
-        this.setOrigin(16, 16);
+        this.setOrigin(8, 8);
         this.type.push('weapon');
         world.emit('collision', this);
         world.emit('velocity', this);
@@ -172,9 +172,10 @@ class Projectile extends sword.Entity{
 						hit=true;
 					}
                 }
-				if(obj.length && hit)
+				if(obj.length && hit){
 					this.emit('remove');
-				clearInterval(spin);
+					clearInterval(spin);
+				}
         });
     }
 }
@@ -186,8 +187,8 @@ function setWizard(entity){
 	entity.box(30, 40);
 	entity.entityClass="Wizard";
 	entity.sprite="wizard";
-	entity.stat.hp=6;
-	entity.hp=6;
+	entity.stat.hp=4;
+	entity.hp=4;
 	entity._weaponReach=5;
 	entity.attack=shootProjectile.bind(this,entity,250);
 }
@@ -196,7 +197,7 @@ function setWizard(entity){
 function shootProjectile(player,speed){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new Projectile(32,32);
+		let p=new Projectile(16,16);
 		map.insert(p)
 		let pos={
 			x: player.mousePos.x,
@@ -213,7 +214,7 @@ function shootProjectile(player,speed){
 			if(p){
 				p.emit('remove');
 			}
-		},1500)
+		},1000)
 		setTimeout(()=>{
 			this.timeout=false;
 		},500);
