@@ -152,6 +152,35 @@ class Greatsword extends Weapon {
         });
     }
 }
+class GlassSword extends Weapon {
+    constructor() {
+        super(22, 54);
+        this.z = 13;
+        this.sprite = 'GlassSword';
+        this.setOrigin(11, 54);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        o.emit('damage', 2, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 600);
+                        else
+                            o.emit('knockback', this, 300);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }
+                }
+            }
+        });
+    }
+}
 class Barrier extends Weapon {
     constructor() {
         super(64, 64);
@@ -173,11 +202,11 @@ class Barrier extends Weapon {
                         if (this.specialAttack)
                             o.emit('knockback', this, 300);
                         else
-                            o.emit('knockback', this, 30);
+                            o.emit('knockback', this, 20);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
-                        }, 30);
+                        }, 20);
                     }
                 }
             }
@@ -203,8 +232,8 @@ class Barrier extends Weapon {
             if (!this.timeout) {
                 player.timeout = true;
                 player.damageFree = true;
-                this.setOrigin(40, 40);
-                this.box(80,80);
+                this.setOrigin(64, 64);
+                this.box(128,128);
                 setTimeout(()=>{                
                     this.box(64,64);
                     this.setOrigin(32, 32);
@@ -212,7 +241,7 @@ class Barrier extends Weapon {
                     setTimeout(()=>{
                         player.timeout=false;
                     },1500);
-                },1000)
+                },1000);
             }
         }
     }
@@ -236,7 +265,7 @@ class HalfBarrier extends Weapon {
                         else
                             o.emit('damage', 0, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 50);
+                            o.emit('knockback', this, 100);
                         else
                             o.emit('knockback', this, 50);
                         this.attack = false;

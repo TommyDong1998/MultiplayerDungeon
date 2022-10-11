@@ -10,7 +10,8 @@ var itemsDef=[
 	{name:"Barrier",description:"You can use forcefield but it disable your attack.",cost:20,rarity:0},
 	{name:"Greatsword",description:"Make swords great again.",cost:24,rarity:0},
 	{name:"HalfBarrier",description:"Its Like a forcefield but not all the way.",cost:12,rarity:0},
-	{name:"Wizard",description:"Long ranged attack",cost:15,rarity:0}
+	{name:"Wizard",description:"Long ranged attack",cost:15,rarity:0},
+	{name:"GlassSword",description:"A stupidly overpowered sword made of 'Glass'.",cost:64,rarity:0}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
@@ -67,7 +68,7 @@ var itemsDef=[
 	}
 	/////
 	var setting={
-		scale:window.innerWidth/512
+		scale:window.innerWidth/700
 	};
 	ctx.scale(setting.scale ,setting.scale);
 	var player;

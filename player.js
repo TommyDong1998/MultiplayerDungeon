@@ -100,6 +100,16 @@ var shop_items = {
         add:function(player){
             setWizard(player);
         }
+    },
+    GlassSword:{
+        cost:64,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new GlassSword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     }
 };
 
@@ -261,7 +271,7 @@ class Player extends Monster {
         this.data = this.data || {
             item: []
         };
-        var current = map.findNear(this, 500);
+        var current = map.findNear(this, 700);
         let visibleItems=[];
         const total=[];
         current.forEach((entity) => {

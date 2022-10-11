@@ -186,8 +186,8 @@ function setWizard(entity){
 	entity.box(30, 40);
 	entity.entityClass="Wizard";
 	entity.sprite="wizard";
-	entity.stat.hp=4;
-	entity.hp=4;
+	entity.stat.hp=6;
+	entity.hp=6;
 	entity._weaponReach=5;
 	entity.attack=shootProjectile.bind(this,entity,250);
 }
