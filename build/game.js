@@ -139,7 +139,7 @@ function setVampire(entity){
 	entity.emit("newClass");
     entity._classSetter=setVampire;
 	entity.box(30, 40);
-	entity.stat.hp=4;
+	entity.stat.hp=8;
 	entity.entityClass="vampire";
 	entity.sprite="elf"
 	entity.attack=function(){
@@ -254,7 +254,7 @@ class Projectile extends sword.Entity{
         super(w, h);
         this.z = 13;
         this.sprite = 'Fireball';
-        this.setOrigin(8, 8);
+        this.setOrigin(16, 16);
         this.type.push('weapon');
         world.emit('collision', this);
         world.emit('velocity', this);
@@ -302,7 +302,7 @@ function setWizard(entity){
 function shootProjectile(player,speed){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new Projectile(16,16);
+		let p=new Projectile(32,32);
 		map.insert(p)
 		let pos={
 			x: player.mousePos.x,
