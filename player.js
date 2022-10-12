@@ -100,6 +100,16 @@ var shop_items = {
         add:function(player){
             setWizard(player);
         }
+    },
+    GlassSword:{
+        cost:64,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new GlassSword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     }
 };
 

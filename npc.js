@@ -7,8 +7,12 @@ class NPC extends Monster {
                 for (let o of obj) {
                     if (o.hp && !(o instanceof NPC)) {
                         o.emit('damage', 1, this);
+                        o.emit('knockback', this, 150);
                     }
-                    o.emit('knockback', this, 150);
+                    else {
+                        o.emit('knockback', this, 75);
+                    }
+
                 }
                 attack = false;
                 setTimeout(() => {
