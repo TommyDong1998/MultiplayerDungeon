@@ -1,16 +1,17 @@
 var itemsDef=[
-	{name:"Sword",description:"A little longer.Moderate chance of doing double damage!",cost:6,rarity:0},
-	{name:"Dagger",description:"Very short. Little knockback. Increased gold chance!",cost:5,rarity:0},
-	{name:"Warrior",description:"Extra health. Invincible charge special attack!",cost:15,rarity:0},
-	{name:"Vampire",description:"Doing damage heals you!",cost:20,rarity:1},
-	{name:"Human Leader",description:"Giant among men. Clearly the leader!",cost:20,rarity:1},
-	{name:"Potion Hoarder",description:"You can now hoard potions. Get 1 potion every 20 seconds!",cost:15,rarity:0},
-	{name:"Longsword",description:"The Sword of the Superior Swordsman.",cost:12,rarity:0},
-	{name:"Mini Knight",description:"The strongest, tinist warrior alive.",cost:15,rarity:0},
-	{name:"Barrier",description:"You can use forcefield but it disable your attack.",cost:20,rarity:0},
-	{name:"Greatsword",description:"Make swords great again.",cost:24,rarity:0},
-	{name:"HalfBarrier",description:"Its Like a forcefield but not all the way.",cost:12,rarity:0},
-	{name:"Wizard",description:"Long ranged attack",cost:15,rarity:0}
+	{name:"Sword",			description:"A little longer.Moderate chance of doing double damage!",						cost:6,		rarity:0},
+	{name:"Dagger",			description:"Very short. Little knockback. Increased gold chance!",							cost:5,		rarity:0},
+	{name:"Warrior",		description:"Extra health. Invincible charge special attack!",								cost:15,	rarity:0},
+	{name:"Vampire",		description:"Doing damage heals you!",														cost:20,	rarity:1},
+	{name:"Human Leader",	description:"Giant among men. Clearly the leader!",											cost:20,	rarity:1},
+	{name:"Potion Hoarder",	description:"You can now hoard potions. Get 1 potion every 20 seconds!",					cost:15,	rarity:0},
+	{name:"Longsword",		description:"The Sword of the Superior Swordsman.",											cost:12,	rarity:0},
+	{name:"Mini Knight",	description:"The strongest, tinist warrior alive.",											cost:15,	rarity:0},
+	{name:"Barrier",		description:"You can use forcefield but it disable your attack.",							cost:20,	rarity:0},
+	{name:"Greatsword",		description:"Make swords great again.",														cost:24,	rarity:0},
+	{name:"HalfBarrier",	description:"Its Like a forcefield but not all the way.",									cost:12,	rarity:0},
+	{name:"Wizard",			description:"Long ranged attack",															cost:15,	rarity:0},
+	{name:"GlassSword",		description:"Good lord a sovereign sword!",													cost:32,	rarity:0}
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
@@ -342,17 +343,30 @@ var itemsDef=[
 			//Draw hp
 			for(var x=0;x<(player.sprite.maxHP/2);x++){
 				//If still have 2 more hearts to draw
-				if((x+1)*2 <=player.sprite.hp)
-				util.drawSprite(loadSprite(530),{x:10+32*x,y:10,width:32,height:32});
-				//If 2 is too much
-				else if(player.sprite.hp%2&&player.sprite.hp-(x)*2>0)
-					util.drawSprite(loadSprite(531),{x:10+32*x,y:10,width:32,height:32});
-				else
-					util.drawSprite(loadSprite(532),{x:10+32*x,y:10,width:32,height:32});
+				if(x>=10){
+					if((x+1)*2 <=player.sprite.hp)
+						util.drawSprite(loadSprite(530),{x:26*x-243,y:15,width:26,height:26});
+					
+						//If 2 is too much
+					else if(player.sprite.hp%2&&player.sprite.hp-(x)*2>0)
+						util.drawSprite(loadSprite(531),{x:26*x-243,y:15,width:26,height:26});
+					else
+						util.drawSprite(loadSprite(532),{x:26*x-243,y:15,width:26,height:26});
+				}
+				else{
+					if((x+1)*2 <=player.sprite.hp)
+						util.drawSprite(loadSprite(530),{x:4+26*x,y:2,width:26,height:26});
+					
+						//If 2 is too much
+					else if(player.sprite.hp%2&&player.sprite.hp-(x)*2>0)
+						util.drawSprite(loadSprite(531),{x:4+26*x,y:2,width:26,height:26});
+					else
+						util.drawSprite(loadSprite(532),{x:4+26*x,y:2,width:26,height:26});
+				}
 			}
 			//Draw potion
 			for(var x=0;x<(player.sprite.potion);x++){
-					util.drawSprite(loadSprite("HealthPotion"),{x:150+30*x,y:16,width:16,height:22});
+					util.drawSprite(loadSprite("HealthPotion"),{x:6+18*x,y:44,width:16,height:22});
 			}
 			
 			//Display team

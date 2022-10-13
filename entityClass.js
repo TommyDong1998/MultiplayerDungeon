@@ -23,18 +23,27 @@ function setWarrior(entity){
 	entity.emit("newClass");
     entity._classSetter=setWarrior;
 	entity.entityClass="warrior";
-	entity.box(30, 40);
-	entity.stat.hp=12;
-	entity.hp=12;
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};	
+	entity.stat.hp=14;
+	entity.hp=14;
+	entity._weaponReach=10;
 	entity.sprite="knight";
 	entity.attack=chargeAttack;
 }
 function setVampire(entity){
 	entity.emit("newClass");
-    entity._classSetter=setVampire;
-	entity.box(30, 38);
-	entity.stat.hp=4;
+    entity._classSetter=setVampire;	
 	entity.entityClass="vampire";
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width / 2,y: entity.height/2};
+	entity.stat.hp=12;
+	entity.hp=12;
+	entity._weaponReach=10;
 	entity.sprite="elf"
 	entity.attack=function(){
 		if (!this.timeout) {
@@ -68,8 +77,13 @@ function setPotionHoard(entity){
 	entity.emit("newClass");
     entity._classSetter=setPotionHoard;
 	entity.entityClass="potionHoard";
-	entity.hp=10;
-	entity.stat.hp=10;
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
+	entity.stat.hp=40;
+	entity.hp=40;
+	entity._weaponReach=10;
 	entity.healthPotions=3;
 	entity.attack=function(){
 		if (!this.timeout&&entity.healthPotions) {
@@ -122,36 +136,46 @@ function spinAttack()
 
 function setLeader(entity){
 	entity.emit("newClass");
-    entity._classSetter=setLeader;
-	entity.box(45, 60);
-	entity.sprite='elf';
+    entity._classSetter=setLeader;	
 	entity.entityClass="leader";
+	entity.width=45;
+	entity.height=60;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
+	entity.sprite='elf';
 	entity.stat.hp=20;
-	entity.hp+=14;
+	entity.hp=20;
+	entity._weaponReach=20;
 	entity.attack=spinAttack.bind(entity);
 }
 
 function setMinie(entity){
 	entity.emit("newClass");
-    entity._classSetter=setMinie;
-	entity.box(15, 20);
+    entity._classSetter=setMinie;	
 	entity.entityClass="Mini_Knight";
+	entity.width=15;
+	entity.height=20;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity.sprite="knight";
-	entity.stat.hp=4;
-	entity.hp=4;
-	entity._weaponReach=5;
+	entity.stat.hp=8;
+	entity.hp=8;
+	entity._weaponReach=10;
 	entity.attack=chargeAttack;
 }
 
 function setWizard(entity){
 	entity.emit("newClass");
     entity._classSetter=setWizard;
-	entity.box(30, 40);
 	entity.entityClass="Wizard";
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity.sprite="wizard";
-	entity.stat.hp=4;
-	entity.hp=4;
-	entity._weaponReach=5;
+	entity.stat.hp=10;
+	entity.hp=10;
+	entity._weaponReach=10;
 	entity.attack=shootProjectile.bind(this,entity,{
 		x: entity.mousePos.x,
 		y: entity.mousePos.y

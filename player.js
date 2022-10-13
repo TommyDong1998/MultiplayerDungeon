@@ -102,7 +102,7 @@ var shop_items = {
         }
     },
     GlassSword:{
-        cost:64,
+        cost:32,
         add:function(player){
             player.weapon.emit("remove");
             var weapon = new GlassSword();
@@ -155,7 +155,7 @@ class Player extends Monster {
             world.removeListener('nextFrame',OrientWeapon);
         });
 
-        this._gold = 30;
+        this._gold = 60;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
