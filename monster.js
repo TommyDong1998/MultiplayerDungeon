@@ -68,7 +68,7 @@ class Monster extends sword.Entity {
                 });
             }
         });
-        this.drops=[[Potion.bind(null,"HealthPotion"),0.5], [Coin,0.7]]
+        this.drops=[[Potion.bind(null,"HealthPotion"),0.1], [Coin,0.7]]
         //When this get attacked
         this.on('damage', (amt, obj) => {
             if (this.damageFree)

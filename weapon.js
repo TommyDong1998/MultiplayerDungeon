@@ -6,7 +6,7 @@ class Weapon extends sword.Entity {
         super(w, h);
         this.z = 13;
         this.sprite = 'Dagger';
-        this.setOrigin(8, 24);
+        this.setOrigin(8, 32);
         this.type.push('weapon');
         world.emit('collision', this);
         this.attack = true;
@@ -61,7 +61,7 @@ class Sword extends Weapon {
         super(20, 40);
         this.z = 13;
         this.sprite = 'Sword';
-        this.setOrigin(10, 32);
+        this.setOrigin(10, 40);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -93,7 +93,7 @@ class Longsword extends Weapon {
         super(20, 44);
         this.z = 13;
         this.sprite = 'Longsword';
-        this.setOrigin(10, 34);
+        this.setOrigin(10, 44);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -125,7 +125,7 @@ class Greatsword extends Weapon {
         super(24, 48);
         this.z = 13;
         this.sprite = 'Greatsword';
-        this.setOrigin(12, 42);
+        this.setOrigin(12, 48);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -251,7 +251,7 @@ class HalfBarrier extends Weapon {
         super(64, 32);
         this.z = 13;
         this.sprite = 'HalfBarrier';
-        this.setOrigin(32, 28);
+        this.setOrigin(32, 32);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -286,7 +286,7 @@ class Dagger extends Weapon {
         super(16, 32);
         this.z = 13;
         this.sprite = 'Dagger';
-        this.setOrigin(8, 24);
+        this.setOrigin(8, 32);
         this.type.push('weapon');
         this.attack = true;
         this.goldBoost = 1;

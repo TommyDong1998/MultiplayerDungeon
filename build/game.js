@@ -191,18 +191,27 @@ function setWarrior(entity){
 	entity.emit("newClass");
     entity._classSetter=setWarrior;
 	entity.entityClass="warrior";
-	entity.box(30, 40);
-	entity.stat.hp=12;
-	entity.hp=12;
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};	
+	entity.stat.hp=14;
+	entity.hp=14;
+	entity._weaponReach=10;
 	entity.sprite="knight";
 	entity.attack=chargeAttack;
 }
 function setVampire(entity){
 	entity.emit("newClass");
-    entity._classSetter=setVampire;
-	entity.box(30, 38);
-	entity.stat.hp=4;
+    entity._classSetter=setVampire;	
 	entity.entityClass="vampire";
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width / 2,y: entity.height/2};
+	entity.stat.hp=12;
+	entity.hp=12;
+	entity._weaponReach=10;
 	entity.sprite="elf"
 	entity.attack=function(){
 		if (!this.timeout) {
@@ -236,8 +245,13 @@ function setPotionHoard(entity){
 	entity.emit("newClass");
     entity._classSetter=setPotionHoard;
 	entity.entityClass="potionHoard";
-	entity.hp=10;
-	entity.stat.hp=10;
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
+	entity.stat.hp=40;
+	entity.hp=40;
+	entity._weaponReach=10;
 	entity.healthPotions=3;
 	entity.attack=function(){
 		if (!this.timeout&&entity.healthPotions) {
@@ -290,36 +304,46 @@ function spinAttack()
 
 function setLeader(entity){
 	entity.emit("newClass");
-    entity._classSetter=setLeader;
-	entity.box(45, 60);
-	entity.sprite='elf';
+    entity._classSetter=setLeader;	
 	entity.entityClass="leader";
+	entity.width=45;
+	entity.height=60;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
+	entity.sprite='elf';
 	entity.stat.hp=20;
-	entity.hp+=14;
+	entity.hp=20;
+	entity._weaponReach=20;
 	entity.attack=spinAttack.bind(entity);
 }
 
 function setMinie(entity){
 	entity.emit("newClass");
-    entity._classSetter=setMinie;
-	entity.box(15, 20);
+    entity._classSetter=setMinie;	
 	entity.entityClass="Mini_Knight";
+	entity.width=15;
+	entity.height=20;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity.sprite="knight";
-	entity.stat.hp=4;
-	entity.hp=4;
-	entity._weaponReach=5;
+	entity.stat.hp=8;
+	entity.hp=8;
+	entity._weaponReach=10;
 	entity.attack=chargeAttack;
 }
 
 function setWizard(entity){
 	entity.emit("newClass");
     entity._classSetter=setWizard;
-	entity.box(30, 40);
 	entity.entityClass="Wizard";
+	entity.width=30;
+	entity.height=40;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity.sprite="wizard";
-	entity.stat.hp=4;
-	entity.hp=4;
-	entity._weaponReach=5;
+	entity.stat.hp=10;
+	entity.hp=10;
+	entity._weaponReach=10;
 	entity.attack=shootProjectile.bind(this,entity,{
 		x: entity.mousePos.x,
 		y: entity.mousePos.y
@@ -400,7 +424,7 @@ class Monster extends sword.Entity {
                 });
             }
         });
-        this.drops=[[Potion.bind(null,"HealthPotion"),0.5], [Coin,0.7]]
+        this.drops=[[Potion.bind(null,"HealthPotion"),0.1], [Coin,0.7]]
         //When this get attacked
         this.on('damage', (amt, obj) => {
             if (this.damageFree)
@@ -524,7 +548,7 @@ class Weapon extends sword.Entity {
         super(w, h);
         this.z = 13;
         this.sprite = 'Dagger';
-        this.setOrigin(8, 24);
+        this.setOrigin(8, 32);
         this.type.push('weapon');
         world.emit('collision', this);
         this.attack = true;
@@ -579,7 +603,7 @@ class Sword extends Weapon {
         super(20, 40);
         this.z = 13;
         this.sprite = 'Sword';
-        this.setOrigin(10, 32);
+        this.setOrigin(10, 40);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -611,7 +635,7 @@ class Longsword extends Weapon {
         super(20, 44);
         this.z = 13;
         this.sprite = 'Longsword';
-        this.setOrigin(10, 34);
+        this.setOrigin(10, 44);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -643,7 +667,7 @@ class Greatsword extends Weapon {
         super(24, 48);
         this.z = 13;
         this.sprite = 'Greatsword';
-        this.setOrigin(12, 42);
+        this.setOrigin(12, 48);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -769,7 +793,7 @@ class HalfBarrier extends Weapon {
         super(64, 32);
         this.z = 13;
         this.sprite = 'HalfBarrier';
-        this.setOrigin(32, 28);
+        this.setOrigin(32, 32);
         this.type.push('weapon');
         this.attack = true;
         this.removeAllListeners('collide');
@@ -804,7 +828,7 @@ class Dagger extends Weapon {
         super(16, 32);
         this.z = 13;
         this.sprite = 'Dagger';
-        this.setOrigin(8, 24);
+        this.setOrigin(8, 32);
         this.type.push('weapon');
         this.attack = true;
         this.goldBoost = 1;
@@ -1226,7 +1250,7 @@ var shop_items = {
         }
     },
     GlassSword:{
-        cost:64,
+        cost:32,
         add:function(player){
             player.weapon.emit("remove");
             var weapon = new GlassSword();
@@ -1279,7 +1303,7 @@ class Player extends Monster {
             world.removeListener('nextFrame',OrientWeapon);
         });
 
-        this._gold = 30;
+        this._gold = 60;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
@@ -1547,8 +1571,10 @@ class Potion extends sword.Entity {
         this.on('collide', (obj) => {
             for (let o of obj) {
                 if (o instanceof Player) {
-                    if (o.hp < o.stat.hp)
-                        o.hp += 1;
+                    if (o.hp < o.stat.hp-3)
+                        o.hp += 4;
+                    else if (o.hp < o.stat.hp)
+                        o.hp = o.stat.hp;
 					else if(o.entityClass=="potionHoard"){
 						o.healthPotions++;
 					}

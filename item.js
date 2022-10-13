@@ -10,8 +10,10 @@ class Potion extends sword.Entity {
         this.on('collide', (obj) => {
             for (let o of obj) {
                 if (o instanceof Player) {
-                    if (o.hp < o.stat.hp)
-                        o.hp += 1;
+                    if (o.hp < o.stat.hp-3)
+                        o.hp += 4;
+                    else if (o.hp < o.stat.hp)
+                        o.hp = o.stat.hp;
 					else if(o.entityClass=="potionHoard"){
 						o.healthPotions++;
 					}
