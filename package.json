@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node build/game.js",
     "build_site": "uglifyjs client_script.js -m -o site/client_script.js",
-    "build_windows": "type demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
-    "build_linux": "cat demo.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
+    "build_windows": "type demo.js projectiles.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
+    "build_linux": "cat demo.js projectiles.js entityClass.js  monster.js weapon.js npc.js level.js player.js item.js > build/game.js",
     "build": "npm run build_site && npm run build_windows"
   },
   "dependencies": {
