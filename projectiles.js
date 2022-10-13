@@ -33,24 +33,24 @@ class Projectile extends sword.Entity{
 				}
         });
     }
+    setSpeed(direction,speed){
+		util.normalize(direction, speed);
+		this.velocity.x+=direction.x ;
+		this.velocity.y+=direction.y ;
+    }
 }
 
-function shootProjectile(player,speed){
+function shootProjectile(entity,direction,speed){
 	if (!this.timeout) {
 		this.timeout = true;
 		let p=new Projectile(16,16);
 		map.insert(p)
-		let pos={
-			x: player.mousePos.x,
-			y: player.mousePos.y
-		}
-		util.normalize(pos, speed);
-		p.setPosition(player.pos.x,player.pos.y);
-		p.owner=player;
-		p.velocity.x+=pos.x ;
-		p.velocity.y+=pos.y ;
-		
-		p.rotate(Math.atan2(player.mousePos.y, player.mousePos.x) + 2.5 * Math.PI);
+        
+        p.setSpeed(direction,speed);
+		p.setPosition(entity.pos.x,entity.pos.y);
+		p.owner=entity;
+
+		p.rotate(Math.atan2(direction.y, direction.x) + 2.5 * Math.PI);
 		setTimeout(()=>{
 			if(p){
 				p.emit('remove');
