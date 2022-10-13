@@ -152,7 +152,10 @@ function setWizard(entity){
 	entity.stat.hp=4;
 	entity.hp=4;
 	entity._weaponReach=5;
-	entity.attack=shootProjectile.bind(this,entity,250);
+	entity.attack=shootProjectile.bind(this,entity,{
+		x: entity.mousePos.x,
+		y: entity.mousePos.y
+	},250);
 }
 
 

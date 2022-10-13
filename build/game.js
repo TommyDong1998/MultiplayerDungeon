@@ -104,7 +104,69 @@ var world = new sword(function(setting, socket) {
     });
 },httpServer);
 world.setMaxListeners(100);
-var map = new sword.GameMap(world, settings.width, settings.height);function chargeAttack(){
+var map = new sword.GameMap(world, settings.width, settings.height);class Projectile extends sword.Entity{
+    constructor(w, h) {
+        super(w, h);
+        this.z = 13;
+        this.sprite = 'Fireball';
+        this.setOrigin(8, 8);
+        this.type.push('weapon');
+        world.emit('collision', this);
+        world.emit('velocity', this);
+		let spin=setInterval(()=>{
+			this.rotate(12 * Math.PI / 180);
+		},16);
+
+        this.on('collide', (obj) => {
+                //Can attack many at same time
+				let hit=false;
+                for (let o of obj) {
+                    if (o.hp && this.owner != o) {
+						hit=true;
+                        o.emit('damage', 1, this);
+						o.emit('knockback', this, 50);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }else if(o.type.includes('solid')){
+						hit=true;
+					}
+                }
+				if(obj.length && hit){
+					this.emit('remove');
+					clearInterval(spin);
+				}
+        });
+    }
+    setSpeed(direction,speed){
+		util.normalize(direction, speed);
+		this.velocity.x+=direction.x ;
+		this.velocity.y+=direction.y ;
+    }
+}
+
+function shootProjectile(entity,direction,speed){
+	if (!this.timeout) {
+		this.timeout = true;
+		let p=new Projectile(16,16);
+		map.insert(p)
+        
+        p.setSpeed(direction,speed);
+		p.setPosition(entity.pos.x,entity.pos.y);
+		p.owner=entity;
+
+		p.rotate(Math.atan2(direction.y, direction.x) + 2.5 * Math.PI);
+		setTimeout(()=>{
+			if(p){
+				p.emit('remove');
+			}
+		},1000)
+		setTimeout(()=>{
+			this.timeout=false;
+		},500);
+	}
+}function chargeAttack(){
 	if (!this.timeout) {
 		this.timeout = true;
 		var pos = {
@@ -249,44 +311,6 @@ function setMinie(entity){
 	entity.attack=chargeAttack;
 }
 
-class Projectile extends sword.Entity{
-    constructor(w, h) {
-        super(w, h);
-        this.z = 13;
-        this.sprite = 'Fireball';
-        this.setOrigin(8, 8);
-        this.type.push('weapon');
-        world.emit('collision', this);
-        world.emit('velocity', this);
-		let spin=setInterval(()=>{
-			this.rotate(12 * Math.PI / 180);
-		},16);
-
-        this.on('collide', (obj) => {
-                //Can attack many at same time
-				let hit=false;
-                for (let o of obj) {
-                    if (o.hp && this.owner != o) {
-						hit=true;
-                        o.emit('damage', 1, this);
-						o.emit('knockback', this, 50);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 300);
-                    }else if(o.type.includes('solid')){
-						hit=true;
-					}
-                }
-				if(obj.length && hit){
-					this.emit('remove');
-					clearInterval(spin);
-				}
-        });
-    }
-}
-
-
 function setWizard(entity){
 	entity.emit("newClass");
     entity._classSetter=setWizard;
@@ -296,36 +320,12 @@ function setWizard(entity){
 	entity.stat.hp=4;
 	entity.hp=4;
 	entity._weaponReach=5;
-	entity.attack=shootProjectile.bind(this,entity,250);
+	entity.attack=shootProjectile.bind(this,entity,{
+		x: entity.mousePos.x,
+		y: entity.mousePos.y
+	},250);
 }
 
-
-function shootProjectile(player,speed){
-	if (!this.timeout) {
-		this.timeout = true;
-		let p=new Projectile(16,16);
-		map.insert(p)
-		let pos={
-			x: player.mousePos.x,
-			y: player.mousePos.y
-		}
-		util.normalize(pos, speed);
-		p.setPosition(player.pos.x,player.pos.y);
-		p.owner=player;
-		p.velocity.x+=pos.x ;
-		p.velocity.y+=pos.y ;
-		
-		p.rotate(Math.atan2(player.mousePos.y, player.mousePos.x) + 2.5 * Math.PI);
-		setTimeout(()=>{
-			if(p){
-				p.emit('remove');
-			}
-		},1000)
-		setTimeout(()=>{
-			this.timeout=false;
-		},500);
-	}
-}
 
 function setLuckMan(entity){
 	entity.entityClass="luckMan";
@@ -670,6 +670,35 @@ class Greatsword extends Weapon {
         });
     }
 }
+class GlassSword extends Weapon {
+    constructor() {
+        super(22, 54);
+        this.z = 13;
+        this.sprite = 'GlassSword';
+        this.setOrigin(11, 54);
+        this.type.push('weapon');
+        this.attack = true;
+        this.removeAllListeners('collide');
+        this.on('collide', (obj) => {
+            if (this.attack) {
+                //Can attack many at same time
+                for (let o of obj) {
+                    if (o.hp && o.weapon != this) {
+                        o.emit('damage', 2, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, 600);
+                        else
+                            o.emit('knockback', this, 300);
+                        this.attack = false;
+                        setTimeout(() => {
+                            this.attack = true;
+                        }, 300);
+                    }
+                }
+            }
+        });
+    }
+}
 class Barrier extends Weapon {
     constructor() {
         super(64, 64);
@@ -691,11 +720,11 @@ class Barrier extends Weapon {
                         if (this.specialAttack)
                             o.emit('knockback', this, 300);
                         else
-                            o.emit('knockback', this, 30);
+                            o.emit('knockback', this, 20);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
-                        }, 30);
+                        }, 20);
                     }
                 }
             }
@@ -721,8 +750,8 @@ class Barrier extends Weapon {
             if (!this.timeout) {
                 player.timeout = true;
                 player.damageFree = true;
-                this.setOrigin(40, 40);
-                this.box(80,80);
+                this.setOrigin(64, 64);
+                this.box(128,128);
                 setTimeout(()=>{                
                     this.box(64,64);
                     this.setOrigin(32, 32);
@@ -730,7 +759,7 @@ class Barrier extends Weapon {
                     setTimeout(()=>{
                         player.timeout=false;
                     },1500);
-                },1000)
+                },1000);
             }
         }
     }
@@ -754,7 +783,7 @@ class HalfBarrier extends Weapon {
                         else
                             o.emit('damage', 0, this);
                         if (this.specialAttack)
-                            o.emit('knockback', this, 50);
+                            o.emit('knockback', this, 100);
                         else
                             o.emit('knockback', this, 50);
                         this.attack = false;
@@ -799,8 +828,12 @@ class Bullet extends sword.Entity {
                 for (let o of obj) {
                     if (o.hp && !(o instanceof NPC)) {
                         o.emit('damage', 1, this);
+                        o.emit('knockback', this, 150);
                     }
-                    o.emit('knockback', this, 150);
+                    else {
+                        o.emit('knockback', this, 75);
+                    }
+
                 }
                 attack = false;
                 setTimeout(() => {
@@ -1190,6 +1223,16 @@ var shop_items = {
         cost:15,
         add:function(player){
             setWizard(player);
+        }
+    },
+    GlassSword:{
+        cost:64,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new GlassSword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
         }
     }
 };
