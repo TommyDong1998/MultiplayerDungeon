@@ -68,8 +68,9 @@ var itemsDef=[
 	}
 	/////
 	var setting={
-		scale:Math.round(window.innerWidth/720)
+		scale:Math.round(window.innerWidth/700 * 10) / 10
 	};
+	console.log()
 	ctx.scale(setting.scale ,setting.scale);
 	var player;
 	var gold;
