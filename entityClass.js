@@ -81,8 +81,8 @@ function setPotionHoard(entity){
 	entity.height=40;
 	entity.box(entity.width, entity.height);
 	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
-	entity.stat.hp=10;
-	entity.hp=10;
+	entity.stat.hp=40;
+	entity.hp=40;
 	entity._weaponReach=10;
 	entity.healthPotions=3;
 	entity.attack=function(){

@@ -155,7 +155,7 @@ class Player extends Monster {
             world.removeListener('nextFrame',OrientWeapon);
         });
 
-        this._gold = 30;
+        this._gold = 60;
 
         Object.defineProperty(this, 'gold', {
             set: (amount)=>{
