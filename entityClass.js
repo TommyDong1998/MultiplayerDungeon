@@ -177,11 +177,10 @@ function setWizard(entity){
 	entity.hp=10;
 	entity._weaponReach=10;
 	entity.attack=()=>{
-		console.log(entity.mousePos.x)
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},250);
+		},Fireball);
 	}
 }
 

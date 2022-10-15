@@ -2,9 +2,10 @@ class Projectile extends sword.Entity{
     constructor(w, h) {
         super(w, h);
         this.z = 13;
-        this.sprite = 'Fireball';
+        this.sprite = 'Dagger';
         this.setOrigin(8, 8);
         this.type.push('weapon');
+		this.stats={speed:250};
         world.emit('collision', this);
         world.emit('velocity', this);
 		let spin=setInterval(()=>{
@@ -40,13 +41,19 @@ class Projectile extends sword.Entity{
     }
 }
 
-function shootProjectile(entity,direction,speed){
+class Fireball extends Projectile{
+	constructor(w, h) {
+        super(w, h);
+        this.sprite = 'Fireball';
+	}
+}
+
+function shootProjectile(entity,direction,projectile){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new Projectile(16,16);
+		let p=new projectile(16,16);
 		map.insert(p)
-        
-        p.setSpeed(direction,speed);
+        p.setSpeed(direction,p.stats.speed);
 		p.setPosition(entity.pos.x,entity.pos.y);
 		p.owner=entity;
 
