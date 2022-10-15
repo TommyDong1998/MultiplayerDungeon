@@ -68,7 +68,7 @@ var itemsDef=[
 	}
 	/////
 	var setting={
-		scale:Math.round(window.innerWidth/700 * 10) / 10
+		scale:Math.ceil(window.innerWidth/700)
 	};
 	console.log()
 	ctx.scale(setting.scale ,setting.scale);
