@@ -276,8 +276,8 @@ var itemsDef=[
 		//Camera
 		ctx.save()
 		if(player){
-			ctx.translate(window.innerWidth/setting.scale/2-player.sprite.x-player.sprite.width/2,
-							window.innerHeight/setting.scale/2-player.sprite.y-player.sprite.height/2);
+			ctx.translate(Math.round(window.innerWidth/setting.scale/2-player.sprite.x-player.sprite.width/2),
+							Math.round(window.innerHeight/setting.scale/2-player.sprite.y-player.sprite.height/2));
 		}
 
 		//Draw all items
