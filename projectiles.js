@@ -9,11 +9,12 @@ class Projectile extends sword.Entity{
 		this.speed=200;
 		this.damage = 1;
 		this.knockback = 50;
-		this.rotation = 0;
-		this.lifetime = 500;
+		this.rotation = 0;			//In Degrees
+		this.lifetime = 500;		//In Milliseconds
 		this.pierce = true;
-		this.piercetime = 0;
-		this.attackSpeed = 300;		
+		this.piercetime = 0;		//Time After Hit
+		this.attackSpeed = 300;		//Milliseconds between attack
+		this.spread = 40;			//In Degrees
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary?
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
         world.emit('collision', this);
@@ -96,7 +97,8 @@ class GoldenMoon extends Projectile{
 		this.speed=250;
 		this.damage = .1;
 		this.knockback = 0;
-		this.rotation = 50;
+		this.rotation = 0;
+		this.spread = 100;
 		this.lifetime = 2000;
 		this.pierce = false;
 		this.piercetime = 200;
@@ -112,7 +114,7 @@ function shootProjectile(entity,direction,projectile){
         p.setSpeed(direction,p.speed);
 		p.setPosition(entity.pos.x,entity.pos.y+entity.height/3);
 		p.owner=entity;
-		p.rotate(Math.atan2(direction.y, direction.x) + 2.5 * Math.PI);
+		p.rotate(Math.atan2(direction.y, direction.x + 2.5 * Math.PI));
 		setTimeout(()=>{
 			this.timeout=false;
 		},p.attackSpeed);
