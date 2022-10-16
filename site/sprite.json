@@ -48,6 +48,12 @@ var spriteData={
 	GlassSword:{
 		"src":"images/GlassSword.png"
 	}, 
+	GoldenHazmat:{
+		"src":"images/GoldenHazmat.png"
+	}, 
+	GoldenMoon:{
+		"src":"images/GoldenMoon.png"
+	}, 
 	TallMinion:[
 	{x:370,y:305,width:11,height:16},
 	{x:387,y:305,width:10,height:15},

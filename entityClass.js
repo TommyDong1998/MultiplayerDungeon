@@ -180,7 +180,7 @@ function setWizard(entity){
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},Projectile);
+		},Fireball);
 	}
 }
 
