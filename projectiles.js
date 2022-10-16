@@ -13,13 +13,13 @@ class Projectile extends sword.Entity{
 		this.lifetime = 500;
 		this.pierce = true;
 		this.piercetime = 0;
+		this.attackSpeed = 300;		
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary?
-		this.attackSpeed = 300;
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
         world.emit('collision', this);
         world.emit('velocity', this);
     }
-	//TO DO:Speed,Acceleration,Curve 
+	//TO DO:Acceleration,Curve,Sprite Change, Invulnerabilty Frame Time
     setSpeed(direction,speed){
 		util.normalize(direction, speed);
 		this.velocity.x+=direction.x ;
@@ -58,12 +58,9 @@ class Projectile extends sword.Entity{
 				else{
 					this.emit("remove")
 					clearInterval(spin);
-
 				};
-
 			}
-		}	
-			
+		}			
 		});
 		setTimeout(()=>{
 			if(this){
@@ -83,7 +80,7 @@ class Fireball extends Projectile{
 		this.speed=250;
 		this.damage = 1;
 		this.knockback = 0;
-		this.rotation = 10;
+		this.rotation = 20;
 		this.lifetime = 1200;
 		this.pierce = false;
 		this.piercetime = 1;
@@ -92,7 +89,7 @@ class Fireball extends Projectile{
 }
 class GoldenMoon extends Projectile{
 	constructor(entity) {
-		super(24,24); 
+		super(32,32); 
 		this.width = 32;
 		this.height = 32;		
         this.sprite = 'GoldenMoon';
@@ -113,7 +110,7 @@ function shootProjectile(entity,direction,projectile){
 		p.createProjectile(p,entity);
 		map.insert(p)
         p.setSpeed(direction,p.speed);
-		p.setPosition(entity.pos.x,entity.pos.y+entity.height/2);
+		p.setPosition(entity.pos.x,entity.pos.y+entity.height/3);
 		p.owner=entity;
 		p.rotate(Math.atan2(direction.y, direction.x) + 2.5 * Math.PI);
 		setTimeout(()=>{
