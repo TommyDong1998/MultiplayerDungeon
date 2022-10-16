@@ -176,11 +176,13 @@ function setWizard(entity){
 	entity.stat.hp=10;
 	entity.hp=10;
 	entity._weaponReach=10;
+	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier];
+	entity.spell = spells[Math.floor(Math.random()*4)];
 	entity.attack=()=>{
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},Fireball);
+		},ForceBarrier);
 	}
 }
 
