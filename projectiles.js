@@ -1,19 +1,19 @@
 class Projectile extends sword.Entity{
     constructor(entity) {
-        super(32,16);     
+        super(16,32);     
 		this.z = 13;   
-		this.width = 32;
-		this.height = 16;		
-        this.sprite = 'HalfBarrier';
+		this.width = 16;
+		this.height = 32;		
+        this.sprite = 'Dagger';
         this.type.push('weapon');
-		this.speed=200;
-		this.damage = 1;
-		this.knockback = 50;
+		this.speed=300;
+		this.damage = .2;
+		this.knockback = 25;
 		this.rotation = 0;			//In Degrees
-		this.lifetime = 500;		//In Milliseconds
+		this.lifetime = 600;		//In Milliseconds
 		this.pierce = true;
 		this.piercetime = 0;		//Time After Hit
-		this.attackSpeed = 300;		//Milliseconds between attack
+		this.attackSpeed = 400;		//Milliseconds between attack
 		this.spread = 40;			//In Degrees
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary?
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
@@ -79,12 +79,12 @@ class Fireball extends Projectile{
 		this.height = 24;		
         this.sprite = 'Fireball';
 		this.speed=250;
-		this.damage = 1;
+		this.damage = 2;
 		this.knockback = 0;
 		this.rotation = 20;
 		this.lifetime = 1200;
 		this.pierce = false;
-		this.piercetime = 1;
+		this.piercetime = 0;
 		this.attackSpeed = 500;
 	}
 }
@@ -94,12 +94,12 @@ class GoldenMoon extends Projectile{
 		this.width = 32;
 		this.height = 32;		
         this.sprite = 'GoldenMoon';
-		this.speed=250;
-		this.damage = .1;
+		this.speed=300;
+		this.damage = .2;
 		this.knockback = 0;
-		this.rotation = 0;
+		this.rotation = 40;
 		this.spread = 100;
-		this.lifetime = 2000;
+		this.lifetime = 1500;
 		this.pierce = false;
 		this.piercetime = 200;
 		this.attackSpeed = 300;
@@ -114,7 +114,7 @@ function shootProjectile(entity,direction,projectile){
         p.setSpeed(direction,p.speed);
 		p.setPosition(entity.pos.x,entity.pos.y+entity.height/3);
 		p.owner=entity;
-		p.rotate(Math.atan2(direction.y, direction.x + 2.5 * Math.PI));
+		p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
 		setTimeout(()=>{
 			this.timeout=false;
 		},p.attackSpeed);
