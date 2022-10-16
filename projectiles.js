@@ -98,11 +98,26 @@ class GoldenMoon extends Projectile{
 		this.damage = .2;
 		this.knockback = 0;
 		this.rotation = 40;
-		this.spread = 100;
 		this.lifetime = 1500;
 		this.pierce = false;
 		this.piercetime = 200;
 		this.attackSpeed = 300;
+	}
+}
+class ForceBarrier extends Projectile{
+	constructor(entity) {
+		super(48,24); 
+		this.width = 48;
+		this.height = 24;		
+        this.sprite = 'HalfBarrier';
+		this.speed=350;
+		this.damage = 0;
+		this.knockback = 100;
+		this.rotation = 0;
+		this.lifetime = 800;
+		this.pierce = false;
+		this.piercetime = 100;
+		this.attackSpeed = 150;
 	}
 }
 function shootProjectile(entity,direction,projectile){

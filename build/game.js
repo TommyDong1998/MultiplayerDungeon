@@ -204,11 +204,26 @@ class GoldenMoon extends Projectile{
 		this.damage = .2;
 		this.knockback = 0;
 		this.rotation = 40;
-		this.spread = 100;
 		this.lifetime = 1500;
 		this.pierce = false;
 		this.piercetime = 200;
 		this.attackSpeed = 300;
+	}
+}
+class ForceBarrier extends Projectile{
+	constructor(entity) {
+		super(48,24); 
+		this.width = 48;
+		this.height = 24;		
+        this.sprite = 'HalfBarrier';
+		this.speed=350;
+		this.damage = 0;
+		this.knockback = 100;
+		this.rotation = 0;
+		this.lifetime = 800;
+		this.pierce = false;
+		this.piercetime = 100;
+		this.attackSpeed = 150;
 	}
 }
 function shootProjectile(entity,direction,projectile){
@@ -403,13 +418,13 @@ function setWizard(entity){
 	entity.stat.hp=10;
 	entity.hp=10;
 	entity._weaponReach=10;
-	let spells = [Projectile, Fireball, GoldenMoon];
-	entity.spell = spells[Math.floor(Math.random()*3)];
+	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier];
+	entity.spell = spells[Math.floor(Math.random()*4)];
 	entity.attack=()=>{
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},entity.spell);
+		},ForceBarrier);
 	}
 }
 
