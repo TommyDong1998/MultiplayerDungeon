@@ -182,7 +182,7 @@ function setWizard(entity){
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},ForceBarrier);
+		},entity.spell);
 	}
 }
 
