@@ -465,7 +465,7 @@ var itemsDef=[
 		};
 	}
 	
-	var kpress={x:0,y:0};
+	var kpress={x:0,y:0,space:null};
 	var prevMouse={x:0,y:0};
 	function moveMouse(e){
 		var currentMouse={x:e.clientX-window.innerWidth/2,y:e.clientY-window.innerHeight/2};
@@ -482,8 +482,7 @@ var itemsDef=[
 	function keyPress(e) {
 		e = e || window.event;
 		if(e.keyCode == '32'){
-			socket.send(JSON.stringify([1]));
-			return;
+			kpress.space=1;
 		}
 		//up
 			if (e.keyCode == '38'||e.keyCode == '87') {
@@ -502,11 +501,16 @@ var itemsDef=[
 				kpress.x=1;
 			}
 			socket.send(JSON.stringify([0,kpress.x,kpress.y]));
+			if(kpress.space)
+				socket.send(JSON.stringify([1]));
 	}
 
 	//	When the user lift the key up
 	function keyUp(e) {
 		e = e || window.event;
+		if(e.keyCode == '32'){
+			kpress.space=0;
+		}
 		//up
 		if (e.keyCode == '38'||e.keyCode == '87') {
 			kpress.y=0;
