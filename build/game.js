@@ -112,23 +112,32 @@ var map = new sword.GameMap(world, settings.width, settings.height);class Projec
 		this.height = 32;		
         this.sprite = 'Dagger';
         this.type.push('weapon');
-		this.speed=300;
-		this.damage = .2;
+		this.speed=400;
+		this.damage = .5;
 		this.knockback = 25;
 		this.rotation = 0;			//In Degrees
-		this.lifetime = 600;		//In Milliseconds
-		this.pierce = true;
-		this.piercetime = 0;		//Time After Hit
-		this.attackSpeed = 400;		//Milliseconds between attack
-		this.spread = 40;			//In Degrees
-		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary?
+		this.lifetime = 500;		//In Milliseconds
+		this.pierce = false;
+		this.piercetime = 40;		//Time After Hit
+		this.attackSpeed = 30;		//Milliseconds between attack
+		this.spread = 45;			//In Degrees
+		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary? Doesn't Work
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
         world.emit('collision', this);
         world.emit('velocity', this);
     }
 	//TO DO:Acceleration,Curve,Sprite Change, Invulnerabilty Frame Time
     setSpeed(direction,speed){
+		
+		let spread = ((Math.random()-.5)*this.spread* Math.PI / 180);
+
+		let angle = Math.atan2(direction.y, direction.x);
+		angle += spread;
+
+		direction.x = Math.cos(angle);
+		direction.y = Math.sin(angle);
 		util.normalize(direction, speed);
+		
 		this.velocity.x+=direction.x ;
 		this.velocity.y+=direction.y ;
     }
@@ -140,14 +149,10 @@ var map = new sword.GameMap(world, settings.width, settings.height);class Projec
 		this.on('collide', (obj) => {
 			let hit=false;
 			for (let o of obj) {
-				if (o.hp && this.owner != o) {
-					hit=true;
+				if (o.hp && this.owner != o && hit == false) {
+					hit = true;
 					o.emit('damage', this.damage, this);
 					o.emit('knockback', this, this.knockback);
-					this.attack = false; //What does this do?
-					setTimeout(() => {
-						this.attack = true;
-					}, 300);
 				}else if(o.type.includes('solid')){
 					hit=true;
 					this.emit("remove");
@@ -177,7 +182,6 @@ var map = new sword.GameMap(world, settings.width, settings.height);class Projec
 		},this.lifetime)
 }
 }
-
 class Fireball extends Projectile{
 	constructor(entity) {
 		super(24,24); 
@@ -191,7 +195,9 @@ class Fireball extends Projectile{
 		this.lifetime = 1200;
 		this.pierce = false;
 		this.piercetime = 0;
-		this.attackSpeed = 500;
+		this.attackSpeed = 400;
+		this.spread = 5;			//In Degrees
+
 	}
 }
 class GoldenMoon extends Projectile{
@@ -200,14 +206,16 @@ class GoldenMoon extends Projectile{
 		this.width = 32;
 		this.height = 32;		
         this.sprite = 'GoldenMoon';
-		this.speed=300;
+		this.speed=300;	
 		this.damage = .2;
 		this.knockback = 0;
 		this.rotation = 40;
 		this.lifetime = 1500;
 		this.pierce = false;
 		this.piercetime = 200;
-		this.attackSpeed = 300;
+		this.attackSpeed = 200;
+		this.spread = 10;			//In Degrees
+
 	}
 }
 class ForceBarrier extends Projectile{
@@ -216,25 +224,27 @@ class ForceBarrier extends Projectile{
 		this.width = 48;
 		this.height = 24;		
         this.sprite = 'HalfBarrier';
-		this.speed=350;
+		this.speed=160;
 		this.damage = 0;
 		this.knockback = 100;
 		this.rotation = 0;
-		this.lifetime = 800;
+		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 150;
+		this.attackSpeed = 100;
+		this.spread = 30;			//In Degrees
 	}
 }
 function shootProjectile(entity,direction,projectile){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new projectile(entity);
+		let p=new projectile(entity,direction);
 		p.createProjectile(p,entity);
+		p.setSpeed(direction,p.speed);
 		map.insert(p)
-        p.setSpeed(direction,p.speed);
-		p.setPosition(entity.pos.x,entity.pos.y+entity.height/3);
+		p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
 		p.owner=entity;
+		//console.log("Angle = ",Math.atan2(direction.y, direction.x));
 		p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
 		setTimeout(()=>{
 			this.timeout=false;
@@ -623,27 +633,38 @@ The normal weapon for player. It contains collision testing methods.
 */
 class Weapon extends sword.Entity {
     constructor(w, h) {
-        super(w, h);
-        this.z = 13;
-        this.sprite = 'Dagger';
-        this.setOrigin(8, 32);
-        this.type.push('weapon');
-        world.emit('collision', this);
+        super(w, h); 
+        world.emit('collision', this);           
+        this.removeAllListeners('collide');
+        this.type.push('weapon');        
         this.attack = true;
+        this.z = 15;
+        this.setOrigin(w/2, h);
+        this.sprite = 'Dagger';
+        this.damage = 1;        
+        this.critDamage = 2;
+        this.critChance = 0; 
+        this.knockback = 200;
+        this.attackTime = 10; //Attacks Per Second (max 30)
+        this.weaponMaker();
+    }
+    weaponMaker(){
         this.on('collide', (obj) => {
             if (this.attack) {
-                //Can attack many at same time
                 for (let o of obj) {
                     if (o.hp && o.weapon != this) {
-                        o.emit('damage', 1, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 400);
+                        if (Math.random() >= (1-this.critChance))
+                            o.emit('damage', this.critDamage, this);
                         else
-                            o.emit('knockback', this, 200);
+                            o.emit('damage', this.damage, this);
+                        if (this.specialAttack)
+                            o.emit('knockback', this, this.knockback*2);
+                        else
+                            o.emit('knockback', this, this.knockback);
                         this.attack = false;
                         setTimeout(() => {
                             this.attack = true;
-                        }, 300);
+                        }, (Math.floor(1000/this.attackTime)));
                     }
                 }
             }
@@ -679,158 +700,82 @@ Extra damage
 class Sword extends Weapon {
     constructor() {
         super(20, 40);
-        this.z = 13;
-        this.sprite = 'Sword';
         this.setOrigin(10, 40);
-        this.type.push('weapon');
-        this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.5)
-                            o.emit('damage', 2, this);
-                        else
-                            o.emit('damage', 1, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 500);
-                        else
-                            o.emit('knockback', this, 250);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 300);
-                    }
-                }
-            }
-        });
+        this.sprite = 'Sword';
+        this.damage = 1;
+        this.critDamage = 2;
+        this.critChance = .25; 
+        this.knockback = 250;
+        this.attackTime = 4; //Attacks Per Second (max 30)
+        this.weaponMaker();
     }
 }
 class Longsword extends Weapon {
     constructor() {
         super(20, 44);
-        this.z = 13;
         this.sprite = 'Longsword';
         this.setOrigin(10, 44);
-        this.type.push('weapon');
-        this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.5)
-                            o.emit('damage', 2, this);
-                        else
-                            o.emit('damage', 1, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 600);
-                        else
-                            o.emit('knockback', this, 250);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 300);
-                    }
-                }
-            }
-        });
+        this.damage = 1;
+        this.critDamage = 2;
+        this.critChance = .5; 
+        this.knockback = 250;
+        this.attackTime = 4; //Attacks Per Second (max 30)
+        this.weaponMaker();
     }
 }
 class Greatsword extends Weapon {
     constructor() {
         super(24, 48);
-        this.z = 13;
         this.sprite = 'Greatsword';
         this.setOrigin(12, 48);
-        this.type.push('weapon');
-        this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.25)
-                            o.emit('damage', 2, this);
-                        else
-                            o.emit('damage', 1, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 600);
-                        else
-                            o.emit('knockback', this, 300);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 300);
-                    }
-                }
-            }
-        });
+        this.damage = 1;
+        this.critDamage = 2;
+        this.critChance = .75; 
+        this.knockback = 300;
+        this.attackTime = 4; //Attacks Per Second (max 30)
+        this.weaponMaker();
     }
 }
 class GlassSword extends Weapon {
     constructor() {
         super(22, 54);
-        this.z = 13;
         this.sprite = 'GlassSword';
         this.setOrigin(11, 54);
-        this.type.push('weapon');
-        this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        o.emit('damage', 2, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 600);
-                        else
-                            o.emit('knockback', this, 300);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 300);
-                    }
-                }
-            }
-        });
+        this.damage = 2;
+        this.critDamage = 2;
+        this.critChance = 0; 
+        this.knockback = 300;
+        this.attackTime = 5; //Attacks Per Second (max 30)
+        this.weaponMaker();
     }
 }
+
+class JimmysRustySword extends Weapon {
+    constructor() {
+        super(28, 80);
+        this.sprite = 'JimmysRustySword';
+        this.setOrigin(14, 80);
+        this.damage = .5;
+        this.critDamage = 20;
+        this.critChance = .04; 
+        this.knockback = 500;
+        this.attackTime = 4; //Attacks Per Second (max 30)
+        this.weaponMaker();
+    }
+}
+
 class Barrier extends Weapon {
     constructor() {
         super(64, 64);
-        this.z = 13;
         this.sprite = 'Barrier';
         this.setOrigin(32, 32);
-        this.type.push('weapon');
-        this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.96)
-                            o.emit('damage', 1, this);
-                        else
-                            o.emit('damage', 0, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 300);
-                        else
-                            o.emit('knockback', this, 20);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 20);
-                    }
-                }
-            }
-        });
+        this.damage = 0;
+        this.critDamage = 1;
+        this.critChance = .02; 
+        this.knockback = 30;
+        this.attackTime = 25; //Attacks Per Second (max 30)
+        this.weaponMaker();
+
         this.once('init',function(player){
             player._weaponAnchor = {x: player.width / 2,y: player.height/2};
             let tempReach=player._weaponReach;
@@ -871,31 +816,14 @@ class HalfBarrier extends Weapon {
         super(64, 32);
         this.z = 13;
         this.sprite = 'HalfBarrier';
-        this.setOrigin(32, 32);
-        this.type.push('weapon');
         this.attack = true;
-        this.removeAllListeners('collide');
-        this.on('collide', (obj) => {
-            if (this.attack) {
-                //Can attack many at same time
-                for (let o of obj) {
-                    if (o.hp && o.weapon != this) {
-                        if (Math.random() > 0.95)
-                            o.emit('damage', 1, this);
-                        else
-                            o.emit('damage', 0, this);
-                        if (this.specialAttack)
-                            o.emit('knockback', this, 100);
-                        else
-                            o.emit('knockback', this, 50);
-                        this.attack = false;
-                        setTimeout(() => {
-                            this.attack = true;
-                        }, 30);
-                    }
-                }
-            }
-        });
+        this.setOrigin(32, 32);
+        this.damage = 0;
+        this.critDamage = 1;
+        this.critChance = .3; 
+        this.knockback = 40;
+        this.attackTime = 25; //Attacks Per Second (max 30)
+        this.weaponMaker();
     }
 }
 /*
@@ -1336,6 +1264,16 @@ var shop_items = {
             map.insert(weapon);
             player.weild(weapon);
         }
+    },
+    JimmysRustySword: {
+        cost: 44,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new JimmysRustySword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     }
 };
 
@@ -1497,7 +1435,7 @@ class Player extends Monster {
         this.data = this.data || {
             item: []
         };
-        var current = map.findNear(this, 700);
+        var current = map.findNear(this, 500);
         let visibleItems=[];
         const total=[];
         current.forEach((entity) => {

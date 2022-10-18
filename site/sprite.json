@@ -21,7 +21,7 @@ var spriteData={
 	Dagger:{
 		"src":"images/Dagger.png"
 	},
-	JimmyRustySword:{
+	JimmysRustySword:{
 		"src":"images/JimmysRustySword.png"
 	},
 	Barrier:{
@@ -53,7 +53,13 @@ var spriteData={
 	}, 
 	GoldenMoon:{
 		"src":"images/GoldenMoon.png"
-	}, 
+	},
+	Random:[
+		{"src":"images/GoldenMoon.png"},
+		{"src":"images/Dagger.png"},
+		{"src":"images/HalfBarrier.png"},
+		{"src":"images/Fireball.png"}
+		],
 	TallMinion:[
 	{x:370,y:305,width:11,height:16},
 	{x:387,y:305,width:10,height:15},
