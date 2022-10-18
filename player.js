@@ -110,6 +110,16 @@ var shop_items = {
             map.insert(weapon);
             player.weild(weapon);
         }
+    },
+    JimmysRustySword: {
+        cost: 44,
+        add:function(player){
+            player.weapon.emit("remove");
+            var weapon = new JimmysRustySword();
+            weapon.owner = player;
+            map.insert(weapon);
+            player.weild(weapon);
+        }
     }
 };
 
@@ -271,7 +281,7 @@ class Player extends Monster {
         this.data = this.data || {
             item: []
         };
-        var current = map.findNear(this, 700);
+        var current = map.findNear(this, 500);
         let visibleItems=[];
         const total=[];
         current.forEach((entity) => {
