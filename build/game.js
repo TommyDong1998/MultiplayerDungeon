@@ -1056,21 +1056,64 @@ function clearMap(){
 	map.quadTree.clear();
 }
 function loadMap(file){
-	var wall = file.layers[1].data;
+	/*
+		Overlay
+		Generate tiles on layer 0
+	*/
+	var wall = file.layers[0].data;
 	function getLoc(c, r) {
 		return wall[(r) * file.width + c];
 	}
+	
 	for (var c = 0; c < file.width; c++) {
 		for (var r = 0; r < file.height; r++) {
 			if (wall[r * file.width + c] != 0) {
-				var solid = new sword.Entity(32, 32);
-				solid.sprite = wall[r * file.width + c] - 1;
-				solid.setPosition(c * 32, r * 32);
-				solid.z = 15;
-				map.insert(solid);
+				let tile = new sword.Entity(32, 32);
+				tile.sprite = wall[r * file.width + c] - 1;
+				tile.setPosition(c * 32, r * 32);
+				tile.z = 16;
+				map.insert(tile);
 			}
 		}
 	}
+
+	/*
+		Wall
+		Generate tiles on layer 1
+	*/
+	wall = file.layers[1].data;
+	for (var c = 0; c < file.width; c++) {
+		for (var r = 0; r < file.height; r++) {
+			if (wall[r * file.width + c] != 0) {
+				let tile = new sword.Entity(32, 32);
+				tile.sprite = wall[r * file.width + c] - 1;
+				tile.setPosition(c * 32, r * 32);
+				tile.z = 15;
+				map.insert(tile);
+			}
+		}
+	}
+	
+	/*
+		Decorative Floor
+		Generate tiles on layer 1
+	*/
+	wall = file.layers[3].data;
+	for (var c = 0; c < file.width; c++) {
+		for (var r = 0; r < file.height; r++) {
+			if (wall[r * file.width + c] != 0) {
+				let tile = new sword.Entity(32, 32);
+				tile.sprite = wall[r * file.width + c] - 1;
+				tile.setPosition(c * 32, r * 32);
+				tile.z = 1;
+				map.insert(tile);
+			}
+		}
+	}
+
+	/*
+		Generate solid maps on layer 0
+	*/
 	var createSolid = (x, y) => {
 		var solid = new sword.Entity(32, 32);
 		solid.type.push('solid');
@@ -1080,7 +1123,8 @@ function loadMap(file){
 		map.insert(solid);
 	};
 
-	var wall = file.layers[0].data;
+	var wall = file.layers[4].data;
+	
 	for (var c = 0; c < file.width; c++) {
 		for (var r = 0; r < file.height; r++) {
 			if (getLoc(c, r) != 0) {
@@ -1089,13 +1133,16 @@ function loadMap(file){
 				tile.sprite = getLoc(c, r) - 1;
 				tile.setPosition(c * 32, r * 32);
 				map.insert(tile);
-				// Solid a little bit on tile
+				//Top solid
 				if (!getLoc(c, r - 1))
 					createSolid(c * 32, (r - 1) * 32);
+				//Bottom solid
 				if (!getLoc(c, r + 1))
 					createSolid(c * 32, (r + 1.5) * 32);
+				//Left solid
 				if (!getLoc(c - 1, r) && !getLoc(c - 1, r - 1))
 					createSolid((c - 1) * 32, r * 32);
+				//Right solid
 				if (!getLoc(c + 1, r) && !getLoc(c + 1, r - 1))
 					createSolid((c + 1) * 32, r * 32);
 			}
@@ -1103,15 +1150,20 @@ function loadMap(file){
 	}
 	
 	
+	/*
+	 Generate monsters for testing 
+	*/
 	world.setMaxListeners(1000);
-	//Stress Tester
 	for(let i=0;i<30;i++){
 		var enemy2 = new NPC("minion");
 		enemy2.attackFirst();
 		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
 	}
 
-	//Generate monsters
+	/*
+	Monsters
+	Generate monsters on layer 2
+	*/
 	var mon = file.layers[2].data;
 	for (var c = 0; c < file.width; c++) {
 		for (var r = 0; r < file.height; r++) {
