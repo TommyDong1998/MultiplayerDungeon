@@ -1732,8 +1732,8 @@ class Coin extends sword.Entity {
                     }
                     this.width=Math.floor(12*(Math.cbrt(this.gold)));
                     this.height=Math.floor(15*(Math.cbrt(this.gold)));
+                    this.setOrigin(0,0);
                     this.box(this.width,this.height);
-                    this.setOrigin(this.width/2, this.height/2);
                 }
             }
         });
