@@ -463,8 +463,12 @@ var itemsDef=[
 		document.onkeydown = keyPress;
 		document.onkeyup = keyUp;
 		document.onmousemove= moveMouse;
-		document.onclick=()=>{
-				socket.send(JSON.stringify([1]));
+		canvas.onmousedown =()=>{
+			sendAttack();
+		};
+		canvas.onmouseup =()=>{
+			clearInterval(kpress.space);
+			kpress.space=null;
 		};
 	}
 	
@@ -481,11 +485,19 @@ var itemsDef=[
 			console.log(e);
 		}
 	}
+	function sendAttack(){
+		if(kpress.space==null){
+			socket.send(JSON.stringify([1,kpress.space]));
+			kpress.space=setInterval(function(){	
+				socket.send(JSON.stringify([1,kpress.space]));
+			},100);
+		}
+	}
 	//	When the user presses down
 	function keyPress(e) {
 		e = e || window.event;
 		if(e.keyCode == '32'){
-			kpress.space=1;
+			sendAttack();
 		}
 		//up
 			if (e.keyCode == '38'||e.keyCode == '87') {
@@ -504,15 +516,14 @@ var itemsDef=[
 				kpress.x=1;
 			}
 			socket.send(JSON.stringify([0,kpress.x,kpress.y]));
-			if(kpress.space)
-				socket.send(JSON.stringify([1]));
 	}
 
 	//	When the user lift the key up
 	function keyUp(e) {
 		e = e || window.event;
 		if(e.keyCode == '32'){
-			kpress.space=0;
+			clearInterval(kpress.space);
+			kpress.space=null;
 		}
 		//up
 		if (e.keyCode == '38'||e.keyCode == '87') {
