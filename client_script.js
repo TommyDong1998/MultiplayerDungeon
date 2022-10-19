@@ -18,10 +18,10 @@ var itemsDef=[
 	const canvas = document.getElementById('canvas');
 	
 	var setting={
-		scale:Math.min(Math.ceil(window.innerWidth/500),Math.ceil(window.innerHeight/500)),
-		width:Math.min(window.innerWidth,window.innerHeight),
+		width:Math.min(window.innerHeight*1.5,window.innerWidth-200),
 		height:Math.min(window.innerWidth,window.innerHeight)
 	};
+	setting.scale=Math.ceil(Math.max(setting.width,setting.height)/500)
 	canvas.width=setting.width;
 	canvas.height=setting.height;
 
