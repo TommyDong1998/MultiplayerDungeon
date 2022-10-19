@@ -471,7 +471,7 @@ var itemsDef=[
 	var kpress={x:0,y:0,space:null};
 	var prevMouse={x:0,y:0};
 	function moveMouse(e){
-		var currentMouse={x:e.clientX-setting.width/2,y:e.clientY-setting.height/2};
+		var currentMouse={x:e.clientX-setting.width/2-canvas.getBoundingClientRect().left,y:e.clientY-setting.height/2};
 		if(Math.floor(prevMouse.x)!=Math.floor(currentMouse.x)||Math.floor(prevMouse.y)!=Math.floor(currentMouse.y)){
 			prevMouse=currentMouse;
 		}
