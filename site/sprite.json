@@ -54,6 +54,9 @@ var spriteData={
 	GoldenMoon:{
 		"src":"images/GoldenMoon.png"
 	},
+	QuintuplicateBolt:{
+		"src":"images/QuintuplicateBolt.png"
+	},
 	Random:[
 		{"src":"images/GoldenMoon.png"},
 		{"src":"images/Dagger.png"},
