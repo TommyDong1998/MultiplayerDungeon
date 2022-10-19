@@ -16,8 +16,15 @@ var itemsDef=[
 	];
 	///////////////
 	const canvas = document.getElementById('canvas');
-	canvas.width=window.innerWidth;
-	canvas.height=window.innerHeight;
+	
+	var setting={
+		scale:Math.min(Math.ceil(window.innerWidth/500),Math.ceil(window.innerHeight/500)),
+		width:Math.min(window.innerWidth,window.innerHeight),
+		height:Math.min(window.innerWidth,window.innerHeight)
+	};
+	canvas.width=setting.width;
+	canvas.height=setting.height;
+
 	var ctx=canvas.getContext('2d');
 	ctx.imageSmoothingEnabled =false;
 	document.getElementById('shop').style.visibility="hidden";
@@ -67,11 +74,7 @@ var itemsDef=[
 	function buyShop(item){
 		socket.send(JSON.stringify([3,item]))
 	}
-	/////
-	var setting={
-		scale:Math.min(Math.floor(window.innerWidth/400),Math.ceil(window.innerHeight/400))-1
-	};
-	console.log()
+	
 	ctx.scale(setting.scale ,setting.scale);
 	var player;
 	var gold;
@@ -272,13 +275,13 @@ var itemsDef=[
 	}
 	//	Update the canvas once per frame
 	function update(){
-		ctx.clearRect(0, 0, window.innerHeight, window.innerWidth)
+		ctx.clearRect(0, 0, setting.height, setting.width)
 
 		//Camera
 		ctx.save()
 		if(player){
-			ctx.translate(Math.round(window.innerWidth/setting.scale/2-player.sprite.x-player.sprite.width/2),
-							Math.round(window.innerHeight/setting.scale/2-player.sprite.y-player.sprite.height/2));
+			ctx.translate(Math.round(setting.width/setting.scale/2-player.sprite.x-player.sprite.width/2),
+							Math.round(setting.height/setting.scale/2-player.sprite.y-player.sprite.height/2));
 		}
 
 		//Draw all items
@@ -468,7 +471,7 @@ var itemsDef=[
 	var kpress={x:0,y:0,space:null};
 	var prevMouse={x:0,y:0};
 	function moveMouse(e){
-		var currentMouse={x:e.clientX-window.innerWidth/2,y:e.clientY-window.innerHeight/2};
+		var currentMouse={x:e.clientX-setting.width/2,y:e.clientY-setting.height/2};
 		if(Math.floor(prevMouse.x)!=Math.floor(currentMouse.x)||Math.floor(prevMouse.y)!=Math.floor(currentMouse.y)){
 			prevMouse=currentMouse;
 		}
