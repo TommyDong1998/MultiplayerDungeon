@@ -6,6 +6,7 @@ body {
 }
 canvas{
     display:block;
+    margin: auto;
 }
 menu{
     position:fixed;
