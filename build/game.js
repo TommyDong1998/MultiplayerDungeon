@@ -235,21 +235,67 @@ class ForceBarrier extends Projectile{
 		this.spread = 30;			//In Degrees
 	}
 }
-function shootProjectile(entity,direction,projectile){
+class Quintuple extends Projectile{
+	constructor(entity) {
+		super(32,32); 
+		this.width = 32;
+		this.height = 32;		
+        this.sprite = 'QuintuplicateBolt';
+		this.speed=175;
+		this.damage = 1;
+		this.knockback = 50;
+		this.rotation = 0;
+		this.lifetime = 800;
+		this.pierce = false;
+		this.piercetime = 150;
+		this.attackSpeed = 150;
+		this.spread = 0;			//In Degrees
+
+	}
+}
+function shootProjectile(entity,direction,projectile,quantity,spread){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new projectile(entity,direction);
-		p.createProjectile(p,entity);
-		p.setSpeed(direction,p.speed);
-		map.insert(p)
-		p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
-		p.owner=entity;
-		//console.log("Angle = ",Math.atan2(direction.y, direction.x));
-		p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
-		setTimeout(()=>{
-			this.timeout=false;
-		},p.attackSpeed);
+		if(quantity == undefined) quantity = 1;
+		if(spread == undefined) spread = 10;
+
+		if(quantity != 0 && spread != 0){
+			let degree = (spread * (quantity+2) * Math.PI / 360);
+			let angle = Math.atan2(direction.y, direction.x);
+			angle -= degree;
+	
+			direction.x = Math.cos(angle);
+			direction.y = Math.sin(angle);
+		}
+
+		for(let i = 1; i<=quantity; i++){
+
+			if(quantity != 0 && spread != 0){
+				let degree = (spread * Math.PI / 180);
+				let angle = Math.atan2(direction.y, direction.x);
+				angle += degree;
+		
+				direction.x = Math.cos(angle);
+				direction.y = Math.sin(angle);
+			}
+
+			let p=new projectile(entity);
+			p.createProjectile(p,entity);
+			p.setSpeed(direction,p.speed);
+			map.insert(p)
+			p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
+			p.owner=entity;
+			//console.log("Angle = ",Math.atan2(direction.y, direction.x));
+			p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
+			if (i==quantity){
+				setTimeout(()=>{this.timeout=false;
+				},p.attackSpeed);
+			}
+			
+		}
 	}
+		
+		
 }function chargeAttack(){
 	if (!this.timeout) {
 		this.timeout = true;
@@ -428,13 +474,13 @@ function setWizard(entity){
 	entity.stat.hp=10;
 	entity.hp=10;
 	entity._weaponReach=10;
-	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier];
+	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier,Quintuple];
 	entity.spell = spells[Math.floor(Math.random()*4)];
 	entity.attack=()=>{
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},entity.spell);
+		},Quintuple,5,12);
 	}
 }
 
@@ -1663,12 +1709,31 @@ class Coin extends sword.Entity {
         world.emit('velocity', this);
         world.emit('collision', this);
         this.gold=1;
+        
         this.on('collide', (obj) => {
+            if(this.gold == 0){
+                this.emit("remove");
+            }
             for (let o of obj) {
                 if (o instanceof Player) {
                     o.gold+=this.gold;
                     this.emit("remove");
                     break;
+                }
+                if (o instanceof Coin) {
+                    if(this.gold<o.gold){
+                        o.gold+=this.gold;
+                        this.gold = 0;
+                        break;
+                    }else if(this.id<o.id){
+                        o.gold+=this.gold;
+                        this.gold = 0;
+                        break;
+                    }
+                    this.width=Math.floor(12*(Math.cbrt(this.gold)));
+                    this.height=Math.floor(15*(Math.cbrt(this.gold)));
+                    this.setOrigin(0,0);
+                    this.box(this.width,this.height);
                 }
             }
         });
