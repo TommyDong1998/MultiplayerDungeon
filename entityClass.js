@@ -127,15 +127,14 @@ function setWizard(entity){
 		strength: 0
 	};
 	setStat(entity);
-	entity.spell = Projectile;
 	entity.abilityAccuracy = 10;
 	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier,Quintuple];
-	entity.spell = spells[Math.floor(Math.random()*4)];
+	entity.spell = spells[Math.floor(Math.random()*5)];
 	entity.attack=()=>{
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},entity.spell,entity.stat.strength,10);
+		},entity.spell,entity.stat.strength,(20-entity.stat.strength));
 	}
 }
 

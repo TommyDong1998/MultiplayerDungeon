@@ -119,7 +119,7 @@ var map = new sword.GameMap(world, settings.width, settings.height);class Projec
 		this.lifetime = 500;		//In Milliseconds
 		this.pierce = false;
 		this.piercetime = 40;		//Time After Hit
-		this.attackSpeed = 30;		//Milliseconds between attack
+		this.attackSpeed = 100;		//Milliseconds between attack
 		this.spread = 45;			//In Degrees
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary? Doesn't Work
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
@@ -231,7 +231,7 @@ class ForceBarrier extends Projectile{
 		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 100;
+		this.attackSpeed = 70;
 		this.spread = 30;			//In Degrees
 	}
 }
@@ -325,7 +325,7 @@ function spinAttack(){
 		this.damageFree = true;
 		setTimeout(() => {
 			this.damageFree = false;
-		}, 10000);
+		}, 300);
 		this.weapon.spin(6 * Math.PI, 900, () => {
 			setTimeout(()=>{
 				this.timeout = false;
@@ -506,15 +506,14 @@ function setWizard(entity){
 		strength: 0
 	};
 	setStat(entity);
-	entity.spell = Projectile;
 	entity.abilityAccuracy = 10;
 	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier,Quintuple];
-	entity.spell = spells[Math.floor(Math.random()*4)];
+	entity.spell = spells[Math.floor(Math.random()*5)];
 	entity.attack=()=>{
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},entity.spell,entity.stat.strength,10);
+		},entity.spell,entity.stat.strength,(20-entity.stat.strength));
 	}
 }
 

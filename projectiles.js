@@ -13,7 +13,7 @@ class Projectile extends sword.Entity{
 		this.lifetime = 500;		//In Milliseconds
 		this.pierce = false;
 		this.piercetime = 40;		//Time After Hit
-		this.attackSpeed = 30;		//Milliseconds between attack
+		this.attackSpeed = 100;		//Milliseconds between attack
 		this.spread = 45;			//In Degrees
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary? Doesn't Work
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
@@ -125,7 +125,7 @@ class ForceBarrier extends Projectile{
 		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 100;
+		this.attackSpeed = 70;
 		this.spread = 30;			//In Degrees
 	}
 }
