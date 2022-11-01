@@ -57,6 +57,9 @@ var spriteData={
 	QuintuplicateBolt:{
 		"src":"images/QuintuplicateBolt.png"
 	},
+	StrengthUp:{
+		"src":"images/StrengthUp.png"
+	},
 	Random:[
 		{"src":"images/GoldenMoon.png"},
 		{"src":"images/Dagger.png"},
