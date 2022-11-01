@@ -6,14 +6,14 @@ class Projectile extends sword.Entity{
 		this.height = 32;		
         this.sprite = 'Dagger';
         this.type.push('weapon');
-		this.speed=400;
+		this.speed = 400;
 		this.damage = .5;
 		this.knockback = 25;
 		this.rotation = 0;			//In Degrees
 		this.lifetime = 500;		//In Milliseconds
 		this.pierce = false;
 		this.piercetime = 40;		//Time After Hit
-		this.attackSpeed = 30;		//Milliseconds between attack
+		this.attackSpeed = 100;		//Milliseconds between attack
 		this.spread = 45;			//In Degrees
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary? Doesn't Work
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
@@ -39,7 +39,7 @@ class Projectile extends sword.Entity{
 		this.box=(this.width,this.height);
 		this.setOrigin(this.width/2,this.height/2);
 		let spin=setInterval(()=>{
-				this.rotate(this.rotation * Math.PI / 180)},33);
+			this.rotate(this.rotation * Math.PI / 180)},33);
 		this.on('collide', (obj) => {
 			let hit=false;
 			for (let o of obj) {
@@ -125,23 +125,69 @@ class ForceBarrier extends Projectile{
 		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 100;
+		this.attackSpeed = 70;
 		this.spread = 30;			//In Degrees
 	}
 }
-function shootProjectile(entity,direction,projectile){
+class Quintuple extends Projectile{
+	constructor(entity) {
+		super(32,32); 
+		this.width = 32;
+		this.height = 32;		
+        this.sprite = 'QuintuplicateBolt';
+		this.speed=175;
+		this.damage = 1;
+		this.knockback = 50;
+		this.rotation = 0;
+		this.lifetime = 800;
+		this.pierce = false;
+		this.piercetime = 150;
+		this.attackSpeed = 150;
+		this.spread = 0;			//In Degrees
+
+	}
+}
+function shootProjectile(entity,direction,projectile,quantity,spread){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new projectile(entity,direction);
-		p.createProjectile(p,entity);
-		p.setSpeed(direction,p.speed);
-		map.insert(p)
-		p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
-		p.owner=entity;
-		//console.log("Angle = ",Math.atan2(direction.y, direction.x));
-		p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
-		setTimeout(()=>{
-			this.timeout=false;
-		},p.attackSpeed);
+		if(quantity == undefined) quantity = 1;
+		if(spread == undefined) spread = 360/quantity;
+
+		if(quantity != 1 && spread != 0){
+			let degree = (spread * (quantity+1) * Math.PI / 360);
+			let angle = Math.atan2(direction.y, direction.x);
+			angle -= degree;
+	
+			direction.x = Math.cos(angle);
+			direction.y = Math.sin(angle);
+		}
+
+		for(let i = 1; i<=quantity; i++){
+
+			if(quantity != 1 && spread != 0){
+				let degree = (spread * Math.PI / 180);
+				let angle = Math.atan2(direction.y, direction.x);
+				angle += degree;
+		
+				direction.x = Math.cos(angle);
+				direction.y = Math.sin(angle);
+			}
+
+			let p=new projectile(entity);
+			p.createProjectile(p,entity);
+			p.setSpeed(direction,p.speed);
+			map.insert(p)
+			p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
+			p.owner=entity;
+			//console.log("Angle = ",Math.atan2(direction.y, direction.x));
+			p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
+			if (i==quantity){
+				setTimeout(()=>{this.timeout=false;
+				},p.attackSpeed);
+			}
+			
+		}
 	}
+		
+		
 }

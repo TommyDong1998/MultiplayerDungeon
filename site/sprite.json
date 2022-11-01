@@ -7,10 +7,10 @@ var spriteData={
 		"y":244
 	},
 	Gold:
-	[{x:289,y:273,width:8,height:7},
-	{x:297,y:273,width:8,height:7},
-	{x:295,y:273,width:8,height:7},
-	{x:303,y: 273,width:8,height:7}],
+	[{x:289,y:273,width:6,height:7},
+	{x:298,y:273,width:6,height:7},
+	{x:305,y:273,width:6,height:7},
+	{x:313,y:273,width:6,height:7}],
 	RustSword:{
 		"height":21,
 		"id":4,
@@ -53,6 +53,12 @@ var spriteData={
 	}, 
 	GoldenMoon:{
 		"src":"images/GoldenMoon.png"
+	},
+	QuintuplicateBolt:{
+		"src":"images/QuintuplicateBolt.png"
+	},
+	StrengthUp:{
+		"src":"images/StrengthUp.png"
 	},
 	Random:[
 		{"src":"images/GoldenMoon.png"},

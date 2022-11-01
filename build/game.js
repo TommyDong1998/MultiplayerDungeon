@@ -112,14 +112,14 @@ var map = new sword.GameMap(world, settings.width, settings.height);class Projec
 		this.height = 32;		
         this.sprite = 'Dagger';
         this.type.push('weapon');
-		this.speed=400;
+		this.speed = 400;
 		this.damage = .5;
 		this.knockback = 25;
 		this.rotation = 0;			//In Degrees
 		this.lifetime = 500;		//In Milliseconds
 		this.pierce = false;
 		this.piercetime = 40;		//Time After Hit
-		this.attackSpeed = 30;		//Milliseconds between attack
+		this.attackSpeed = 100;		//Milliseconds between attack
 		this.spread = 45;			//In Degrees
 		this.opacity = .5; 			//Can't Find Opacity Option/Not necessary? Doesn't Work
 		this.attackPerSec = 100; 	//at most 30, Need Invulnerability Fix,Not Implemented Yet
@@ -145,7 +145,7 @@ var map = new sword.GameMap(world, settings.width, settings.height);class Projec
 		this.box=(this.width,this.height);
 		this.setOrigin(this.width/2,this.height/2);
 		let spin=setInterval(()=>{
-				this.rotate(this.rotation * Math.PI / 180)},33);
+			this.rotate(this.rotation * Math.PI / 180)},33);
 		this.on('collide', (obj) => {
 			let hit=false;
 			for (let o of obj) {
@@ -231,25 +231,71 @@ class ForceBarrier extends Projectile{
 		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 100;
+		this.attackSpeed = 70;
 		this.spread = 30;			//In Degrees
 	}
 }
-function shootProjectile(entity,direction,projectile){
+class Quintuple extends Projectile{
+	constructor(entity) {
+		super(32,32); 
+		this.width = 32;
+		this.height = 32;		
+        this.sprite = 'QuintuplicateBolt';
+		this.speed=175;
+		this.damage = 1;
+		this.knockback = 50;
+		this.rotation = 0;
+		this.lifetime = 800;
+		this.pierce = false;
+		this.piercetime = 150;
+		this.attackSpeed = 150;
+		this.spread = 0;			//In Degrees
+
+	}
+}
+function shootProjectile(entity,direction,projectile,quantity,spread){
 	if (!this.timeout) {
 		this.timeout = true;
-		let p=new projectile(entity,direction);
-		p.createProjectile(p,entity);
-		p.setSpeed(direction,p.speed);
-		map.insert(p)
-		p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
-		p.owner=entity;
-		//console.log("Angle = ",Math.atan2(direction.y, direction.x));
-		p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
-		setTimeout(()=>{
-			this.timeout=false;
-		},p.attackSpeed);
+		if(quantity == undefined) quantity = 1;
+		if(spread == undefined) spread = 360/quantity;
+
+		if(quantity != 1 && spread != 0){
+			let degree = (spread * (quantity+1) * Math.PI / 360);
+			let angle = Math.atan2(direction.y, direction.x);
+			angle -= degree;
+	
+			direction.x = Math.cos(angle);
+			direction.y = Math.sin(angle);
+		}
+
+		for(let i = 1; i<=quantity; i++){
+
+			if(quantity != 1 && spread != 0){
+				let degree = (spread * Math.PI / 180);
+				let angle = Math.atan2(direction.y, direction.x);
+				angle += degree;
+		
+				direction.x = Math.cos(angle);
+				direction.y = Math.sin(angle);
+			}
+
+			let p=new projectile(entity);
+			p.createProjectile(p,entity);
+			p.setSpeed(direction,p.speed);
+			map.insert(p)
+			p.setPosition(entity.pos.x+entity.width/4,entity.pos.y+entity.height/4);
+			p.owner=entity;
+			//console.log("Angle = ",Math.atan2(direction.y, direction.x));
+			p.rotate((Math.atan2(direction.y, direction.x) + 2.5 * Math.PI));
+			if (i==quantity){
+				setTimeout(()=>{this.timeout=false;
+				},p.attackSpeed);
+			}
+			
+		}
 	}
+		
+		
 }function chargeAttack(){
 	if (!this.timeout) {
 		this.timeout = true;
@@ -271,6 +317,73 @@ function shootProjectile(entity,direction,projectile){
 		},500)
 	}
 }
+
+function spinAttack(){
+	if (!this.timeout) {
+		this.timeout = true;
+		var direction = this.facing;
+		this.damageFree = true;
+		setTimeout(() => {
+			this.damageFree = false;
+		}, 300);
+		this.weapon.spin(6 * Math.PI, 900, () => {
+			setTimeout(()=>{
+				this.timeout = false;
+			},300);
+		});
+	}
+}
+
+function pounceAttack(){
+    if (!this.timeout) {
+        this.timeout = true;
+        this.vamp=1;
+        this.damageFree = true;
+        var pos = {
+                x: this.mousePos.x,
+                y: this.mousePos.y
+        }
+        util.normalize(pos, this.stat.speed);
+        this.velocity.x += pos.x;
+        this.velocity.y += pos.y;
+        setTimeout(()=>{
+            this.damageFree = false;
+            this.vamp=0;				
+            this.velocity.x -= pos.x*2;
+            this.velocity.y -= pos.y*2;
+            setTimeout(()=>{
+                this.velocity.x += pos.x;
+                this.velocity.y += pos.y;
+                setTimeout(()=>{
+                    this.timeout=false;
+                },500)
+            },200);
+        },300)
+    }
+}
+
+function potionAttack(){
+    if (!this.timeout&&this.healthPotions) {
+        this.timeout=true;
+        this.healthPotions--;
+        var potion = new Potion("HealthPotion");
+        world.emit('rmCollision', potion);
+        potion.setPosition(this.pos.x, this.pos.y);
+        setTimeout(()=>{
+            world.emit('collision', potion);
+        },300);
+        potion.velocityTimeout(this.mousePos,this.stat.speed*2,300);
+        setTimeout(()=>{
+            this.timeout=false;
+        },1000)
+    }
+}
+function setStat (entity){
+	entity.stat.hp = entity.baseStat.hp + entity.classStat.hp;
+	entity.stat.speed = entity.baseStat.speed + entity.classStat.speed;
+	entity.stat.strength = entity.baseStat.strength + entity.classStat.strength;
+	entity.hp = entity.stat.hp;
+}
 function setWarrior(entity){
 	entity.emit("newClass");
     entity._classSetter=setWarrior;
@@ -278,12 +391,17 @@ function setWarrior(entity){
 	entity.width=30;
 	entity.height=40;
 	entity.box(entity.width, entity.height);
-	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};	
-	entity.stat.hp=14;
-	entity.hp=14;
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity._weaponReach=10;
 	entity.sprite="knight";
+	entity.classStat = {
+		hp: 6,
+		speed: 10,
+		strength: 1
+	};
+	setStat(entity);
 	entity.attack=chargeAttack;
+	
 }
 function setVampire(entity){
 	entity.emit("newClass");
@@ -293,37 +411,15 @@ function setVampire(entity){
 	entity.height=40;
 	entity.box(entity.width, entity.height);
 	entity._weaponAnchor = {x: entity.width / 2,y: entity.height/2};
-	entity.stat.hp=12;
-	entity.hp=12;
 	entity._weaponReach=10;
 	entity.sprite="elf"
-	entity.attack=function(){
-		if (!this.timeout) {
-			this.timeout = true;
-			entity.vamp=1;
-			this.damageFree = true;
-			var pos = {
-                    x: this.mousePos.x,
-                    y: this.mousePos.y
-            }
-			util.normalize(pos, this.stat.speed);
-			this.velocity.x += pos.x;
-            this.velocity.y += pos.y;
-			setTimeout(()=>{
-				this.damageFree = false;
-				this.vamp=0;				
-				this.velocity.x -= pos.x*2;
-				this.velocity.y -= pos.y*2;
-				setTimeout(()=>{
-					this.velocity.x += pos.x;
-					this.velocity.y += pos.y;
-					setTimeout(()=>{
-						this.timeout=false;
-					},500)
-				},200);
-			},300)
-		}
-	}
+	entity.classStat = {
+		hp: 2,
+		speed: 50,
+		strength: 1
+	};
+	setStat(entity);
+	entity.attack=pounceAttack;
 }
 function setPotionHoard(entity){
 	entity.emit("newClass");
@@ -333,26 +429,15 @@ function setPotionHoard(entity){
 	entity.height=40;
 	entity.box(entity.width, entity.height);
 	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
-	entity.stat.hp=40;
-	entity.hp=40;
 	entity._weaponReach=10;
 	entity.healthPotions=3;
-	entity.attack=function(){
-		if (!this.timeout&&entity.healthPotions) {
-			this.timeout=true;
-			entity.healthPotions--;
-			var potion = new Potion("HealthPotion");
-			world.emit('rmCollision', potion);
-            potion.setPosition(this.pos.x, this.pos.y);
-			setTimeout(()=>{
-				world.emit('collision', potion);
-			},300);
-			potion.velocityTimeout(this.mousePos,entity.stat.speed*2,300);
-            setTimeout(()=>{
-				this.timeout=false;
-			},1000)
-        }
-	}
+	entity.classStat = {
+		hp: 6,
+		speed: 0,
+		strength: 0
+	};
+	setStat(entity);
+	entity.attack=potionAttack;
 	let addPotion=setInterval(()=>{
 		if(entity.healthPotions<10)
 			entity.healthPotions+=1;
@@ -367,25 +452,6 @@ function setPotionHoard(entity){
 			clearInterval(addPotion);
 	})
 }
-function spinAttack()
-{
-	if (!this.timeout) {
-		this.timeout = true;
-		var direction = this.facing;
-		setTimeout(() => {
-			this.damageFree = true;
-		}, 100);
-		setTimeout(() => {
-			this.damageFree = false;
-		}, 600);
-		this.weapon.spin(6 * Math.PI, 900, () => {
-			setTimeout(()=>{
-				this.timeout = false;
-			},300);
-		});
-	}
-}
-
 function setLeader(entity){
 	entity.emit("newClass");
     entity._classSetter=setLeader;	
@@ -395,9 +461,13 @@ function setLeader(entity){
 	entity.box(entity.width, entity.height);
 	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity.sprite='elf';
-	entity.stat.hp=20;
-	entity.hp=20;
-	entity._weaponReach=20;
+	entity._weaponReach=30;
+	entity.classStat = {
+		hp: 10,
+		speed: 25,
+		strength: 2
+	};
+	setStat(entity);
 	entity.attack=spinAttack.bind(entity);
 }
 
@@ -410,9 +480,13 @@ function setMinie(entity){
 	entity.box(entity.width, entity.height);
 	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
 	entity.sprite="knight";
-	entity.stat.hp=8;
-	entity.hp=8;
 	entity._weaponReach=10;
+	entity.classStat = {
+		hp: 0,
+		speed: 15,
+		strength: 0
+	};
+	setStat(entity);
 	entity.attack=chargeAttack;
 }
 
@@ -424,17 +498,22 @@ function setWizard(entity){
 	entity.height=40;
 	entity.box(entity.width, entity.height);
 	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
-	entity.sprite="wizard";
-	entity.stat.hp=10;
-	entity.hp=10;
+	entity.sprite="wizard";;
 	entity._weaponReach=10;
-	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier];
-	entity.spell = spells[Math.floor(Math.random()*4)];
+	entity.classStat = {
+		hp: 2,
+		speed: -25,
+		strength: 0
+	};
+	setStat(entity);
+	entity.abilityAccuracy = 10;
+	let spells = [Projectile, Fireball, GoldenMoon, ForceBarrier,Quintuple];
+	entity.spell = spells[Math.floor(Math.random()*5)];
 	entity.attack=()=>{
 		shootProjectile(entity,{
 			x: entity.mousePos.x,
 			y: entity.mousePos.y
-		},entity.spell);
+		},entity.spell,entity.stat.strength,(20-entity.stat.strength));
 	}
 }
 
@@ -1326,10 +1405,15 @@ var shop_items = {
             map.insert(weapon);
             player.weild(weapon);
         }
+    },
+    StrengthUp: {
+        cost:10,
+        add:function(player){
+            player.baseStat.strength +=1;
+            setStat(player);
+        }
     }
 };
-
-
 /* Requires Global Variable world */
 class Player extends Monster {
     constructor(socket, type, name) {
@@ -1337,7 +1421,17 @@ class Player extends Monster {
         super("elf");
         this.playerName = name;
 		this.boughtItem=[];
-        this.stat.speed = 150;
+        this.stat.speed=150;
+        this.baseStat = {
+            hp: 10,
+            speed: 150,
+            strength: 1
+        };
+        this.classStat = {
+            hp: 0,
+            speed: 0,
+            strength: 0
+        };
         this.mousePos = {
             x: 0,
             y: 0
@@ -1663,12 +1757,31 @@ class Coin extends sword.Entity {
         world.emit('velocity', this);
         world.emit('collision', this);
         this.gold=1;
+        
         this.on('collide', (obj) => {
+            if(this.gold == 0){
+                this.emit("remove");
+            }
             for (let o of obj) {
                 if (o instanceof Player) {
                     o.gold+=this.gold;
                     this.emit("remove");
                     break;
+                }
+                if (o instanceof Coin) {
+                    if(this.gold<o.gold){
+                        o.gold+=this.gold;
+                        this.gold = 0;
+                        break;
+                    }else if(this.id<o.id){
+                        o.gold+=this.gold;
+                        this.gold = 0;
+                        break;
+                    }
+                    this.width=Math.floor(12*(Math.cbrt(this.gold)));
+                    this.height=Math.floor(15*(Math.cbrt(this.gold)));
+                    this.setOrigin(0,0);
+                    this.box(this.width,this.height);
                 }
             }
         });
