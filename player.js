@@ -94,12 +94,12 @@ class Player extends Monster {
                         break;
                         //Attack
                     case 1:
-			if(this.hp>0){
-				if (this.weapon._overrideAttack)
-				    this.weapon._overrideAttack(this)
-				else
-				    this.attack();
-			}
+                        if(this.hp>0){
+                            if (this.weapon._overrideAttack)
+                                this.weapon._overrideAttack(this)
+                            else
+                                this.attack();
+                        }
                         break;
                         //Mouse movement
                     case 2:
