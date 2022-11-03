@@ -27,7 +27,7 @@ function spinAttack(){
 		this.damageFree = true;
 		setTimeout(() => {
 			this.damageFree = false;
-		}, 300);
+		}, 600);
 		this.weapon.spin(6 * Math.PI, 900, () => {
 			setTimeout(()=>{
 				this.timeout = false;

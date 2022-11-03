@@ -83,7 +83,7 @@ class Fireball extends Projectile{
 		this.height = 24;		
         this.sprite = 'Fireball';
 		this.speed=250;
-		this.damage = 2;
+		this.damage = 3;
 		this.knockback = 0;
 		this.rotation = 20;
 		this.lifetime = 1200;
@@ -125,8 +125,8 @@ class ForceBarrier extends Projectile{
 		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 70;
-		this.spread = 30;			//In Degrees
+		this.attackSpeed = 100;
+		this.spread = 25;			//In Degrees
 	}
 }
 class Quintuple extends Projectile{
@@ -135,14 +135,14 @@ class Quintuple extends Projectile{
 		this.width = 32;
 		this.height = 32;		
         this.sprite = 'QuintuplicateBolt';
-		this.speed=175;
-		this.damage = 1;
-		this.knockback = 50;
+		this.speed=200;
+		this.damage = .3;
+		this.knockback = 40;
 		this.rotation = 0;
 		this.lifetime = 800;
 		this.pierce = false;
 		this.piercetime = 150;
-		this.attackSpeed = 150;
+		this.attackSpeed = 175;
 		this.spread = 0;			//In Degrees
 
 	}
