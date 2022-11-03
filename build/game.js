@@ -382,7 +382,9 @@ function setStat (entity){
 	entity.stat.hp = entity.baseStat.hp + entity.classStat.hp;
 	entity.stat.speed = entity.baseStat.speed + entity.classStat.speed;
 	entity.stat.strength = entity.baseStat.strength + entity.classStat.strength;
+	entity.stat.resistance = entity.baseStat.resistance + entity.classStat.resistance;
 	entity.hp = entity.stat.hp;
+	console.log(entity.stat.resistance);
 }
 function setWarrior(entity){
 	entity.emit("newClass");
@@ -397,7 +399,8 @@ function setWarrior(entity){
 	entity.classStat = {
 		hp: 6,
 		speed: 10,
-		strength: 1
+		strength: 1,
+		resistance: 3
 	};
 	setStat(entity);
 	entity.attack=chargeAttack;
@@ -416,7 +419,8 @@ function setVampire(entity){
 	entity.classStat = {
 		hp: 2,
 		speed: 50,
-		strength: 1
+		strength: 1,
+		resistance: 1
 	};
 	setStat(entity);
 	entity.attack=pounceAttack;
@@ -465,7 +469,8 @@ function setLeader(entity){
 	entity.classStat = {
 		hp: 10,
 		speed: 25,
-		strength: 2
+		strength: 2,
+		resistance: 50
 	};
 	setStat(entity);
 	entity.attack=spinAttack.bind(entity);
@@ -484,7 +489,8 @@ function setMinie(entity){
 	entity.classStat = {
 		hp: 0,
 		speed: 15,
-		strength: 0
+		strength: 0,
+		resistance: -1
 	};
 	setStat(entity);
 	entity.attack=chargeAttack;
@@ -503,7 +509,8 @@ function setWizard(entity){
 	entity.classStat = {
 		hp: 2,
 		speed: -25,
-		strength: 0
+		strength: 0,
+		resistance: 0
 	};
 	setStat(entity);
 	entity.abilityAccuracy = 10;
@@ -1423,7 +1430,7 @@ class Player extends Monster {
             hp: 10,
             speed: 150,
             strength: 1,
-            resistance:5
+            resistance:10
         };
         this.classStat = {
             hp: 0,
