@@ -9,7 +9,8 @@ class Player extends Monster {
         this.baseStat = {
             hp: 10,
             speed: 150,
-            strength: 1
+            strength: 1,
+            resistance:10
         };
         this.classStat = {
             hp: 0,

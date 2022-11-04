@@ -9,8 +9,11 @@ class Monster extends sword.Entity {
         this.z = 10;
         this.stat = {
             hp: this.hp,
+            mana: 0,
             speed: 100,
-            strength: 1
+            strength: 1, //Ability Power
+            resistance: 0, //Knockback and Status Effect Resistance
+            defense: 0 //Blocks 1 hp of damage per 10 seconds
         };
         this.status=[];
 		this.facing = 1;
@@ -162,11 +165,9 @@ class Monster extends sword.Entity {
     }
     //Knocked back by an obj
     knockback(obj, amt) {
+        amt = amt*(5/(5+this.stat.resistance))
         this._knockbackCount=this._knockbackCount||0;
         this._knockbackCount+=1;
-        if(this instanceof Player && this._knockbackCount){
-            amt/=2;
-        }
         var d = {
             x: obj.pos.x - this.pos.x,
             y: obj.pos.y - this.pos.y

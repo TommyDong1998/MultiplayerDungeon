@@ -189,7 +189,7 @@ class Fireball extends Projectile{
 		this.height = 24;		
         this.sprite = 'Fireball';
 		this.speed=250;
-		this.damage = 2;
+		this.damage = 3;
 		this.knockback = 0;
 		this.rotation = 20;
 		this.lifetime = 1200;
@@ -231,8 +231,8 @@ class ForceBarrier extends Projectile{
 		this.lifetime = 1600;
 		this.pierce = false;
 		this.piercetime = 100;
-		this.attackSpeed = 70;
-		this.spread = 30;			//In Degrees
+		this.attackSpeed = 100;
+		this.spread = 25;			//In Degrees
 	}
 }
 class Quintuple extends Projectile{
@@ -241,14 +241,14 @@ class Quintuple extends Projectile{
 		this.width = 32;
 		this.height = 32;		
         this.sprite = 'QuintuplicateBolt';
-		this.speed=175;
-		this.damage = 1;
-		this.knockback = 50;
+		this.speed=200;
+		this.damage = .3;
+		this.knockback = 40;
 		this.rotation = 0;
 		this.lifetime = 800;
 		this.pierce = false;
 		this.piercetime = 150;
-		this.attackSpeed = 150;
+		this.attackSpeed = 175;
 		this.spread = 0;			//In Degrees
 
 	}
@@ -325,7 +325,7 @@ function spinAttack(){
 		this.damageFree = true;
 		setTimeout(() => {
 			this.damageFree = false;
-		}, 300);
+		}, 600);
 		this.weapon.spin(6 * Math.PI, 900, () => {
 			setTimeout(()=>{
 				this.timeout = false;
@@ -382,7 +382,9 @@ function setStat (entity){
 	entity.stat.hp = entity.baseStat.hp + entity.classStat.hp;
 	entity.stat.speed = entity.baseStat.speed + entity.classStat.speed;
 	entity.stat.strength = entity.baseStat.strength + entity.classStat.strength;
+	entity.stat.resistance = entity.baseStat.resistance + entity.classStat.resistance;
 	entity.hp = entity.stat.hp;
+	console.log(entity.stat.resistance);
 }
 function setWarrior(entity){
 	entity.emit("newClass");
@@ -397,7 +399,8 @@ function setWarrior(entity){
 	entity.classStat = {
 		hp: 6,
 		speed: 10,
-		strength: 1
+		strength: 1,
+		resistance: 3
 	};
 	setStat(entity);
 	entity.attack=chargeAttack;
@@ -416,7 +419,8 @@ function setVampire(entity){
 	entity.classStat = {
 		hp: 2,
 		speed: 50,
-		strength: 1
+		strength: 1,
+		resistance: 1
 	};
 	setStat(entity);
 	entity.attack=pounceAttack;
@@ -465,7 +469,8 @@ function setLeader(entity){
 	entity.classStat = {
 		hp: 10,
 		speed: 25,
-		strength: 2
+		strength: 2,
+		resistance: 50
 	};
 	setStat(entity);
 	entity.attack=spinAttack.bind(entity);
@@ -484,7 +489,8 @@ function setMinie(entity){
 	entity.classStat = {
 		hp: 0,
 		speed: 15,
-		strength: 0
+		strength: 0,
+		resistance: -1
 	};
 	setStat(entity);
 	entity.attack=chargeAttack;
@@ -503,7 +509,8 @@ function setWizard(entity){
 	entity.classStat = {
 		hp: 2,
 		speed: -25,
-		strength: 0
+		strength: 0,
+		resistance: 0
 	};
 	setStat(entity);
 	entity.abilityAccuracy = 10;
@@ -532,8 +539,11 @@ class Monster extends sword.Entity {
         this.z = 10;
         this.stat = {
             hp: this.hp,
+            mana: 0,
             speed: 100,
-            strength: 1
+            strength: 1, //Ability Power
+            resistance: 0, //Knockback and Status Effect Resistance
+            defense: 0 //Blocks 1 hp of damage per 10 seconds
         };
         this.status=[];
 		this.facing = 1;
@@ -685,11 +695,9 @@ class Monster extends sword.Entity {
     }
     //Knocked back by an obj
     knockback(obj, amt) {
+        amt = amt*(5/(5+this.stat.resistance))
         this._knockbackCount=this._knockbackCount||0;
         this._knockbackCount+=1;
-        if(this instanceof Player && this._knockbackCount){
-            amt/=2;
-        }
         var d = {
             x: obj.pos.x - this.pos.x,
             y: obj.pos.y - this.pos.y
@@ -1060,7 +1068,7 @@ class Demon extends NPC {
         this.hp = 20;
         this.stat.hp = 20;
         this.stat.speed = 150;
-        this.removeAllListeners("knockback");
+        this.stat.resistance = 15;
         this.on('damage', (amt, obj) => {
             if (this.hp <= 0) {
                 for (var x = 0; x < 10; x++) {
@@ -1072,10 +1080,6 @@ class Demon extends NPC {
                     }
                 }
             }
-        });
-        this.on('knockback', (obj, amt) => {
-            if (obj instanceof Weapon)
-                this.knockback(obj, amt / 2);
         });
         setInterval(() => {
             if (this.hp != this.stat.hp) {
@@ -1425,7 +1429,8 @@ class Player extends Monster {
         this.baseStat = {
             hp: 10,
             speed: 150,
-            strength: 1
+            strength: 1,
+            resistance:10
         };
         this.classStat = {
             hp: 0,
@@ -1510,12 +1515,10 @@ class Player extends Monster {
                         break;
                         //Attack
                     case 1:
-                        if(this.hp>0){
-                            if (this.weapon._overrideAttack)
-                                this.weapon._overrideAttack(this)
-                            else
-                                this.attack();
-                        }
+                        if (this.weapon._overrideAttack)
+                            this.weapon._overrideAttack(this)
+                        else
+                            this.attack();
                         break;
                         //Mouse movement
                     case 2:
