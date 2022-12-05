@@ -385,7 +385,7 @@ function update(){
 
 
 //	Create a socket to connect to the server
-var socket=new WebSocket("ws://"+window.location.host);
+var socket=new WebSocket(window.location.protocol === 'https:' ? 'wss' : 'ws'+"://"+window.location.host);
 var pname;
 function randomName() {
 	//var randomNum = Math.floor(Math.random() * 10);
@@ -443,7 +443,7 @@ function recievePackets(event){
 	if(message.restart){
 		if(confirm("You died! Want to restart?")){
 			//socket.send(JSON.stringify({restart:true}));
-			var tempSocket=new WebSocket("ws://"+window.location.host);
+			var tempSocket=new WebSocket(window.location.protocol === 'https:' ? 'wss' : 'ws'+"://"+window.location.host);
 			tempSocket.addEventListener("open",()=>{
 				socket.send(JSON.stringify({"name":pname}));
 			});
