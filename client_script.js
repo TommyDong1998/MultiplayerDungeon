@@ -443,7 +443,7 @@ function recievePackets(event){
 	if(message.restart){
 		if(confirm("You died! Want to restart?")){
 			//socket.send(JSON.stringify({restart:true}));
-			var tempSocket=new WebSocket("ws://"+window.location.host);
+			var tempSocket=new WebSocket(window.location.protocol === 'https:' ? 'wss' : 'ws'+"://"+window.location.host);
 			tempSocket.addEventListener("open",()=>{
 				socket.send(JSON.stringify({"name":pname}));
 			});
