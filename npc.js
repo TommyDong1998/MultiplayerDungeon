@@ -130,7 +130,7 @@ class Demon extends NPC {
         this.hp = 20;
         this.stat.hp = 20;
         this.stat.speed = 150;
-        this.removeAllListeners("knockback");
+        this.stat.resistance = 15;
         this.on('damage', (amt, obj) => {
             if (this.hp <= 0) {
                 for (var x = 0; x < 10; x++) {
@@ -142,10 +142,6 @@ class Demon extends NPC {
                     }
                 }
             }
-        });
-        this.on('knockback', (obj, amt) => {
-            if (obj instanceof Weapon)
-                this.knockback(obj, amt / 2);
         });
         setInterval(() => {
             if (this.hp != this.stat.hp) {
