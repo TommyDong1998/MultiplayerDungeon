@@ -385,7 +385,7 @@ function update(){
 
 
 //	Create a socket to connect to the server
-var socket=new WebSocket("ws://"+window.location.host);
+var socket=new WebSocket(window.location.protocol === 'https:' ? 'wss' : 'ws'+"://"+window.location.host);
 var pname;
 function randomName() {
 	//var randomNum = Math.floor(Math.random() * 10);
