@@ -1,13 +1,11 @@
 {
   "name": "multiplayerdungeon",
   "version": "3.0.1",
-  "main": "game.js",
+  "main": "demo.js",
   "scripts": {
-    "start": "node build/game.js",
+    "start": "node demo.js",
     "build_site": "uglifyjs client_script.js -m -o site/client_script.js",
-    "build_windows": "type demo.js projectiles.js Attacks.js entityClass.js  monster.js weapon.js npc.js level.js shop.js player.js item.js > build/game.js",
-    "build_linux": "cat demo.js projectiles.js Attacks.js entityClass.js  monster.js weapon.js npc.js level.js shop.js player.js item.js > build/game.js",
-    "build": "npm run build_site && npm run build_windows"
+    "build": "npm run build_site"
   },
   "dependencies": {
     "express": "^4.16.4",

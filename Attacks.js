@@ -1,9 +1,12 @@
-function chargeAttack(){
-	if (!this.timeout) {
-		this.timeout = true;
-		var pos = {
-				x: this.mousePos.x,
-				y: this.mousePos.y
+const { getWorld, util } = require("./state");
+const { Potion } = require("./item");
+
+function chargeAttack() {
+    if (!this.timeout) {
+        this.timeout = true;
+        var pos = {
+                x: this.mousePos.x,
+                y: this.mousePos.y
 		}
 		util.normalize(pos, this.stat.speed);
 		this.velocity.x += pos.x;
@@ -13,19 +16,19 @@ function chargeAttack(){
 			this.damageFree = false;
 			this.velocity.x -= pos.x;
 			this.velocity.y -= pos.y;
-			setTimeout(()=>{
-				this.timeout=false;
-			},300);
-		},500)
-	}
+            setTimeout(() => {
+                this.timeout=false;
+            },300);
+        },500);
+    }
 }
 
-function spinAttack(){
-	if (!this.timeout) {
-		this.timeout = true;
-		var direction = this.facing;
-		this.damageFree = true;
-		setTimeout(() => {
+function spinAttack() {
+    if (!this.timeout) {
+        this.timeout = true;
+        var direction = this.facing;
+        this.damageFree = true;
+        setTimeout(() => {
 			this.damageFree = false;
 		}, 600);
 		this.weapon.spin(6 * Math.PI, 900, () => {
@@ -36,7 +39,7 @@ function spinAttack(){
 	}
 }
 
-function pounceAttack(){
+function pounceAttack() {
     if (!this.timeout) {
         this.timeout = true;
         this.vamp=1;
@@ -48,35 +51,43 @@ function pounceAttack(){
         util.normalize(pos, this.stat.speed);
         this.velocity.x += pos.x;
         this.velocity.y += pos.y;
-        setTimeout(()=>{
-            this.damageFree = false;
-            this.vamp=0;				
-            this.velocity.x -= pos.x*2;
-            this.velocity.y -= pos.y*2;
-            setTimeout(()=>{
-                this.velocity.x += pos.x;
-                this.velocity.y += pos.y;
-                setTimeout(()=>{
-                    this.timeout=false;
-                },500)
-            },200);
-        },300)
+            setTimeout(() => {
+                this.damageFree = false;
+                this.vamp=0;				
+                this.velocity.x -= pos.x*2;
+                this.velocity.y -= pos.y*2;
+                setTimeout(() => {
+                    this.velocity.x += pos.x;
+                    this.velocity.y += pos.y;
+                    setTimeout(() => {
+                        this.timeout=false;
+                    },500);
+                },200);
+            },300);
     }
 }
 
-function potionAttack(){
-    if (!this.timeout&&this.healthPotions) {
-        this.timeout=true;
+function potionAttack() {
+    if (!this.timeout && this.healthPotions) {
+        this.timeout = true;
         this.healthPotions--;
         var potion = new Potion("HealthPotion");
+        const world = getWorld();
         world.emit('rmCollision', potion);
         potion.setPosition(this.pos.x, this.pos.y);
-        setTimeout(()=>{
+        setTimeout(() => {
             world.emit('collision', potion);
         },300);
-        potion.velocityTimeout(this.mousePos,this.stat.speed*2,300);
-        setTimeout(()=>{
-            this.timeout=false;
-        },1000)
+        potion.velocityTimeout(this.mousePos, this.stat.speed * 2, 300);
+        setTimeout(() => {
+            this.timeout = false;
+        },1000);
     }
 }
+
+module.exports = {
+    chargeAttack,
+    spinAttack,
+    pounceAttack,
+    potionAttack
+};

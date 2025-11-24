@@ -1,10 +1,12 @@
-/*global sword*/
+const { sword, util, getWorld, getMap } = require("./state");
+const { Potion, Coin } = require("./item");
+
 /*
-This is the class that all entities inherit. NPC and Players. 
+This is the class that all entities inherit. NPC and Players.
 */
 class Monster extends sword.Entity {
     constructor(type) {
-        super(1,1)
+        super(1,1);
         this.setType(type);
         this.z = 10;
         this.stat = {
@@ -18,6 +20,8 @@ class Monster extends sword.Entity {
         this.status=[];
 		this.facing = 1;
 		this._weaponReach=10;
+        const map = getMap();
+        const world = getWorld();
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
@@ -186,3 +190,7 @@ class Monster extends sword.Entity {
         }, 300)
     }
 }
+
+module.exports = {
+    Monster
+};

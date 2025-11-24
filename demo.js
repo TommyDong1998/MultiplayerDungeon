@@ -1,107 +1,84 @@
-var express = require("express");
-var app = express();
+const express = require("express");
+const { sword, setWorld, setMap, setSettings, players } = require("./state");
+const { Player } = require("./player");
+const { loadMap, clearMap } = require("./level");
+const { loadLevel } = require("./mapLoader");
 
-app.use(express.static('site'));
-let port=process.env.PORT||8080
+const app = express();
 
-var httpServer=app.listen(port);
-//allow client to get port
+app.use(express.static("site"));
+const port = process.env.PORT || 8080;
 
-app.get('/api/port', (req, res) => {
-    res.send('var port='+port+';');
+const httpServer = app.listen(port);
+// allow client to get port
+
+app.get("/api/port", (req, res) => {
+    res.send("var port=" + port + ";");
 });
 
-var sword = require("swordengine");
-/*
-ToDo
-Finish xp implementation
-Level Teleporting
-Leader Class
-Mage Class
-*/
+let settings;
+let playersConnected = 0;
+let loadedMap = false;
 
-// Some common untilities that will be used.
-var util = {
-    normalize: (point, scale) => {
-        //From stackoverflow//Modified //Creative commons
-        var norm = Math.sqrt(Math.abs(point.x * point.x) + Math.abs(point.y * point.y));
-        if (norm != 0) { // as3 return 0,0 for a point of zero length
-            point.x = scale * point.x / norm;
-            point.y = scale * point.y / norm;
-        }
-        //End
-    },
-    //Used to get difference between two objects
-    diff: (object, object3) => {
-        var diff = {}
-        for (var obj in object3) {
-            if (!object.hasOwnProperty(obj) || object3[obj] != object[obj]) {
-                diff[obj] = object3[obj];
-            }
-        }
-        return diff;
-    }
-};
-
-var settings;
-var players=[];
-var playersConnected=0;
-
-//Send player information to client
-function updateGoldRank(){
-    let playersList= players.sort((a,b)=>{
+// Send player information to client
+function updateGoldRank() {
+    let playersList = players.sort((a, b) => {
         return b.gold - a.gold;
-    })
-    playersList= playersList.map((player)=>{
+    });
+    playersList = playersList.map((player) => {
         return player.playerName;
-    })
-    players.forEach((player)=>{
-        player.socket.send(JSON.stringify({
-            players: playersList
-        }));
-    })
+    });
+    players.forEach((player) => {
+        player.socket.send(
+            JSON.stringify({
+                players: playersList
+            })
+        );
+    });
 }
 
-//Upgrade gold rankings every 5 seconds
-setInterval(()=>{
+// Upgrade gold rankings every 5 seconds
+setInterval(() => {
     updateGoldRank();
-},5000);
+}, 5000);
 
-var loadedMap=false;
-var world = new sword(function(setting, socket) {
+const world = new sword(function (setting, socket) {
     settings = setting;
-    socket.on('connection', function connection(ws) {
+    setSettings(setting);
+    socket.on("connection", function connection(ws) {
         ws.once("message", (data) => {
             try {
-                if(!loadedMap){
-                    loadMap(require("./map/level1.json"));
-                    loadedMap=true;
+                if (!loadedMap) {
+                    loadMap(loadLevel());
+                    loadedMap = true;
                 }
-                playersConnected+=1;
-                
+                playersConnected += 1;
+
                 data = JSON.parse(data);
                 if (data.name) {
                     var player = new Player(ws, "elf", data.name);
-					players.push(player);
+                    players.push(player);
                     updateGoldRank();
-					player.on("remove",()=>{
-						if(players.indexOf(player)!=-1){
-							players.splice(players.indexOf(player),1);
-                            playersConnected-=1;
+                    player.on("remove", () => {
+                        if (players.indexOf(player) != -1) {
+                            players.splice(players.indexOf(player), 1);
+                            playersConnected -= 1;
                         }
-                        setTimeout(()=>{
-                            if(playersConnected==0){
+                        setTimeout(() => {
+                            if (playersConnected == 0) {
                                 clearMap();
-                                loadedMap=false;
+                                loadedMap = false;
                             }
-                        },5000)
-					});
+                        }, 5000);
+                    });
                 }
             } catch (e) {
                 console.log(e);
             }
         });
     });
-},httpServer);
+}, httpServer);
+setWorld(world);
 world.setMaxListeners(100);
-var map = new sword.GameMap(world, settings.width, settings.height);
+const map = new sword.GameMap(world, settings.width, settings.height);
+setMap(map);

@@ -1,15 +1,18 @@
-/*global sword*/
+const { sword, getWorld, getMap } = require("./state");
+
 class Potion extends sword.Entity {
     constructor(type) {
         super(16, 22);
         this.sprite = type;
         this.z = 10;
+        const map = getMap();
+        const world = getWorld();
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
         this.on('collide', (obj) => {
             for (let o of obj) {
-                if (o instanceof Player) {
+                if (o && o.isPlayer) {
                     if (o.hp < o.stat.hp-3)
                         o.hp += 4;
                     else if (o.hp < o.stat.hp)
@@ -24,12 +27,14 @@ class Potion extends sword.Entity {
         });
     }
 }
-/*global sword*/
+
 class Coin extends sword.Entity {
     constructor() {
         super(12, 15);
         this.sprite = "Gold";
         this.z = 10;
+        const map = getMap();
+        const world = getWorld();
         map.insert(this);
         world.emit('velocity', this);
         world.emit('collision', this);
@@ -40,7 +45,7 @@ class Coin extends sword.Entity {
                 this.emit("remove");
             }
             for (let o of obj) {
-                if (o instanceof Player) {
+                if (o && o.isPlayer) {
                     o.gold+=this.gold;
                     this.emit("remove");
                     break;
@@ -64,3 +69,8 @@ class Coin extends sword.Entity {
         });
     }
 }
+
+module.exports = {
+    Potion,
+    Coin
+};

@@ -1,4 +1,7 @@
 
+const { chargeAttack, pounceAttack, potionAttack, spinAttack } = require("./Attacks");
+const { Projectile, Fireball, GoldenMoon, ForceBarrier, Quintuple, shootProjectile } = require("./projectiles");
+
 function setStat (entity){
 	entity.stat.hp = entity.baseStat.hp + entity.classStat.hp;
 	entity.stat.speed = entity.baseStat.speed + entity.classStat.speed;
@@ -150,3 +153,14 @@ function setLuckMan(entity){
 	entity.entityClass="luckMan";
 	entity.stat.luck=3;
 }
+
+module.exports = {
+	setStat,
+	setWarrior,
+	setVampire,
+	setPotionHoard,
+	setLeader,
+	setMinie,
+	setWizard,
+	setLuckMan
+};

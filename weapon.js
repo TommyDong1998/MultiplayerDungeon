@@ -1,10 +1,13 @@
+const { sword, getWorld, getMap } = require("./state");
+
 /*
 The normal weapon for player. It contains collision testing methods.
 */
 class Weapon extends sword.Entity {
     constructor(w, h) {
         super(w, h); 
-        world.emit('collision', this);           
+        const world = getWorld();
+        world.emit('collision', this);
         this.removeAllListeners('collide');
         this.type.push('weapon');        
         this.attack = true;
@@ -216,7 +219,22 @@ Bullet class is for wizard particles
 class Bullet extends sword.Entity {
     constructor(size) {
         super(size, size);
+        const map = getMap();
+        const world = getWorld();
         map.insert(this);
         world.emit('velocity', this);
     }
 }
+
+module.exports = {
+    Weapon,
+    Sword,
+    Longsword,
+    Greatsword,
+    GlassSword,
+    JimmysRustySword,
+    Barrier,
+    HalfBarrier,
+    Dagger,
+    Bullet
+};

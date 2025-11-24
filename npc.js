@@ -1,3 +1,7 @@
+const { Monster } = require("./monster");
+const { players } = require("./state");
+const { Coin } = require("./item");
+
 class NPC extends Monster {
     constructor(type) {
         super(type);
@@ -34,7 +38,7 @@ class NPC extends Monster {
         this.action = setInterval(() => {
             var nearest;
             players.forEach((obj) => {
-                if (obj instanceof Player && obj != this) {
+                if (obj && obj.isPlayer && obj != this) {
                     var distance = Math.sqrt(Math.pow(obj.pos.x+obj.width/2 - this.pos.x+this.width/2, 2) + Math.pow(obj.pos.y+obj.height/2 - this.pos.y+this.height/2, 2));
                     if(distance>300)
                         return
@@ -150,3 +154,8 @@ class Demon extends NPC {
         }, 5000);
     }
 }
+
+module.exports = {
+    NPC,
+    Demon
+};

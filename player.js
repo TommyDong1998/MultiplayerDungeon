@@ -1,8 +1,17 @@
+const { Monster } = require("./monster");
+const { util, getWorld, getMap } = require("./state");
+const { Coin } = require("./item");
+const { Weapon, Sword, Longsword, Greatsword, Barrier, HalfBarrier, GlassSword, JimmysRustySword, Dagger, Bullet } = require("./weapon");
+const { shop_items } = require("./shop");
+const { setWarrior, setVampire, setPotionHoard, setLeader, setMinie, setWizard } = require("./entityClass");
+
 /* Requires Global Variable world */
 class Player extends Monster {
     constructor(socket, type, name) {
-        // Create Player
         super("elf");
+        const map = getMap();
+        const world = getWorld();
+        this.isPlayer = true;
         this.playerName = name;
 		this.boughtItem=[];
         this.stat.speed=150;
@@ -165,6 +174,7 @@ class Player extends Monster {
         //this.buy(0);
     }
     sendFrame() {
+        const map = getMap();
         this.data = this.data || {
             item: []
         };
@@ -308,3 +318,7 @@ class Player extends Monster {
         item.add(this);
     }
 }
+
+module.exports = {
+    Player
+};

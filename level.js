@@ -1,3 +1,6 @@
+const { sword, getWorld, getMap } = require("./state");
+const { NPC, Demon } = require("./npc");
+
 //Spawn different amounts of monsters per level
 function Spawner(level,position){
 	let numOfMinions=5 + 1 * level;
@@ -41,14 +44,22 @@ function Spawner(level,position){
 	});
 }
 function clearMap(){
-	while(world._collisionItems.length){
+	const world = getWorld();
+	const map = getMap();
+	while(world && world._collisionItems && world._collisionItems.length){
 		world._collisionItems[0].emit('remove');
 	}
-	world._velocityItems=[];
-	world._collisionItems=[];
-	map.quadTree.clear();
+	if (world) {
+		world._velocityItems=[];
+		world._collisionItems=[];
+	}
+	if (map && map.quadTree) {
+		map.quadTree.clear();
+	}
 }
 function loadMap(file){
+	const map = getMap();
+	const world = getWorld();
 	/*
 		Overlay
 		Generate tiles on layer 0
@@ -198,3 +209,9 @@ function loadMap(file){
 	}
 
 }
+
+module.exports = {
+	Spawner,
+	clearMap,
+	loadMap
+};
