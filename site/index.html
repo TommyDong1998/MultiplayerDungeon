@@ -51,16 +51,6 @@
 					<div class="help">Controls: WASD/Arrows to move. Mouse to aim. Click or spacebar to attack.</div>
 				</div>
 			</div>
-			<div id="restartOverlay">
-				<div class="restart-card">
-					<div class="restart-title">You Fell</div>
-					<div class="restart-body">Want to jump back into the dungeon?</div>
-					<div class="restart-actions">
-						<button class="restart-primary">Respawn</button>
-						<button class="restart-cancel">Exit</button>
-					</div>
-				</div>
-			</div>
 		</div>
 		<menu>
 		<div id="shop">
@@ -127,8 +117,18 @@
 		<div id="xp">
 			<div id="bar"></div>
 		</div>
+		<div id="restartOverlay">
+			<div class="restart-card">
+				<div class="restart-title">You Fell</div>
+				<div class="restart-body">Want to jump back into the dungeon?</div>
+				<div class="restart-actions">
+					<button class="restart-primary">Respawn</button>
+					<button class="restart-cancel">Exit</button>
+				</div>
+			</div>
+		</div>
 	</body>
-	<script src="client_script.js"></script>
+	<script src="/client_script.js"></script>
 	<script>
 		(() => {
 			const classCards = document.querySelectorAll('.class-card');

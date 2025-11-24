@@ -441,8 +441,7 @@ function recievePackets(event){
 		})
 	}
 	if(message.restart){
-		if(confirm("You died! Want to restart?")){
-			//socket.send(JSON.stringify({restart:true}));
+		showRestartOverlay(()=>{
 			var tempSocket=new WebSocket((window.location.protocol === 'https:' ? 'wss' : 'ws')+"://"+window.location.host);
 			tempSocket.addEventListener("open",()=>{
 				socket.send(JSON.stringify({"name":pname}));
@@ -450,9 +449,9 @@ function recievePackets(event){
 			tempSocket.onmessage=recievePackets;
 			socket= tempSocket;
 			gameMap= new map;
-		}else{
+		},()=>{
 			console.log("no restart")
-		}
+		});
 	}
 }
 
@@ -553,3 +552,26 @@ function updateIndex() {
 		return a.zOrder - b.zOrder
 	});
 };
+function showRestartOverlay(onRestart,onCancel){
+	const modal=document.getElementById("restartOverlay");
+	if(!modal){
+		if(onRestart) onRestart();
+		return;
+	}
+	const primary=modal.querySelector(".restart-primary");
+	const cancel=modal.querySelector(".restart-cancel");
+	const cleanup=()=>{
+		modal.style.display="none";
+		primary.onclick=null;
+		cancel.onclick=null;
+	};
+	modal.style.display="flex";
+	primary.onclick=()=>{
+		cleanup();
+		onRestart&&onRestart();
+	};
+	cancel.onclick=()=>{
+		cleanup();
+		onCancel&&onCancel();
+	};
+}

@@ -4,8 +4,7 @@
   "main": "demo.js",
   "scripts": {
     "start": "node demo.js",
-    "build_site": "uglifyjs client_script.js -m -o site/client_script.js",
-    "build": "npm run build_site"
+    "build": "echo \"No build required\""
   },
   "dependencies": {
     "express": "^4.16.4",

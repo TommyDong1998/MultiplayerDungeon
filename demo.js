@@ -4,10 +4,14 @@ const { Player } = require("./player");
 const { loadMap, clearMap } = require("./level");
 const { loadLevel } = require("./mapLoader");
 const { setWarrior, setWizard, setMinie, setRogue } = require("./entityClass");
+const path = require("path");
 
 const app = express();
 
 app.use(express.static("site"));
+app.get("/client_script.js", (req, res) => {
+    res.sendFile(path.join(__dirname, "client_script.js"));
+});
 const port = process.env.PORT || 8080;
 
 const httpServer = app.listen(port);
