@@ -37,8 +37,8 @@ class Projectile extends sword.Entity {
         this.velocity.x += direction.x;
         this.velocity.y += direction.y;
     }
-    createProjectile(entity) {
-        this.box = (this.width, this.height);
+    createProjectile() {
+        this.box(this.width, this.height);
         this.setOrigin(this.width / 2, this.height / 2);
         let spin = setInterval(() => {
             this.rotate((this.rotation * Math.PI) / 180);
@@ -175,7 +175,7 @@ function shootProjectile(entity, direction, projectile, quantity, spread) {
             }
 
             let p = new projectile(entity);
-            p.createProjectile(p, entity);
+            p.createProjectile();
             p.setSpeed(direction, p.speed);
             map.insert(p);
             p.setPosition(entity.pos.x + entity.width / 4, entity.pos.y + entity.height / 4);

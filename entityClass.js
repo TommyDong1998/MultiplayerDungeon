@@ -1,5 +1,5 @@
 
-const { chargeAttack, pounceAttack, potionAttack, spinAttack } = require("./Attacks");
+const { chargeAttack, pounceAttack, potionAttack, spinAttack } = require("./attacks");
 const { Projectile, Fireball, GoldenMoon, ForceBarrier, Quintuple, shootProjectile } = require("./projectiles");
 
 function setStat (entity){
@@ -29,6 +29,26 @@ function setWarrior(entity){
 	setStat(entity);
 	entity.attack=chargeAttack;
 	
+}
+function setRogue(entity){
+	entity.emit("newClass");
+	entity._classSetter=setRogue;
+	entity.entityClass="rogue";
+	entity.width=28;
+	entity.height=36;
+	entity.box(entity.width, entity.height);
+	entity._weaponAnchor = {x: entity.width/2,y: entity.height/2};
+	entity._weaponReach=12;
+	entity.sprite="elf";
+	entity.classStat = {
+		hp: 0,
+		speed: 25,
+		strength: 0,
+		resistance: 1
+	};
+	setStat(entity);
+	entity.goldBoost = true;
+	entity.attack=chargeAttack;
 }
 function setVampire(entity){
 	entity.emit("newClass");
@@ -157,6 +177,7 @@ function setLuckMan(entity){
 module.exports = {
 	setStat,
 	setWarrior,
+	setRogue,
 	setVampire,
 	setPotionHoard,
 	setLeader,

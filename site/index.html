@@ -15,10 +15,51 @@
 		<canvas id="canvas"></canvas>
 		<div id="signinBackground">
 			<div id="signin">
-				<b>Pick a Name</b>
-				<input type="text" id="name"></input>
-				<input type="button" value="Play" onclick="startGame()"/></input>
-				<small>Controls: Arrow keys or WASD to move. Move mouse to control weapon. Click or spacebar to use special attack.</small>
+				<div class="branding">
+					<div class="logo">Usurp the Night</div>
+					<div class="tagline">Drop into the pixel dungeon you see behind, upgrade fast, survive the waves.</div>
+				</div>
+				<div class="form">
+					<label for="name">Pick a name</label>
+					<input type="text" id="name" placeholder="Enter your hero name"></input>
+				</div>
+				<div class="classes">
+					<div class="class-card" data-class="warrior">
+						<div class="class-title">Warrior</div>
+						<div class="class-body">
+							<div class="class-stat">Balanced melee, charge attack</div>
+							<div class="class-perk">Starts with solid armor</div>
+						</div>
+					</div>
+					<div class="class-card" data-class="apprentice">
+						<div class="class-title">Apprentice</div>
+						<div class="class-body">
+							<div class="class-stat">Weak bolt, long reach</div>
+							<div class="class-perk">Evolves into Wizard</div>
+						</div>
+					</div>
+					<div class="class-card" data-class="rogue">
+						<div class="class-title">Rogue</div>
+						<div class="class-body">
+							<div class="class-stat">Fast move, daggers</div>
+							<div class="class-perk">Bonus gold on hits</div>
+						</div>
+					</div>
+				</div>
+				<div class="actions">
+					<input type="button" value="Start Run" onclick="startGame()"/></input>
+					<div class="help">Controls: WASD/Arrows to move. Mouse to aim. Click or spacebar to attack.</div>
+				</div>
+			</div>
+			<div id="restartOverlay">
+				<div class="restart-card">
+					<div class="restart-title">You Fell</div>
+					<div class="restart-body">Want to jump back into the dungeon?</div>
+					<div class="restart-actions">
+						<button class="restart-primary">Respawn</button>
+						<button class="restart-cancel">Exit</button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<menu>
@@ -88,4 +129,35 @@
 		</div>
 	</body>
 	<script src="client_script.js"></script>
+	<script>
+		(() => {
+			const classCards = document.querySelectorAll('.class-card');
+			let selectedClass = 'warrior';
+			const selectCard = (card) => {
+				classCards.forEach(c => c.classList.remove('active'));
+				card.classList.add('active');
+				selectedClass = card.dataset.class;
+			};
+			classCards.forEach((card, idx) => {
+				card.addEventListener('click', () => selectCard(card));
+				if (idx === 0) selectCard(card);
+			});
+
+			// Override startGame to send the selected class
+			window.startGame = function() {
+				document.getElementById("shop").style.visibility = "visible";
+				const nameField = document.querySelector("#name");
+				const finalName = nameField.value || randomName();
+				if (!nameField.value) nameField.value = finalName;
+				pname = finalName;
+				try {
+					socket.send(JSON.stringify({ name: pname, class: selectedClass }));
+				} catch (e) {
+					console.error(e);
+				}
+				document.querySelector("#signinBackground").style.display = "none";
+				setUpControl();
+			};
+		})();
+	</script>
 </html>

@@ -3,6 +3,7 @@ const { sword, setWorld, setMap, setSettings, players } = require("./state");
 const { Player } = require("./player");
 const { loadMap, clearMap } = require("./level");
 const { loadLevel } = require("./mapLoader");
+const { setWarrior, setWizard, setMinie, setRogue } = require("./entityClass");
 
 const app = express();
 
@@ -56,7 +57,21 @@ const world = new sword(function (setting, socket) {
 
                 data = JSON.parse(data);
                 if (data.name) {
-                    var player = new Player(ws, "elf", data.name);
+                    const player = new Player(ws, "elf", data.name);
+                    const startClass = (data.class || "").toLowerCase();
+                    switch (startClass) {
+                        case "warrior":
+                            setWarrior(player);
+                            break;
+                        case "apprentice":
+                            setWizard(player);
+                            break;
+                        case "rogue":
+                            setRogue(player);
+                            break;
+                        default:
+                            break;
+                    }
                     players.push(player);
                     updateGoldRank();
                     player.on("remove", () => {
