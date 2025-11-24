@@ -5,6 +5,7 @@ const { loadMap, clearMap } = require("./level");
 const { loadLevel } = require("./mapLoader");
 const { setWarrior, setWizard, setMinie, setRogue } = require("./entityClass");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -12,6 +13,34 @@ app.use(express.static("site"));
 app.get("/client_script.js", (req, res) => {
     res.sendFile(path.join(__dirname, "client_script.js"));
 });
+app.get("/framesManifest.json", (req, res) => {
+    res.json(buildFramesManifest());
+});
+
+function buildFramesManifest() {
+    const dir = path.join(__dirname, "site/images/frames");
+    const manifest = {};
+    let files = [];
+    try {
+        files = fs.readdirSync(dir);
+    } catch (e) {
+        return manifest;
+    }
+    const re = /^(.+)_anim_f(\d+)\.png$/;
+    files.forEach((file) => {
+        const m = re.exec(file);
+        if (!m) return;
+        const prefix = m[1];
+        const idx = Number(m[2]);
+        manifest[prefix] = manifest[prefix] || [];
+        manifest[prefix][idx] = "images/frames/" + file;
+    });
+    // compact arrays
+    Object.keys(manifest).forEach((key) => {
+        manifest[key] = manifest[key].filter(Boolean);
+    });
+    return manifest;
+}
 const port = process.env.PORT || 8080;
 
 const httpServer = app.listen(port);

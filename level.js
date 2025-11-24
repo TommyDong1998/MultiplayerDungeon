@@ -1,47 +1,56 @@
 const { sword, getWorld, getMap } = require("./state");
 const { NPC, Demon } = require("./npc");
+const { spawnDungeonEnemies, spawnDungeonBoss, spawnPortal } = require("./dungeonManager");
+const { players } = require("./state");
 
 //Spawn different amounts of monsters per level
-function Spawner(level,position){
-	let numOfMinions=5 + 1 * level;
-	let numOfTinyMinions=3 * level;
-	let numOfTallMinions=level;
+function Spawner(level, position, dungeonId = 'overworld', mapInstance = null){
+	console.log(`Spawning level ${level} in dungeon: ${dungeonId}`);
 
-	for(let i=0;i<numOfMinions;i+=1){
-		var enemy = new NPC("minion");
-		enemy.attackFirst();
-		enemy.growTo("TinyMinion",5000);
-		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
-	}
+	// Spawn enemies from dungeon config
+	spawnDungeonEnemies(dungeonId, level, mapInstance);
 
-	for(let i=0;i<numOfTinyMinions;i+=1){
-		var enemy = new NPC("TinyMinion");
-		enemy.attackFirst();
-		enemy.growTo("TallMinion",10000);
-		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
-	}
+	// Spawn boss
+	console.log(`About to spawn boss for dungeon ${dungeonId}, level ${level}`);
+	const boss = spawnDungeonBoss(dungeonId, level, mapInstance, (defeatedBoss) => {
+		console.log(`Boss defeat callback triggered! Boss HP: ${defeatedBoss.hp}`);
 
-	for(let i=0;i<numOfTallMinions;i+=1){
-		var enemy = new NPC("TallMinion");
-		enemy.attackSpawn();
-		enemy.setPosition(position.x+Math.floor(Math.random()*100),position.y+Math.floor(Math.random()*100));
-	}
+		if (defeatedBoss.hp <= 0) {
+			console.log(`Boss confirmed defeated in ${dungeonId}!`);
 
-	////////////////////////////////////////
-	//Generate new demon which spawns next level
-	///////////////////////////////////////
-	var enemy = new Demon();
-	enemy.stat.hp = Math.floor((1+level*0.5) * 30);
-	enemy.hp = enemy.stat.hp;
-	enemy.attackSpawn();
-	enemy.setPosition(position.x,position.y);
-	enemy.on('damage',()=>{
-		if (enemy.hp <= 0) {
-			setTimeout(()=>{
-				Spawner(level+1,enemy.pos);
-			},5000);
+			// Get dungeon info to find next dungeon
+			const { DUNGEONS } = require("./dungeonMaps");
+			const currentDungeon = DUNGEONS[dungeonId];
+
+			console.log(`Current dungeon: ${currentDungeon.name}, Next dungeon: ${currentDungeon.nextDungeon || 'none'}`);
+
+			setTimeout(() => {
+				console.log(`Spawning portal after 2 second delay...`);
+				// Spawn portal to next dungeon
+				const portal = spawnPortal(defeatedBoss.pos, currentDungeon.nextDungeon, players, mapInstance);
+
+				if(portal) {
+					console.log(`Portal spawned successfully!`);
+				} else {
+					console.log(`Portal is null - might be final dungeon`);
+				}
+
+				// If final dungeon, spawn next level in same dungeon
+				if (!currentDungeon.nextDungeon) {
+					console.log(`Final dungeon - spawning next level in 5 seconds`);
+					setTimeout(() => {
+						Spawner(level + 1, defeatedBoss.pos, dungeonId, mapInstance);
+					}, 5000);
+				}
+			}, 2000);
 		}
 	});
+
+	if(boss) {
+		console.log(`Boss spawned successfully in ${dungeonId}`);
+	} else {
+		console.log(`Failed to spawn boss in ${dungeonId}!`);
+	}
 }
 function clearMap(){
 	const world = getWorld();
@@ -57,8 +66,9 @@ function clearMap(){
 		map.quadTree.clear();
 	}
 }
-function loadMap(file){
-	const map = getMap();
+function loadMap(file, mapInstance){
+	// Allow passing in a specific map instance, otherwise use global
+	const map = mapInstance || getMap();
 	const world = getWorld();
 	/*
 		Overlay
@@ -155,58 +165,47 @@ function loadMap(file){
 	
 	
 	/*
-	 Generate monsters for testing 
+	 Initialize dungeon system - NOTE: This is for the OLD global map only
+	 New system uses dungeonMapManager which creates maps per dungeon
 	*/
 	world.setMaxListeners(1000);
-	for(let i=0;i<30;i++){
-		var enemy2 = new NPC("minion");
-		enemy2.attackFirst();
-		enemy2.setPosition(10* 32+Math.floor(Math.random()*100), 34 * 32+Math.floor(Math.random()*100));
-	}
+
+	// For the new system, spawning happens when first player enters via dungeonMapManager
+	// Mark overworld as needing spawning when first player joins
+	console.log("Map tiles loaded for overworld template");
 
 	/*
-	Monsters
-	Generate monsters on layer 2
+	OLD Monsters layer - DISABLED
+	Now using dungeon system instead of map layer spawning
 	*/
-	var mon = file.layers[2].data;
-	for (var c = 0; c < file.width; c++) {
-		for (var r = 0; r < file.height; r++) {
-			if (mon[r * file.width + c] != 0) {
-				let enemy;
-				switch(mon[r * file.width + c]-1){
-					case 183:
-						enemy = new NPC("skeleton");
-						enemy.attackFirst();
-					break;
-					case 737:
-						enemy = new Demon();
-						enemy.attackSpawn();
-						enemy.on('damage',function(){
-							if (enemy.hp <= 0) {
-								setTimeout(()=>{
-									Spawner(0,enemy.pos);
-								},5000);
-							}
-						});
-					break;
-					case 695:
-						enemy = new NPC("minion");
-						enemy.attackFirst();
-					break;
-					case 631:
-						enemy = new NPC("TallMinion");
-						enemy.attackSpawn();
-					break;
-					case 119:
-						enemy = new NPC("TinyMinion");
-						enemy.attackFirst();
-					break;
-				}
-				if(enemy)
-					enemy.setPosition(c * 32, r * 32);
-			}
-		}
-	}
+	// var mon = file.layers[2].data;
+	// for (var c = 0; c < file.width; c++) {
+	// 	for (var r = 0; r < file.height; r++) {
+	// 		if (mon[r * file.width + c] != 0) {
+	// 			let enemy;
+	// 			switch(mon[r * file.width + c]-1){
+	// 				case 183:
+	// 					enemy = new NPC("skeleton");
+	// 					enemy.attackFirst();
+	// 				break;
+	// 				case 695:
+	// 					enemy = new NPC("minion");
+	// 					enemy.attackFirst();
+	// 				break;
+	// 				case 631:
+	// 					enemy = new NPC("TallMinion");
+	// 					enemy.attackSpawn();
+	// 				break;
+	// 				case 119:
+	// 					enemy = new NPC("TinyMinion");
+	// 					enemy.attackFirst();
+	// 				break;
+	// 			}
+	// 			if(enemy)
+	// 				enemy.setPosition(c * 32, r * 32);
+	// 		}
+	// 	}
+	// }
 
 }
 

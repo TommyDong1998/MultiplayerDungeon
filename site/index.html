@@ -117,6 +117,37 @@
 		<div id="xp">
 			<div id="bar"></div>
 		</div>
+		<!-- Map Name Display -->
+		<div id="mapName" style="position: absolute; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.8); color: white; padding: 12px 20px; border-radius: 8px; font-size: 20px; font-family: VT323; border: 2px solid #555; z-index: 100;">
+			Map: Overworld
+		</div>
+		<!-- Victory Notification -->
+		<div id="victoryNotification" style="display: none; position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: gold; padding: 15px 25px; border: 2px solid gold; border-radius: 10px; font-family: VT323; font-size: 18px; z-index: 100; box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3); animation: slideInRight 0.5s ease-out;">
+			<div style="font-weight: bold; margin-bottom: 5px;">🎉 Boss Defeated!</div>
+			<div style="font-size: 14px; color: #87ceeb;">Portal has appeared!</div>
+		</div>
+		<style>
+			@keyframes slideInRight {
+				from {
+					transform: translateX(400px);
+					opacity: 0;
+				}
+				to {
+					transform: translateX(0);
+					opacity: 1;
+				}
+			}
+			@keyframes slideOutRight {
+				from {
+					transform: translateX(0);
+					opacity: 1;
+				}
+				to {
+					transform: translateX(400px);
+					opacity: 0;
+				}
+			}
+		</style>
 		<div id="restartOverlay">
 			<div class="restart-card">
 				<div class="restart-title">You Fell</div>

@@ -137,6 +137,9 @@ class item{
 		if(item.potion!=undefined){
 			sprite.potion=item.potion;
 		}
+		if(item.spriteScale!=undefined){
+			sprite.spriteScale=item.spriteScale;
+		}
 }
 }
 class map{
@@ -177,8 +180,17 @@ function loaded(){
 	window.requestAnimationFrame(update);
 }
 
+var framesMap={};
+fetch("/framesManifest.json").then(r=>r.json()).then((data)=>{
+	framesMap=data||{};
+}).catch(()=>{});
+
 //	Load information about the sprite
 function loadSprite(name){
+	// prefer explicit frame sets from frames/ directory
+	if(framesMap[name]){
+		return framesMap[name].map((src)=>({src}));
+	}
 	//If inside sprite sheet
 	var info=spriteData[name];
 	if(info){
@@ -239,7 +251,17 @@ var util={
 				info.image = new Image();
 				info.image.src = info.src;
 			}else if (info.image.complete){
-				ctx.drawImage(info.image, sprite.x,sprite.y,sprite.width,sprite.height);
+				// Use the natural image dimensions with a scale factor
+				var baseW = info.width || info.image.width;
+				var baseH = info.height || info.image.height;
+				// Use sprite-specific scale, or default to 1 (no scaling)
+				var scale = sprite.spriteScale !== undefined ? sprite.spriteScale : 1;
+				var scaledW = baseW * scale;
+				var scaledH = baseH * scale;
+				// Center the scaled image on the sprite position
+				var offsetX = (sprite.width - scaledW) / 2;
+				var offsetY = sprite.height - scaledH; // Align to bottom of hitbox
+				ctx.drawImage(info.image, sprite.x + offsetX, sprite.y + offsetY, scaledW, scaledH);
 			}
 		}else{
 			ctx.drawImage(tiles,info.x,info.y,info.width,info.height,
@@ -249,7 +271,20 @@ var util={
 	flip:(info,sprite,c)=>{
 		ctx.save();
 		ctx.scale(-1,1);
-		c({x:(sprite.x+sprite.width)*-1,y:sprite.y,width:sprite.width,height:sprite.height});
+		// When flipping, we need to account for the image being centered/offset within the hitbox
+		var baseW = (info.width || (info.image && info.image.width)) || sprite.width;
+		var scale = sprite.spriteScale !== undefined ? sprite.spriteScale : 1;
+		var scaledW = baseW * scale;
+		var offsetX = (sprite.width - scaledW) / 2;
+		// Create a new sprite object to pass, preserving spriteScale
+		var flippedSprite = {
+			x: (sprite.x + sprite.width - offsetX) * -1,
+			y: sprite.y,
+			width: sprite.width,
+			height: sprite.height,
+			spriteScale: sprite.spriteScale
+		};
+		c(flippedSprite);
 		ctx.restore();
 	},
 	rotate:(info,sprite,c)=>{
@@ -434,6 +469,14 @@ function recievePackets(event){
 		});
 		document.querySelector('#playerList').innerHTML=player;
 	}
+	// Dungeon change
+	if(message.dungeonChange){
+		updateMapName(message.dungeonName);
+	}
+	// Victory message
+	if(message.victory){
+		showVictory(message.message);
+	}
 	if (message.removeUpdate){
 		message.removeUpdate.forEach((entity)=>{
 			if(gameMap.map[entity])
@@ -452,6 +495,36 @@ function recievePackets(event){
 		},()=>{
 			console.log("no restart")
 		});
+	}
+}
+
+// Update map name display
+function updateMapName(dungeonName){
+	const mapNameEl = document.querySelector('#mapName');
+	if(mapNameEl){
+		mapNameEl.textContent = 'Map: ' + dungeonName;
+	}
+}
+
+// Show victory notification
+function showVictory(message){
+	const notificationEl = document.querySelector('#victoryNotification');
+	if(notificationEl){
+		// Reset animation by removing and re-adding
+		notificationEl.style.animation = 'none';
+		notificationEl.style.display = 'block';
+
+		// Trigger reflow to restart animation
+		void notificationEl.offsetWidth;
+		notificationEl.style.animation = '';
+
+		// Hide after 4 seconds with slide out animation
+		setTimeout(()=>{
+			notificationEl.style.animation = 'slideOutRight 0.5s ease-in';
+			setTimeout(() => {
+				notificationEl.style.display = 'none';
+			}, 500);
+		}, 4000);
 	}
 }
 

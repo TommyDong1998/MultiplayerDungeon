@@ -7,6 +7,7 @@ class Projectile extends sword.Entity {
         this.width = 16;
         this.height = 32;
         this.sprite = "Dagger";
+        this.spriteScale = 1;
         this.type.push("weapon");
         this.speed = 400;
         this.damage = 0.5;
@@ -86,6 +87,7 @@ class Fireball extends Projectile {
         this.width = 24;
         this.height = 24;
         this.sprite = "Fireball";
+        this.spriteScale = 1;
         this.speed = 250;
         this.damage = 3;
         this.knockback = 0;
@@ -103,6 +105,7 @@ class GoldenMoon extends Projectile {
         this.width = 32;
         this.height = 32;
         this.sprite = "GoldenMoon";
+        this.spriteScale = 1;
         this.speed = 300;
         this.damage = 0.2;
         this.knockback = 0;
@@ -120,6 +123,7 @@ class ForceBarrier extends Projectile {
         this.width = 48;
         this.height = 24;
         this.sprite = "HalfBarrier";
+        this.spriteScale = 1;
         this.speed = 160;
         this.damage = 0;
         this.knockback = 100;
@@ -137,6 +141,7 @@ class Quintuple extends Projectile {
         this.width = 32;
         this.height = 32;
         this.sprite = "QuintuplicateBolt";
+        this.spriteScale = 1;
         this.speed = 200;
         this.damage = 0.3;
         this.knockback = 40;

@@ -1,6 +1,7 @@
 const { getMap } = require("./state");
 const { setStat, setWarrior, setVampire, setLeader, setPotionHoard, setMinie, setWizard } = require("./entityClass");
 const { Sword, Dagger, Longsword, Barrier, Greatsword, HalfBarrier, GlassSword, JimmysRustySword } = require("./weapon");
+const { getPlayerMap } = require("./dungeonMapManager");
 
 //Shop number
 const entityClassNum=1;
@@ -15,7 +16,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new Sword();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -26,7 +27,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new Dagger();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -61,7 +62,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new Longsword();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -78,7 +79,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new Barrier();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -89,7 +90,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new Greatsword();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -100,7 +101,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new HalfBarrier();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -117,7 +118,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new GlassSword();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }
@@ -128,7 +129,7 @@ var shop_items = {
             player.weapon.emit("remove");
             var weapon = new JimmysRustySword();
             weapon.owner = player;
-            const map = getMap();
+            const map = getPlayerMap(player);
             map.insert(weapon);
             player.weild(weapon);
         }

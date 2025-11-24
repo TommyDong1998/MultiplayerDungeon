@@ -4,13 +4,24 @@ const { Coin } = require("./item");
 const { Weapon, Sword, Longsword, Greatsword, Barrier, HalfBarrier, GlassSword, JimmysRustySword, Dagger, Bullet } = require("./weapon");
 const { shop_items } = require("./shop");
 const { setWarrior, setVampire, setPotionHoard, setLeader, setMinie, setWizard } = require("./entityClass");
+const { initializePlayer, cleanupPlayer } = require("./dungeonManager");
 
 /* Requires Global Variable world */
 class Player extends Monster {
     constructor(socket, type, name) {
-        super("elf");
-        const map = getMap();
+        // Get overworld map instance for new players
+        const { getDungeonMap } = require('./dungeonMapManager');
+        const overworldMap = getDungeonMap('overworld');
+
+        // Create player on overworld map
+        super("elf", overworldMap);
+
+        // Track player on this map
+        const { initializePlayerMap } = require('./dungeonMapManager');
+        initializePlayerMap(this);
+
         const world = getWorld();
+
         this.isPlayer = true;
         this.playerName = name;
 		this.boughtItem=[];
@@ -38,7 +49,7 @@ class Player extends Monster {
 		//////////////////////////////
         this._weaponAnchor = {x: this.width / 2,y: this.height*0.5};
         let weapon=new Weapon(16, 32);
-        map.insert(weapon);
+        overworldMap.insert(weapon);
         this.weild(weapon);
 		//////////////////////////
         let OrientWeapon= function(x, y) {
@@ -141,7 +152,40 @@ class Player extends Monster {
             }
         });
 		this.shop();
-        
+
+        // Initialize dungeon system for this player
+        initializePlayer(this);
+
+        // Handle player death - respawn in overworld
+        this.on('damage', (amt, obj) => {
+            if (this.hp <= 0) {
+                console.log(`Player ${this.playerName} died! Respawning in overworld...`);
+
+                // Move to overworld map
+                const { movePlayerToMap } = require('./dungeonMapManager');
+                const { setPlayerDungeon } = require('./dungeonManager');
+
+                movePlayerToMap(this, 'overworld');
+                setPlayerDungeon(this, 'overworld');
+
+                // Respawn at overworld spawn
+                this.setPosition(25 * 32, 15 * 32);
+
+                // Restore health
+                this.hp = this.stat.hp;
+
+                // Send respawn message to client
+                try {
+                    this.socket.send(JSON.stringify({
+                        respawn: true,
+                        message: "You died! Respawned in Overworld"
+                    }));
+                } catch (e) {
+                    console.log("Error sending respawn message:", e);
+                }
+            }
+        });
+
         //Whenever something get removed
         function removeEntity(id) {
             try {
@@ -164,6 +208,7 @@ class Player extends Monster {
         });
         this.once("remove", () => {
             world.removeListener('nextFrame', sendFrame);
+            cleanupPlayer(this); // Clean up dungeon data
             if (!close){
 				world.removeListener('remove', removeEntity);
                 socket.send(JSON.stringify({
@@ -174,13 +219,22 @@ class Player extends Monster {
         //this.buy(0);
     }
     sendFrame() {
-        const map = getMap();
+        // Get player's current map instance
+        const { getPlayerMap } = require('./dungeonMapManager');
+        const map = getPlayerMap(this);
+
+        if (!map) {
+            console.log(`Player ${this.playerName} has no map instance!`);
+            return;
+        }
+
         this.data = this.data || {
             item: []
         };
         var current = map.findNear(this, 500);
         let visibleItems=[];
         const total=[];
+
         current.forEach((entity) => {
             if (entity.sprite || entity instanceof Bullet) {
                 var info = {
@@ -217,6 +271,9 @@ class Player extends Monster {
                 }
                 if (entity.playerName) {
                     info.playerName = entity.playerName;
+                }
+                if (entity.spriteScale != undefined) {
+                    info.spriteScale = entity.spriteScale;
                 }
                 var exist = this.data.item.find((obj) => {
                     return obj.id == entity.id;

@@ -3,8 +3,8 @@ const { players } = require("./state");
 const { Coin } = require("./item");
 
 class NPC extends Monster {
-    constructor(type) {
-        super(type);
+    constructor(type, mapInstance = null) {
+        super(type, mapInstance);
         var attack = true;
         this.on('collide', (obj) => {
             if (attack) {
@@ -129,14 +129,18 @@ class NPC extends Monster {
 //Main boss
 //Based off normal npc
 class Demon extends NPC {
-    constructor() {
-        super("demon");
-        this.hp = 20;
-        this.stat.hp = 20;
+    constructor(type = "demon", mapInstance = null) {
+        super(type, mapInstance);
+        // Default stats - can be overridden
+        if(!this.hp || this.hp < 20) {
+            this.hp = 20;
+            this.stat.hp = 20;
+        }
         this.stat.speed = 150;
         this.stat.resistance = 15;
         this.on('damage', (amt, obj) => {
             if (this.hp <= 0) {
+                // Drop coins
                 for (var x = 0; x < 10; x++) {
                     var coin = new Coin();
                     coin.setPosition(this.pos.x + (Math.random() * 100), this.pos.y + (Math.random() * 100));
