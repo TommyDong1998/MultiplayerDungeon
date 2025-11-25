@@ -55,15 +55,42 @@ function Spawner(level, position, dungeonId = 'overworld', mapInstance = null){
 function clearMap(){
 	const world = getWorld();
 	const map = getMap();
+
+	// Collect portals before clearing (to preserve them)
+	const portals = [];
+	if (world && world._collisionItems) {
+		for (let item of world._collisionItems) {
+			// Check if entity is a Portal (has destinationDungeon property)
+			if (item.destinationDungeon !== undefined) {
+				portals.push(item);
+			}
+		}
+	}
+
+	// Remove all entities
 	while(world && world._collisionItems && world._collisionItems.length){
-		world._collisionItems[0].emit('remove');
+		const item = world._collisionItems[0];
+		// Skip portals
+		if (item.destinationDungeon !== undefined) {
+			// Temporarily remove from collision items without triggering remove event
+			world._collisionItems.shift();
+			continue;
+		}
+		item.emit('remove');
 	}
+
+	// Re-add portals to collision items
 	if (world) {
-		world._velocityItems=[];
-		world._collisionItems=[];
+		world._velocityItems = [];
+		world._collisionItems = [...portals];
 	}
+
+	// Clear quadtree and re-insert portals
 	if (map && map.quadTree) {
 		map.quadTree.clear();
+		portals.forEach(portal => {
+			map.insert(portal);
+		});
 	}
 }
 function loadMap(file, mapInstance){
